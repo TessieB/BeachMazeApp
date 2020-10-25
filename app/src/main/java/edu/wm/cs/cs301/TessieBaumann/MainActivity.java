@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
+import edu.wm.cs.cs301.TessieBaumann.R;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
