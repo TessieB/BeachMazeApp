@@ -5,4 +5,11 @@
         <item>Prim</item>
         <item>Eller</item>
     </string-array>
+
+    <string-array name="sensor">
+        <item>Premium</item>
+        <item>Mediocre</item>
+        <item>Soso</item>
+        <item>Shaky</item>
+    </string-array>
 </resources>
