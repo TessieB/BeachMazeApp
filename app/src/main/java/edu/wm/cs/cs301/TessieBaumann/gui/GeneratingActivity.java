@@ -66,7 +66,7 @@ public class GeneratingActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed(){
-        Log.v(TAG, "back button pressed");
+        Log.v(TAG, "back button pressed in Generating Activity");
         backPressed = true;
         super.onBackPressed();
     }
