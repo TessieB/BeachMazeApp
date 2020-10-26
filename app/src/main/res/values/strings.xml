@@ -12,4 +12,6 @@
         <item>Soso</item>
         <item>Shaky</item>
     </string-array>
+    <string name="edit_message">Explore</string>
+    <string name="button_send">Send</string>
 </resources>
