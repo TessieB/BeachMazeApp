@@ -1,5 +1,6 @@
 package edu.wm.cs.cs301.TessieBaumann.gui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -8,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
+import android.widget.RadioButton;
 import android.widget.Spinner;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,6 +23,7 @@ public class GeneratingActivity extends AppCompatActivity {
     private static final String KEY = "my message key";
     private ProgressBar loadingBar;
     private Handler myHandler;
+    private String driver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +33,7 @@ public class GeneratingActivity extends AppCompatActivity {
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.sensor, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         builderSpinner.setAdapter(adapter);
+        Log.d("Hey", "Hey there");
 
         loadingBar = (ProgressBar) findViewById(R.id.generatingProgressBar);
         loadingBar.setMax(100);
@@ -40,7 +44,8 @@ public class GeneratingActivity extends AppCompatActivity {
                 Bundle bundle = msg.getData();
                 String progressBarMessage = bundle.getString(KEY);
                 Log.v(TAG, progressBarMessage);
-                loadingBar.incrementProgressBy(5);
+                loadingBar.incrementProgressBy(10);
+                moveToNextActivity();
             }
         };
 
@@ -48,11 +53,10 @@ public class GeneratingActivity extends AppCompatActivity {
 
     public void runThread(View view){
         loadingBar.setProgress(0);
-        Log.v(TAG, "Running thread");
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                for(int i = 0; i < 100; i+= 5) {
+                for(int i = 0; i < 100; i+= 10) {
                     Log.v(TAG, "Running thread inside run method");
                     try{
                         Thread.sleep(1000);
@@ -60,16 +64,52 @@ public class GeneratingActivity extends AppCompatActivity {
                     catch (InterruptedException e){
                         System.out.println("Thread was interrupted");
                     }
-                    Log.v(TAG, "Thread is done running");
                     Message message = new Message();
                     Bundle bundle = new Bundle();
                     bundle.putString(KEY, "time to increment the progress bar by 5");
                     message.setData(bundle);
                     myHandler.sendMessage(message);
                 }
+                Log.v(TAG, "Thread is done running");
             }
         };
         Thread thread = new Thread(runnable);
         thread.start();
+    }
+
+    public void setDriver(View view){
+        Log.d("hey there", "hi " + driver);
+        RadioButton tempDriver = (RadioButton) view;
+        driver = tempDriver.getText().toString();
+        Log.d("hey there2", "hi2 " + driver);
+        moveToNextActivity();
+    }
+
+    private void moveToNextActivity(){
+        if(loadingBar.getProgress()==100 && driver.equals("Wall Follower")){
+            sendAnimatedMessage(loadingBar);
+        }
+        else if(loadingBar.getProgress()==100 && driver.equals("Wizard")){
+            sendAnimatedMessage(loadingBar);
+        }
+        else if(loadingBar.getProgress()==100 && driver.equals("Manual")){
+            sendManualMessage(loadingBar);
+        }
+    }
+
+    public void sendAnimatedMessage(View view){
+        Intent intent = new Intent(this, PlayAnimationActivity.class);
+        //EditText editText = (EditText) findViewById(R.id.editText);
+        //String message = editText.getText().toString();
+        //intent.putExtra(EXTRA_MESSAGE, message);
+        startActivity(intent);
+    }
+
+    public void sendManualMessage(View view){
+        Intent intent = new Intent(this, PlayManuallyActivity.class);
+        //EditText editText = (EditText) findViewById(R.id.editText);
+        //String message = editText.getText().toString();
+        //intent.putExtra(EXTRA_MESSAGE, message);
+        startActivity(intent);
     }
 }
