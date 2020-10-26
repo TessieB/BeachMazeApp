@@ -7,6 +7,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
@@ -24,16 +25,28 @@ public class GeneratingActivity extends AppCompatActivity {
     private ProgressBar loadingBar;
     private Handler myHandler;
     private String driver;
+    private boolean backPressed = false;
+    private String robot = "Premium";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.generating_activity);
-        Spinner builderSpinner = (Spinner) findViewById(R.id.sensorspinner);
+        Spinner sensorSpinner = (Spinner) findViewById(R.id.sensorspinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.sensor, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        builderSpinner.setAdapter(adapter);
-        Log.d("Hey", "Hey there");
+        sensorSpinner.setAdapter(adapter);
+        sensorSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                setRobot(adapterView.getItemAtPosition(i).toString());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
 
         loadingBar = (ProgressBar) findViewById(R.id.generatingProgressBar);
         loadingBar.setMax(100);
@@ -51,12 +64,23 @@ public class GeneratingActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onBackPressed(){
+        Log.v(TAG, "back button pressed");
+        backPressed = true;
+        super.onBackPressed();
+    }
+
     public void runThread(View view){
         loadingBar.setProgress(0);
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
                 for(int i = 0; i < 100; i+= 10) {
+                    Log.v(TAG, "backPressed value: " + backPressed);
+                    if(backPressed){
+                        break;
+                    }
                     Log.v(TAG, "Running thread inside run method");
                     try{
                         Thread.sleep(1000);
@@ -86,14 +110,15 @@ public class GeneratingActivity extends AppCompatActivity {
     }
 
     private void moveToNextActivity(){
-        if(loadingBar.getProgress()==100 && driver.equals("Wall Follower")){
-            sendAnimatedMessage(loadingBar);
-        }
-        else if(loadingBar.getProgress()==100 && driver.equals("Wizard")){
-            sendAnimatedMessage(loadingBar);
-        }
-        else if(loadingBar.getProgress()==100 && driver.equals("Manual")){
-            sendManualMessage(loadingBar);
+        Log.v(TAG, "Loading bar: " + loadingBar.toString());
+        if(driver != null) {
+            if (loadingBar.getProgress() == 100 && driver.equals("Wall Follower")) {
+                sendAnimatedMessage(loadingBar);
+            } else if (loadingBar.getProgress() == 100 && driver.equals("Wizard")) {
+                sendAnimatedMessage(loadingBar);
+            } else if (loadingBar.getProgress() == 100 && driver.equals("Manual")) {
+                sendManualMessage(loadingBar);
+            }
         }
     }
 
@@ -111,5 +136,11 @@ public class GeneratingActivity extends AppCompatActivity {
         //String message = editText.getText().toString();
         //intent.putExtra(EXTRA_MESSAGE, message);
         startActivity(intent);
+    }
+
+    private void setRobot(String str){
+        //Spinner tempBuilder = (Spinner) view;
+        robot = str;
+        Log.v(TAG, "Setting robot to " + robot);
     }
 }
