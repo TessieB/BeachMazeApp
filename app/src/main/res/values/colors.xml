@@ -8,4 +8,6 @@
     <color name="orange">#F69E50</color>
     <color name="darkBlue">#0E2597</color>
     <color name="sensor">#030304</color>
+    <color name="green">#237102</color>
+    <color name="red">#F44336</color>
 </resources>

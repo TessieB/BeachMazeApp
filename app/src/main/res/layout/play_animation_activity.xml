@@ -41,6 +41,7 @@
         android:layout_marginStart="15dp"
         android:layout_marginTop="12dp"
         android:layout_marginEnd="23dp"
+        android:onClick="showMap"
         android:text="ToggleButton"
         app:layout_constraintBottom_toTopOf="@+id/textView14"
         app:layout_constraintEnd_toStartOf="@+id/seekBar2"
@@ -51,11 +52,11 @@
         android:id="@+id/textView14"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="25dp"
+        android:layout_marginStart="10dp"
         android:layout_marginEnd="320dp"
         android:text="Show Map"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-        app:layout_constraintBottom_toTopOf="@+id/textView17"
+        app:layout_constraintBottom_toTopOf="@+id/leftSensorTextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toggleButton4" />
@@ -91,16 +92,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="36dp"
-        android:layout_marginTop="103dp"
         android:layout_marginEnd="25dp"
         android:layout_marginBottom="30dp"
+        android:onClick="playOrPauseGame"
         android:text="ToggleButton"
         android:textOff="PAUSE"
         android:textOn="START"
         app:layout_constraintBottom_toTopOf="@+id/progressBar3"
         app:layout_constraintEnd_toStartOf="@+id/seekBar4"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView20" />
+        app:layout_constraintTop_toBottomOf="@+id/rightSensorTextView" />
 
     <SeekBar
         android:id="@+id/seekBar4"
@@ -139,8 +140,8 @@
         android:text="Go2Winning"
         android:textColor="@color/black"
         app:layout_constraintBottom_toTopOf="@+id/button7"
-        app:layout_constraintEnd_toStartOf="@+id/textView21"
-        app:layout_constraintStart_toEndOf="@+id/textView17"
+        app:layout_constraintEnd_toStartOf="@+id/frontSensorTextView"
+        app:layout_constraintStart_toEndOf="@+id/leftSensorTextView"
         app:layout_constraintTop_toBottomOf="@+id/seekBar2" />
 
     <Button
@@ -155,15 +156,15 @@
         android:text="Go2Losing"
         android:textColor="@color/black"
         app:layout_constraintBottom_toTopOf="@+id/textView16"
-        app:layout_constraintEnd_toStartOf="@+id/textView19"
-        app:layout_constraintStart_toEndOf="@+id/textView20"
+        app:layout_constraintEnd_toStartOf="@+id/backSensorTextView"
+        app:layout_constraintStart_toEndOf="@+id/rightSensorTextView"
         app:layout_constraintTop_toBottomOf="@+id/button6" />
 
     <TextView
-        android:id="@+id/textView17"
+        android:id="@+id/leftSensorTextView"
         android:layout_width="51dp"
         android:layout_height="48dp"
-        android:layout_marginStart="29dp"
+        android:layout_marginStart="25dp"
         android:layout_marginTop="88dp"
         android:layout_marginBottom="110dp"
         android:gravity="center"
@@ -171,16 +172,16 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         android:textColor="@color/sensor"
         android:textSize="15sp"
-        app:layout_constraintBottom_toTopOf="@+id/textView20"
+        app:layout_constraintBottom_toTopOf="@+id/rightSensorTextView"
         app:layout_constraintEnd_toStartOf="@+id/button6"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView14" />
 
     <TextView
-        android:id="@+id/textView19"
+        android:id="@+id/backSensorTextView"
         android:layout_width="51dp"
         android:layout_height="48dp"
-        android:layout_marginEnd="19dp"
+        android:layout_marginEnd="25dp"
         android:layout_marginBottom="105dp"
         android:gravity="center"
         android:text="Back Sensor"
@@ -190,13 +191,14 @@
         app:layout_constraintBottom_toTopOf="@+id/seekBar4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/button7"
-        app:layout_constraintTop_toBottomOf="@+id/textView21" />
+        app:layout_constraintTop_toBottomOf="@+id/frontSensorTextView" />
 
     <TextView
-        android:id="@+id/textView20"
+        android:id="@+id/rightSensorTextView"
         android:layout_width="51dp"
         android:layout_height="48dp"
         android:layout_marginStart="25dp"
+        android:layout_marginBottom="104dp"
         android:gravity="center"
         android:text="Right Sensor"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
@@ -204,14 +206,15 @@
         android:textSize="15sp"
         app:layout_constraintBottom_toTopOf="@+id/toggleButton5"
         app:layout_constraintEnd_toStartOf="@+id/button7"
+        app:layout_constraintHorizontal_bias="0.395"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView17" />
+        app:layout_constraintTop_toBottomOf="@+id/leftSensorTextView" />
 
     <TextView
-        android:id="@+id/textView21"
+        android:id="@+id/frontSensorTextView"
         android:layout_width="51dp"
         android:layout_height="48dp"
-        android:layout_marginTop="118dp"
+        android:layout_marginTop="105dp"
         android:layout_marginEnd="25dp"
         android:layout_marginBottom="110dp"
         android:gravity="center"
@@ -219,7 +222,7 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         android:textColor="@color/sensor"
         android:textSize="15sp"
-        app:layout_constraintBottom_toTopOf="@+id/textView19"
+        app:layout_constraintBottom_toTopOf="@+id/backSensorTextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/button6"
         app:layout_constraintTop_toBottomOf="@+id/seekBar2" />

@@ -6,12 +6,15 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -28,6 +31,13 @@ public class GeneratingActivity extends AppCompatActivity {
     private boolean backPressed = false;
     private String robot = "Premium";
 
+
+    /**
+     This method checks to see what maze builder
+     the user wants to use and tells that to the builder.
+     The default value for this method is DFS
+     @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,12 +68,17 @@ public class GeneratingActivity extends AppCompatActivity {
                 String progressBarMessage = bundle.getString(KEY);
                 Log.v(TAG, progressBarMessage);
                 loadingBar.incrementProgressBy(10);
-                moveToNextActivity();
+                showStartButton();
             }
         };
 
     }
 
+    /**
+     This method tells when the back
+     button has been pressed and then
+     goes back to the title screen activity.
+     */
     @Override
     public void onBackPressed(){
         Log.v(TAG, "back button pressed in Generating Activity");
@@ -71,6 +86,13 @@ public class GeneratingActivity extends AppCompatActivity {
         super.onBackPressed();
     }
 
+
+    /**
+     This method creates a background thread that
+     updates the progress bar, giving the appearance that
+     a maze is being loaded.
+     @param view which is the progress bar that loads the maze
+     */
     public void runThread(View view){
         loadingBar.setProgress(0);
         Runnable runnable = new Runnable() {
@@ -83,7 +105,7 @@ public class GeneratingActivity extends AppCompatActivity {
                     }
                     Log.v(TAG, "Running thread inside run method");
                     try{
-                        Thread.sleep(1000);
+                        Thread.sleep(500);
                     }
                     catch (InterruptedException e){
                         System.out.println("Thread was interrupted");
@@ -101,46 +123,94 @@ public class GeneratingActivity extends AppCompatActivity {
         thread.start();
     }
 
+
+    /**
+     This method sets the driver to be the
+     driver that the user clicks on.
+     @param view which is the driver radio button
+     */
     public void setDriver(View view){
-        Log.d("hey there", "hi " + driver);
         RadioButton tempDriver = (RadioButton) view;
         driver = tempDriver.getText().toString();
-        Log.d("hey there2", "hi2 " + driver);
-        moveToNextActivity();
+        Log.d(TAG, "Driver: " + driver);
+        Toast toast = Toast.makeText(getApplicationContext(), "Driver: " + driver, Toast.LENGTH_SHORT);
+        toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 0);
+        toast.show();
+        showStartButton();
     }
 
-    private void moveToNextActivity(){
+
+    /**
+     This method reveals the start button that
+     allows the user to start the game once the
+     maze has fully loaded (when the progress bar has
+     reached 100%) and the user has chosen a driver/
+     */
+    private void showStartButton(){
         Log.v(TAG, "Loading bar: " + loadingBar.toString());
-        if(driver != null) {
-            if (loadingBar.getProgress() == 100 && driver.equals("Wall Follower")) {
-                sendAnimatedMessage(loadingBar);
-            } else if (loadingBar.getProgress() == 100 && driver.equals("Wizard")) {
-                sendAnimatedMessage(loadingBar);
-            } else if (loadingBar.getProgress() == 100 && driver.equals("Manual")) {
-                sendManualMessage(loadingBar);
-            }
+        if(driver != null && loadingBar.getProgress() == 100) {
+            Button startButton = (Button) findViewById(R.id.startGameButton);
+            startButton.setVisibility(startButton.VISIBLE);
         }
     }
 
+
+    /**
+     This method makes the app move to the next activity
+     when the start playing button has been pressed,
+     which is PlayManuallyActivity if the user chose the
+     manual driver or is PlayAnimationActivity if the user chose
+     the Wall Follower or Wizard driver.
+     @param view which is the start button
+     */
+    public void moveToNextActivity(View view){
+        if (driver.equals("Wall Follower")) {
+            sendAnimatedMessage(view);
+        } else if ( driver.equals("Wizard")) {
+            sendAnimatedMessage(view);
+        } else if (driver.equals("Manual")) {
+            sendManualMessage(view);
+        }
+    }
+
+
+    /**
+     This method moves the app to the
+     PlayAnimationActivity class.
+     @param view which is the start button
+     */
     public void sendAnimatedMessage(View view){
         Intent intent = new Intent(this, PlayAnimationActivity.class);
-        //EditText editText = (EditText) findViewById(R.id.editText);
-        //String message = editText.getText().toString();
-        //intent.putExtra(EXTRA_MESSAGE, message);
+        Bundle bundle = new Bundle();
+        bundle.putString("Robot", robot);
+        intent.putExtras(bundle);
         startActivity(intent);
     }
 
+
+    /**
+     This method moves the app to the
+     PlayManuallyActivity class.
+     @param view which is the start button
+     */
     public void sendManualMessage(View view){
         Intent intent = new Intent(this, PlayManuallyActivity.class);
-        //EditText editText = (EditText) findViewById(R.id.editText);
-        //String message = editText.getText().toString();
-        //intent.putExtra(EXTRA_MESSAGE, message);
         startActivity(intent);
     }
 
+
+    /**
+     This method checks to see what maze robot
+     the user wants to use and tells that to the builder.
+     The default value for this method is Premium
+     @param str which is the robot specifier
+     */
     private void setRobot(String str){
         //Spinner tempBuilder = (Spinner) view;
         robot = str;
         Log.v(TAG, "Setting robot to " + robot);
+        Toast toast = Toast.makeText(getApplicationContext(), "Robot: " + robot, Toast.LENGTH_SHORT);
+        toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 0);
+        toast.show();
     }
 }

@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -15,17 +16,28 @@ import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import edu.wm.cs.cs301.TessieBaumann.R;
 
 public class AMazeActivity extends AppCompatActivity  {
 
-    private static final int SKILL_LEVEL_MAX = 16;
-    private int skillLevelNum = 0;
+    private static final int SKILL_LEVEL_MAX = 16;  //max skill level that can be picked
+    private int skillLevelNum = 0;  //tells the maze what skill level to use
     private static final String TAG = "message";
-    private String builder = "DFS";
-    private boolean wantRooms = false;
+    private String builder = "DFS";  //tells the maze what builder to use
+    private boolean wantRooms = false;  //tells whether or not the user wants rooms in their maze
 
+
+    /**
+     This method sets the content view to the
+     xml file amazeactivity.xml and puts the builder
+     options into a spinner and the skill level options into
+     a seek bar. It also updates the maze as to what builder to
+     use and what skill level to use whenever the user changes one
+     of these values.
+     @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,30 +86,58 @@ public class AMazeActivity extends AppCompatActivity  {
 
     }
 
+     /**
+     This method checks to see if the user wants rooms
+     in the maze and sends that information to the maze builder.
+     The default value is no rooms, or a perfect maze
+     @param view which is the room check box
+     */
     public void onRoomCheckBoxChecked(View view){
         CheckBox rooms = (CheckBox) view;
         wantRooms = rooms.isChecked();
         Log.v(TAG, "User wants rooms: " + wantRooms);
+        Toast toast = Toast.makeText(getApplicationContext(), "Rooms: " + wantRooms, Toast.LENGTH_SHORT);
+        toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 0);
+        toast.show();
     }
 
+    /**
+     This method sets the skill/difficulty level
+     that the user wants for the maze.
+     The default value is 0
+     @param view which is the difficulty level seek bar
+     */
     private void setSkillLevel(View view){
         ProgressBar tempSkillLevel = (ProgressBar) view;
         skillLevelNum = tempSkillLevel.getProgress();
         Log.v(TAG, "Setting skill level to " + skillLevelNum);
+        Toast toast = Toast.makeText(getApplicationContext(), "Difficulty Level: " + skillLevelNum, Toast.LENGTH_SHORT);
+        toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 0);
+        toast.show();
     }
 
+    /**
+     This method checks to see what maze builder
+     the user wants to use and tells that to the builder.
+     The default value for this method is DFS
+     @param str which is the builder specifier
+     */
     private void setBuilder(String str){
-        //Spinner tempBuilder = (Spinner) view;
         builder = str;
         Log.v(TAG, "Setting builder to " + builder);
+        Toast toast = Toast.makeText(getApplicationContext(), "Maze Generator: " + builder, Toast.LENGTH_SHORT);
+        toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 0);
+        toast.show();
     }
 
-
+    /**
+     This method makes the app move to the
+     next activity when either the revisit or explore
+     buttons are pressed.
+     @param view which either the revisit or explore button
+     */
     public void sendMessage(View view){
         Intent intent = new Intent(this, GeneratingActivity.class);
-        //EditText editText = (EditText) findViewById(R.id.editText);
-        //String message = editText.getText().toString();
-        //intent.putExtra(EXTRA_MESSAGE, message);
         startActivity(intent);
     }
 
