@@ -184,7 +184,7 @@ public class GeneratingActivity extends AppCompatActivity {
      */
     public void sendAnimatedMessage(View view){
         Intent intent = new Intent(this, PlayAnimationActivity.class);
-        Bundle bundle = new Bundle();
+        Bundle bundle = getIntent().getExtras();
         bundle.putString("Robot", robot);
         intent.putExtras(bundle);
         startActivity(intent);
@@ -198,6 +198,8 @@ public class GeneratingActivity extends AppCompatActivity {
      */
     public void sendManualMessage(View view){
         Intent intent = new Intent(this, PlayManuallyActivity.class);
+        Bundle bundle = getIntent().getExtras();
+        intent.putExtras(bundle);
         startActivity(intent);
     }
 

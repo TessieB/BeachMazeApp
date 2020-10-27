@@ -63,6 +63,8 @@ public class LosingActivity extends AppCompatActivity {
      */
     public void sendTitleStageMessage(View view){
         Intent intent = new Intent(this, AMazeActivity.class);
+        Bundle bundle = getIntent().getExtras();
+        intent.putExtras(bundle);
         startActivity(intent);
     }
 

@@ -132,12 +132,32 @@ public class AMazeActivity extends AppCompatActivity  {
 
     /**
      This method makes the app move to the
-     next activity when either the revisit or explore
-     buttons are pressed.
-     @param view which either the revisit or explore button
+     next activity when the explore
+     button is pressed.
+     @param view of the explore button
      */
     public void sendMessage(View view){
         Intent intent = new Intent(this, GeneratingActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString("Skill Level", skillLevelNum + "");
+        bundle.putString("Maze Generator", builder);
+        bundle.putString("Rooms", wantRooms + "");
+        intent.putExtras(bundle);
+        startActivity(intent);
+    }
+
+
+    /**
+     This method makes the app move to the
+     next activity with the same complexity
+     values of the previously played maze when the revisit
+     button is pressed.
+     @param view of the revisit  button
+     */
+    public void sendRevisitMessage(View view){
+        Intent intent = new Intent(this, GeneratingActivity.class);
+        Bundle bundle = getIntent().getExtras();
+        intent.putExtras(bundle);
         startActivity(intent);
     }
 

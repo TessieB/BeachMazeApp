@@ -105,7 +105,7 @@ public class PlayManuallyActivity extends AppCompatActivity {
      */
     public void sendWinningMessage(View view){
         Intent intent = new Intent(this, WinningActivity.class);
-        Bundle bundle = new Bundle();
+        Bundle bundle = getIntent().getExtras();
         bundle.putString("Path Length", pathLength + "");
         bundle.putString("Shortest Path Length", shortestPathLength + "");
         intent.putExtras(bundle);

@@ -148,7 +148,7 @@ public class PlayAnimationActivity extends AppCompatActivity {
      */
     public void sendLosingMessage(View view){
         Intent intent = new Intent(this, LosingActivity.class);
-        Bundle bundle = new Bundle();
+        Bundle bundle = getIntent().getExtras();
         bundle.putString("Path Length", pathLength + "");
         bundle.putString("Shortest Path Length", shortestPathLength + "");
         bundle.putString("Energy Consumption", (ROBOT_INITIAL_ENERGY - remainingEnergy.getProgress()) + "");
@@ -164,7 +164,7 @@ public class PlayAnimationActivity extends AppCompatActivity {
      */
     public void sendWinningMessage(View view){
         Intent intent = new Intent(this, WinningActivity.class);
-        Bundle bundle = new Bundle();
+        Bundle bundle = getIntent().getExtras();
         bundle.putString("Path Length", pathLength + "");
         bundle.putString("Shortest Path Length", shortestPathLength + "");
         bundle.putString("Energy Consumption", (ROBOT_INITIAL_ENERGY - remainingEnergy.getProgress()) + "");
@@ -183,9 +183,6 @@ public class PlayAnimationActivity extends AppCompatActivity {
     public void onBackPressed(){
         Log.v(TAG, "back button pressed in PlayAnimationActivity");
         Intent intent = new Intent(this, AMazeActivity.class);
-        //EditText editText = (EditText) findViewById(R.id.editText);
-        //String message = editText.getText().toString();
-        //intent.putExtra(EXTRA_MESSAGE, message);
         startActivity(intent);
     }
 

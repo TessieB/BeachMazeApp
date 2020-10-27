@@ -53,6 +53,7 @@ public class WinningActivity extends AppCompatActivity {
             String energyConsumption = bundle.getString("Energy Consumption");
             overallEnergyConsumption.setText("Overall Energy Consumption: " + energyConsumption);
         }
+        Log.d("HEY", bundle.getString("Maze Generator"));
     }
 
 
@@ -64,6 +65,8 @@ public class WinningActivity extends AppCompatActivity {
      */
     public void sendTitleStageMessage(View view){
         Intent intent = new Intent(this, AMazeActivity.class);
+        Bundle bundle = getIntent().getExtras();
+        intent.putExtras(bundle);
         startActivity(intent);
     }
 
