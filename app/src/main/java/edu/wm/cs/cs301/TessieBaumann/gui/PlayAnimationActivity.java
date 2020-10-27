@@ -20,10 +20,13 @@ public class PlayAnimationActivity extends AppCompatActivity {
 
     private static final String TAG = "message";  //string message key
     private static final int MAX_MAP_SIZE = 10;  //max size that the map can be
+    private static final int ROBOT_INITIAL_ENERGY = 3500;  //amount of energy driver starts with
     private String robot;  //sensor configuration chosen by user
     private int mapSize = 5;  //default map size
     private int animationSpeed = 5;  //default animation speed
     private ProgressBar remainingEnergy;  //remaining energy of robot
+    private int pathLength = 10;  //path length of robot through maze
+    private int shortestPathLength = 8;  //shortest possible path length through the maze
 
 
     /**
@@ -46,7 +49,7 @@ public class PlayAnimationActivity extends AppCompatActivity {
         setSizeOfMap();
         setAnimationSpeed();
         remainingEnergy = (ProgressBar) findViewById(R.id.remainingEnergyProgressBar);
-        remainingEnergy.setMax(3500);
+        remainingEnergy.setMax(ROBOT_INITIAL_ENERGY);
         remainingEnergy.setProgress(1500);
         TextView remainingEnergyText = (TextView) findViewById(R.id.remainingEnergyTextView);
         remainingEnergyText.setText("Remaining Energy: " + remainingEnergy.getProgress());
@@ -145,6 +148,11 @@ public class PlayAnimationActivity extends AppCompatActivity {
      */
     public void sendLosingMessage(View view){
         Intent intent = new Intent(this, LosingActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString("Path Length", pathLength + "");
+        bundle.putString("Shortest Path Length", shortestPathLength + "");
+        bundle.putString("Energy Consumption", (ROBOT_INITIAL_ENERGY - remainingEnergy.getProgress()) + "");
+        intent.putExtras(bundle);
         startActivity(intent);
     }
 
@@ -156,9 +164,11 @@ public class PlayAnimationActivity extends AppCompatActivity {
      */
     public void sendWinningMessage(View view){
         Intent intent = new Intent(this, WinningActivity.class);
-        //EditText editText = (EditText) findViewById(R.id.editText);
-        //String message = editText.getText().toString();
-        //intent.putExtra(EXTRA_MESSAGE, message);
+        Bundle bundle = new Bundle();
+        bundle.putString("Path Length", pathLength + "");
+        bundle.putString("Shortest Path Length", shortestPathLength + "");
+        bundle.putString("Energy Consumption", (ROBOT_INITIAL_ENERGY - remainingEnergy.getProgress()) + "");
+        intent.putExtras(bundle);
         startActivity(intent);
     }
 

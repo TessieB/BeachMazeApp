@@ -21,8 +21,9 @@ public class PlayManuallyActivity extends AppCompatActivity {
 
     private static final String TAG = "Move";  //message string
     private static final int MAX_MAP_SIZE = 10;  //max size that the map can be
-    private int pathLength = 0;  //length of the path the user has taken
+    private int pathLength = 3;  //length of the path the user has taken
     private int mapSize = 5;  //default map size
+    private int shortestPathLength = 1;  //shortest possible path length, temp value
 
     /**
      This method sets the content view to the
@@ -104,6 +105,10 @@ public class PlayManuallyActivity extends AppCompatActivity {
      */
     public void sendWinningMessage(View view){
         Intent intent = new Intent(this, WinningActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString("Path Length", pathLength + "");
+        bundle.putString("Shortest Path Length", shortestPathLength + "");
+        intent.putExtras(bundle);
         startActivity(intent);
     }
 
