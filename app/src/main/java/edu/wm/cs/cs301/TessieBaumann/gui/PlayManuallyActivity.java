@@ -26,10 +26,10 @@ public class PlayManuallyActivity extends AppCompatActivity {
     private int shortestPathLength = 1;  //shortest possible path length, temp value
 
     /**
-     This method sets the content view to the
-     xml file play_manually_activity.xml and
-     sets the size of the map according to the user input.
-     @param savedInstanceState
+     * This method sets the content view to the
+     * xml file play_manually_activity.xml and
+     * sets the size of the map according to the user input.
+     * @param savedInstanceState
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,8 +41,8 @@ public class PlayManuallyActivity extends AppCompatActivity {
 
 
     /**
-     This method sets the size of the map to the
-     size requested by the user.
+     * This method sets the size of the map to the
+     * size requested by the user.
      */
     private void setSizeOfMap(){
         final SeekBar mapSize1 = (SeekBar) findViewById(R.id.mapSizeSeekBar);
@@ -69,10 +69,10 @@ public class PlayManuallyActivity extends AppCompatActivity {
 
 
     /**
-     This method sets the map to be
-     the size requested by the user, which
-     was passed down to it through setSizeOfMap().
-     @param size of the map
+     * This method sets the map to be
+     * the size requested by the user, which
+     * was passed down to it through setSizeOfMap().
+     * @param size of the map
      */
     private void setMapSize(int size){
         mapSize = size;
@@ -83,12 +83,11 @@ public class PlayManuallyActivity extends AppCompatActivity {
     }
 
 
-
     /**
-     This method checks to see if the
-     back button has been pressed, and if
-     finds the answer to be true, makes the app return
-     to AMazeActivity.
+     * This method checks to see if the
+     * back button has been pressed, and if
+     * finds the answer to be true, makes the app return
+     * to AMazeActivity.
      */
     @Override
     public void onBackPressed(){
@@ -99,9 +98,9 @@ public class PlayManuallyActivity extends AppCompatActivity {
 
 
     /**
-     This method makes the app switch to
-     the WinningActivity state
-     @param view of the short cut button
+     * This method makes the app switch to
+     * the WinningActivity state
+     * @param view of the short cut button
      */
     public void sendWinningMessage(View view){
         Intent intent = new Intent(this, WinningActivity.class);
@@ -114,9 +113,9 @@ public class PlayManuallyActivity extends AppCompatActivity {
 
 
     /**
-     This method makes the user move one
-     step forwards through the maze
-     @param view of the top arrow
+     * This method makes the user move one
+     * step forwards through the maze
+     * @param view of the top arrow
      */
     public void moveForwards(View view){
         pathLength++;
@@ -128,9 +127,9 @@ public class PlayManuallyActivity extends AppCompatActivity {
 
 
     /**
-     This method makes the user turn
-     left in the maze
-     @param view of the top left
+     * This method makes the user turn
+     * left in the maze
+     * @param view of the top left
      */
     public void turnLeft(View view){
         Log.v(TAG, "Turns left");
@@ -141,9 +140,9 @@ public class PlayManuallyActivity extends AppCompatActivity {
 
 
     /**
-     This method makes the user turn
-     right in the maze
-     @param view of the right arrow
+     * This method makes the user turn
+     * right in the maze
+     * @param view of the right arrow
      */
     public void turnRight(View view){
         Log.v(TAG, "Turns right");
@@ -154,9 +153,9 @@ public class PlayManuallyActivity extends AppCompatActivity {
 
 
     /**
-     This method makes the user jump
-     forwards over a wall in the maze
-     @param view of the jump button
+     * This method makes the user jump
+     * forwards over a wall in the maze
+     * @param view of the jump button
      */
     public void jump(View view){
         pathLength++;
@@ -168,10 +167,10 @@ public class PlayManuallyActivity extends AppCompatActivity {
 
 
     /**
-     This method makes the map appear
-     on the screen if turned on and makes it
-     disappear if turned off
-     @param view of the show map button
+     * This method makes the map appear
+     * on the screen if turned on and makes it
+     * disappear if turned off
+     * @param view of the show map button
      */
     public void showMap(View view){
         if(((ToggleButton)view).isChecked()) {
@@ -190,10 +189,10 @@ public class PlayManuallyActivity extends AppCompatActivity {
 
 
     /**
-     This method makes the solution appear
-     on the screen if turned on and makes it
-     disappear if turned off
-     @param view of the show solution button
+     * This method makes the solution appear
+     * on the screen if turned on and makes it
+     * disappear if turned off
+     * @param view of the show solution button
      */
     public void showSolution(View view){
         if(((ToggleButton)view).isChecked()) {
@@ -212,10 +211,10 @@ public class PlayManuallyActivity extends AppCompatActivity {
 
 
     /**
-     This method makes any visible walls appear
-     on the screen if turned on and makes them
-     disappear if turned off
-     @param view of the show visible walls button
+     * This method makes any visible walls appear
+     * on the screen if turned on and makes them
+     * disappear if turned off
+     * @param view of the show visible walls button
      */
     public void showVisibleWalls(View view){
         if(((ToggleButton)view).isChecked()) {

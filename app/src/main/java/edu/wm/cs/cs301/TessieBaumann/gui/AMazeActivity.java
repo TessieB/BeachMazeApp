@@ -30,13 +30,13 @@ public class AMazeActivity extends AppCompatActivity  {
 
 
     /**
-     This method sets the content view to the
-     xml file amazeactivity.xml and puts the builder
-     options into a spinner and the skill level options into
-     a seek bar. It also updates the maze as to what builder to
-     use and what skill level to use whenever the user changes one
-     of these values.
-     @param savedInstanceState
+     * This method sets the content view to the
+     * xml file amazeactivity.xml and puts the builder
+     * options into a spinner and the skill level options into
+     * a seek bar. It also updates the maze as to what builder to
+     * use and what skill level to use whenever the user changes one
+     * of these values.
+     * @param savedInstanceState
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,11 +86,11 @@ public class AMazeActivity extends AppCompatActivity  {
 
     }
 
-     /**
-     This method checks to see if the user wants rooms
-     in the maze and sends that information to the maze builder.
-     The default value is no rooms, or a perfect maze
-     @param view which is the room check box
+    /**
+     * This method checks to see if the user wants rooms
+     * in the maze and sends that information to the maze builder.
+     * The default value is no rooms, or a perfect maze
+     * @param view of the room check box
      */
     public void onRoomCheckBoxChecked(View view){
         CheckBox rooms = (CheckBox) view;
@@ -102,10 +102,10 @@ public class AMazeActivity extends AppCompatActivity  {
     }
 
     /**
-     This method sets the skill/difficulty level
-     that the user wants for the maze.
-     The default value is 0
-     @param view which is the difficulty level seek bar
+     * This method sets the skill/difficulty level
+     * that the user wants for the maze.
+     * The default value is 0
+     * @param view which is the difficulty level seek bar
      */
     private void setSkillLevel(View view){
         ProgressBar tempSkillLevel = (ProgressBar) view;
@@ -117,10 +117,10 @@ public class AMazeActivity extends AppCompatActivity  {
     }
 
     /**
-     This method checks to see what maze builder
-     the user wants to use and tells that to the builder.
-     The default value for this method is DFS
-     @param str which is the builder specifier
+     * This method checks to see what maze builder
+     * the user wants to use and tells that to the builder.
+     * The default value for this method is DFS
+     * @param str which is the builder specifier
      */
     private void setBuilder(String str){
         builder = str;
@@ -131,10 +131,10 @@ public class AMazeActivity extends AppCompatActivity  {
     }
 
     /**
-     This method makes the app move to the
-     next activity when the explore
-     button is pressed.
-     @param view of the explore button
+     * This method makes the app move to the
+     * next activity when the explore
+     * button is pressed.
+     * @param view of the explore button
      */
     public void sendMessage(View view){
         Intent intent = new Intent(this, GeneratingActivity.class);
@@ -148,11 +148,11 @@ public class AMazeActivity extends AppCompatActivity  {
 
 
     /**
-     This method makes the app move to the
-     next activity with the same complexity
-     values of the previously played maze when the revisit
-     button is pressed.
-     @param view of the revisit  button
+     * This method makes the app move to the
+     * next activity with the same complexity
+     * values of the previously played maze when the revisit
+     * button is pressed.
+     * @param view of the revisit  button
      */
     public void sendRevisitMessage(View view){
         Intent intent = new Intent(this, GeneratingActivity.class);

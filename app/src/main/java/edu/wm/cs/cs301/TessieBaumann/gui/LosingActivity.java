@@ -16,13 +16,13 @@ public class LosingActivity extends AppCompatActivity {
 
 
     /**
-     This method sets the content view to the
-     xml file losing_activity.xml and
-     sets the screen to show the user's path,
-     the shortest possible path to solve the maze,
-     and the overall energy consumption if the maze
-     was not operated manually.
-     @param savedInstanceState
+     * This method sets the content view to the
+     * xml file losing_activity.xml and
+     * sets the screen to show the user's path,
+     * the shortest possible path to solve the maze,
+     * and the overall energy consumption if the maze
+     * was not operated manually.
+     * @param savedInstanceState
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,10 +33,10 @@ public class LosingActivity extends AppCompatActivity {
 
 
     /**
-     This method sets the screen to show the
-     user's path, the shortest possible path to
-     solve the maze, and the overall energy
-     consumption if the maze was not operated manually.
+     * This method sets the screen to show the
+     * user's path, the shortest possible path to
+     * solve the maze, and the overall energy
+     * consumption if the maze was not operated manually.
      */
     private void setLosingScreenMessages(){
         TextView shortPath = (TextView) findViewById(R.id.shortestPathLengthTextView);
@@ -56,10 +56,10 @@ public class LosingActivity extends AppCompatActivity {
 
 
     /**
-     This method makes the app
-     switch back to AMazeActivity so the
-     game can be played again
-     @param view play again button
+     * This method makes the app
+     * switch back to AMazeActivity so the
+     * game can be played again
+     * @param view play again button
      */
     public void sendTitleStageMessage(View view){
         Intent intent = new Intent(this, AMazeActivity.class);
@@ -70,10 +70,10 @@ public class LosingActivity extends AppCompatActivity {
 
 
     /**
-     This method checks to see if the
-     back button has been pressed, and if
-     finds the answer to be true, makes the app return
-     to AMazeActivity.
+     * This method checks to see if the
+     * back button has been pressed, and if
+     * finds the answer to be true, makes the app return
+     * to AMazeActivity.
      */
     @Override
     public void onBackPressed(){

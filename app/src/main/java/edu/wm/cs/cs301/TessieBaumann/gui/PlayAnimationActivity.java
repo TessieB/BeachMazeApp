@@ -30,12 +30,12 @@ public class PlayAnimationActivity extends AppCompatActivity {
 
 
     /**
-     This method sets the content view to the
-     xml file play_animation_activity.xml and
-     sets the size of the map according to the user input,
-     sets the animation speed according to the user input,
-     and sets the progress bar with the robot's remaining energy.
-     @param savedInstanceState
+     * This method sets the content view to the
+     * xml file play_animation_activity.xml and
+     * sets the size of the map according to the user input,
+     * sets the animation speed according to the user input,
+     * and sets the progress bar with the robot's remaining energy.
+     * @param savedInstanceState
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,8 +56,8 @@ public class PlayAnimationActivity extends AppCompatActivity {
     }
 
     /**
-     This method sets the size of the map to the
-     size requested by the user.
+     * This method sets the size of the map to the
+     * size requested by the user.
      */
     private void setSizeOfMap(){
         final SeekBar mapSize1 = (SeekBar) findViewById(R.id.animatedMapSizeSeekBar);
@@ -84,10 +84,10 @@ public class PlayAnimationActivity extends AppCompatActivity {
 
 
     /**
-     This method sets the map to be
-     the size requested by the user, which
-     was passed down to it through setSizeOfMap().
-     @param size of the map
+     * This method sets the map to be
+     * the size requested by the user, which
+     * was passed down to it through setSizeOfMap().
+     * @param size of the map
      */
     private void setMapSize(int size){
         mapSize = size;
@@ -98,8 +98,8 @@ public class PlayAnimationActivity extends AppCompatActivity {
     }
 
     /**
-     This method sets the speed of the animation to what
-     is requested by the user.
+     * This method sets the speed of the animation to what
+     * is requested by the user.
      */
     private void setAnimationSpeed(){
         final SeekBar animationSpeed1 = (SeekBar) findViewById(R.id.animationSpeedSeekBar);
@@ -126,10 +126,10 @@ public class PlayAnimationActivity extends AppCompatActivity {
 
 
     /**
-     This method sets the animation to be
-     the speed requested by the user, which
-     was passed down to it through setAnimationSpeed().
-     @param speed of the animation
+     * This method sets the animation to be
+     * the speed requested by the user, which
+     * was passed down to it through setAnimationSpeed().
+     * @param speed of the animation
      */
     private void setTheAnimationSpeed(int speed){
         animationSpeed = speed;
@@ -140,11 +140,10 @@ public class PlayAnimationActivity extends AppCompatActivity {
     }
 
 
-
     /**
-     This method makes the app switch
-     to the LosingActivity
-     @param view of the GO2LOSING button
+     * This method makes the app switch
+     * to the LosingActivity
+     * @param view of the GO2LOSING button
      */
     public void sendLosingMessage(View view){
         Intent intent = new Intent(this, LosingActivity.class);
@@ -158,9 +157,9 @@ public class PlayAnimationActivity extends AppCompatActivity {
 
 
     /**
-     This method makes the app switch
-     to the WinningActivity
-     @param view of the GO2WINNING button
+     * This method makes the app switch
+     * to the WinningActivity
+     * @param view of the GO2WINNING button
      */
     public void sendWinningMessage(View view){
         Intent intent = new Intent(this, WinningActivity.class);
@@ -174,10 +173,10 @@ public class PlayAnimationActivity extends AppCompatActivity {
 
 
     /**
-     This method checks to see if the
-     back button has been pressed, and if
-     finds the answer to be true, makes the app return
-     to AMazeActivity.
+     * This method checks to see if the
+     * back button has been pressed, and if
+     * finds the answer to be true, makes the app return
+     * to AMazeActivity.
      */
     @Override
     public void onBackPressed(){
@@ -188,10 +187,10 @@ public class PlayAnimationActivity extends AppCompatActivity {
 
 
     /**
-     This method makes the map appear
-     on the screen if turned on and makes it
-     disappear if turned off
-     @param view of the show map button
+     * This method makes the map appear
+     * on the screen if turned on and makes it
+     * disappear if turned off
+     * @param view of the show map button
      */
     public void showMap(View view){
         if(((ToggleButton)view).isChecked()) {
@@ -210,10 +209,10 @@ public class PlayAnimationActivity extends AppCompatActivity {
 
 
     /**
-     This method makes the animation
-     pause if turned on, or continue
-     playing if turned off
-     @param view of the play/pause button
+     * This method makes the animation
+     * pause if turned on, or continue
+     * playing if turned off
+     * @param view of the play/pause button
      */
     public void playOrPauseGame(View view){
         if(((ToggleButton)view).isChecked()) {
@@ -232,10 +231,10 @@ public class PlayAnimationActivity extends AppCompatActivity {
 
 
     /**
-     This method makes the sensors on the screen
-     show up as green if they are reliable
-     and red if they are unreliable
-     @param robot with specified sensors picked by the user
+     * This method makes the sensors on the screen
+     * show up as green if they are reliable
+     * and red if they are unreliable
+     * @param robot with specified sensors picked by the user
      */
     private void setRobotSensors(String robot){
         Log.v(TAG, "Robot; " + robot);
@@ -255,10 +254,10 @@ public class PlayAnimationActivity extends AppCompatActivity {
 
 
     /**
-     This method sets the sensors on the screen to
-     green if they are reliable and red if they
-     are unreliable
-     @param sensorGreen tells which sensors are reliable
+     * This method sets the sensors on the screen to
+     * green if they are reliable and red if they
+     * are unreliable
+     * @param sensorGreen tells which sensors are reliable
      */
     private void setRobotSensorsColors(boolean[] sensorGreen){
         Log.v(TAG, "Robot; " + sensorGreen[0]);

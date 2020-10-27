@@ -33,13 +33,13 @@ public class GeneratingActivity extends AppCompatActivity {
 
 
     /**
-     This method sets the content view to the
-     xml file generating_activity.xml, puts possible
-     robot values into a spinner, updates the app on what
-     robot was chosen, and receives messages from the runThread(View view)
-     method on when to update the progress of the progress bar
-     that tells how much of the maze has been loaded.
-     @param savedInstanceState
+     * This method sets the content view to the
+     * xml file generating_activity.xml, puts possible
+     * robot values into a spinner, updates the app on what
+     * robot was chosen, and receives messages from the runThread(View view)
+     * method on when to update the progress of the progress bar
+     * that tells how much of the maze has been loaded.
+     * @param savedInstanceState
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,9 +78,9 @@ public class GeneratingActivity extends AppCompatActivity {
     }
 
     /**
-     This method tells when the back
-     button has been pressed and then
-     goes back to the title screen activity.
+     * This method tells when the back
+     * button has been pressed and then
+     * goes back to the title screen activity.
      */
     @Override
     public void onBackPressed(){
@@ -91,10 +91,10 @@ public class GeneratingActivity extends AppCompatActivity {
 
 
     /**
-     This method creates a background thread that
-     updates the progress bar, giving the appearance that
-     a maze is being loaded.
-     @param view which is the progress bar that loads the maze
+     * This method creates a background thread that
+     * updates the progress bar, giving the appearance that
+     * a maze is being loaded.
+     * @param view which is the progress bar that loads the maze
      */
     public void runThread(View view){
         loadingBar.setProgress(0);
@@ -128,9 +128,9 @@ public class GeneratingActivity extends AppCompatActivity {
 
 
     /**
-     This method sets the driver to be the
-     driver that the user clicks on.
-     @param view which is the driver radio button
+     * This method sets the driver to be the
+     * driver that the user clicks on.
+     * @param view which is the driver radio button
      */
     public void setDriver(View view){
         RadioButton tempDriver = (RadioButton) view;
@@ -144,10 +144,10 @@ public class GeneratingActivity extends AppCompatActivity {
 
 
     /**
-     This method reveals the start button that
-     allows the user to start the game once the
-     maze has fully loaded (when the progress bar has
-     reached 100%) and the user has chosen a driver/
+     * This method reveals the start button that
+     * allows the user to start the game once the
+     * maze has fully loaded (when the progress bar has
+     * reached 100%) and the user has chosen a driver
      */
     private void showStartButton(){
         Log.v(TAG, "Loading bar: " + loadingBar.toString());
@@ -159,12 +159,12 @@ public class GeneratingActivity extends AppCompatActivity {
 
 
     /**
-     This method makes the app move to the next activity
-     when the start playing button has been pressed,
-     which is PlayManuallyActivity if the user chose the
-     manual driver or is PlayAnimationActivity if the user chose
-     the Wall Follower or Wizard driver.
-     @param view which is the start button
+     * This method makes the app move to the next activity
+     * when the start playing button has been pressed,
+     * which is PlayManuallyActivity if the user chose the
+     * manual driver or is PlayAnimationActivity if the user chose
+     * the Wall Follower or Wizard driver.
+     * @param view which is the start button
      */
     public void moveToNextActivity(View view){
         if (driver.equals("Wall Follower")) {
@@ -178,9 +178,9 @@ public class GeneratingActivity extends AppCompatActivity {
 
 
     /**
-     This method moves the app to the
-     PlayAnimationActivity class.
-     @param view which is the start button
+     * This method moves the app to the
+     * PlayAnimationActivity class.
+     * @param view which is the start button
      */
     public void sendAnimatedMessage(View view){
         Intent intent = new Intent(this, PlayAnimationActivity.class);
@@ -192,9 +192,9 @@ public class GeneratingActivity extends AppCompatActivity {
 
 
     /**
-     This method moves the app to the
-     PlayManuallyActivity class.
-     @param view which is the start button
+     * This method moves the app to the
+     * PlayManuallyActivity class.
+     * @param view which is the start button
      */
     public void sendManualMessage(View view){
         Intent intent = new Intent(this, PlayManuallyActivity.class);
@@ -205,13 +205,12 @@ public class GeneratingActivity extends AppCompatActivity {
 
 
     /**
-     This method checks to see what maze robot
-     the user wants to use and tells that to the builder.
-     The default value for this method is Premium
-     @param str which is the robot specifier
+     * This method checks to see what maze robot
+     * the user wants to use and tells that to the builder.
+     * The default value for this method is Premium
+     * @param str which is the robot specifier
      */
     private void setRobot(String str){
-        //Spinner tempBuilder = (Spinner) view;
         robot = str;
         Log.v(TAG, "Setting robot to " + robot);
         Toast toast = Toast.makeText(getApplicationContext(), "Robot: " + robot, Toast.LENGTH_SHORT);
