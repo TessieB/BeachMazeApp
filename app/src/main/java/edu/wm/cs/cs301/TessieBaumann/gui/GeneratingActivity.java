@@ -185,6 +185,7 @@ public class GeneratingActivity extends AppCompatActivity {
     public void sendAnimatedMessage(View view){
         Intent intent = new Intent(this, PlayAnimationActivity.class);
         Bundle bundle = getIntent().getExtras();
+        bundle.putString("Driver", driver);
         bundle.putString("Robot", robot);
         intent.putExtras(bundle);
         startActivity(intent);

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -46,6 +47,17 @@ public class LosingActivity extends AppCompatActivity {
         String shortestPathLength = bundle.getString("Shortest Path Length");
         shortPath.setText("Shortest Possible Path Length: " + shortestPathLength);
         userPath.setText("Your Path Length: " + pathLength);
+        if(bundle.getString("Reason Lost") != null){
+            String reasonLost = bundle.getString("Reason Lost");
+            if(reasonLost.equals("Broken Robot")){
+                ImageView brokenRobot = (ImageView) findViewById(R.id.brokenRobotImageView);
+                brokenRobot.setVisibility(View.VISIBLE);
+            }
+            else{
+                ImageView sleepingRobot = (ImageView) findViewById(R.id.sleepingRobotImageView);
+                sleepingRobot.setVisibility(View.VISIBLE);
+            }
+        }
         if(bundle.getString("Energy Consumption") != null){
             TextView overallEnergyConsumption = (TextView) findViewById(R.id.energyConsumptionTextView);
             overallEnergyConsumption.setVisibility(View.VISIBLE);

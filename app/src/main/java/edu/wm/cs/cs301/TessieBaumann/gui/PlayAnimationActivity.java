@@ -27,6 +27,7 @@ public class PlayAnimationActivity extends AppCompatActivity {
     private ProgressBar remainingEnergy;  //remaining energy of robot
     private int pathLength = 10;  //path length of robot through maze
     private int shortestPathLength = 8;  //shortest possible path length through the maze
+    private String reasonLost = "Broken Robot"; //if the robot lost, tells why
 
 
     /**
@@ -148,6 +149,7 @@ public class PlayAnimationActivity extends AppCompatActivity {
     public void sendLosingMessage(View view){
         Intent intent = new Intent(this, LosingActivity.class);
         Bundle bundle = getIntent().getExtras();
+        bundle.putString("Reason Lost", reasonLost);
         bundle.putString("Path Length", pathLength + "");
         bundle.putString("Shortest Path Length", shortestPathLength + "");
         bundle.putString("Energy Consumption", (ROBOT_INITIAL_ENERGY - remainingEnergy.getProgress()) + "");

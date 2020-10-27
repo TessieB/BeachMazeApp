@@ -107,4 +107,34 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/userPathLengthTextView" />
 
+    <ImageView
+        android:id="@+id/brokenRobotImageView"
+        android:layout_width="280dp"
+        android:layout_height="118dp"
+        android:layout_marginStart="66dp"
+        android:layout_marginTop="21dp"
+        android:layout_marginEnd="65dp"
+        android:layout_marginBottom="50dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/energyConsumptionTextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/userPathLengthTextView"
+        app:srcCompat="@drawable/broken_robot" />
+
+    <ImageView
+        android:id="@+id/sleepingRobotImageView"
+        android:layout_width="134dp"
+        android:layout_height="190dp"
+        android:layout_marginStart="138dp"
+        android:layout_marginTop="1dp"
+        android:layout_marginEnd="138dp"
+        android:layout_marginBottom="3dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/energyConsumptionTextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/userPathLengthTextView"
+        app:srcCompat="@drawable/sleeping_robot" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
