@@ -5,9 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.SeekBar;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -15,6 +13,21 @@ import android.widget.ToggleButton;
 import androidx.appcompat.app.AppCompatActivity;
 
 import edu.wm.cs.cs301.TessieBaumann.R;
+
+/**
+ * This class allows the user to play the game manually,
+ * using the front, right, and left arrows, and the jump button on
+ * the screen. The user can also turn the map, solution, and visible
+ * walls on and off, depending on what they want to be able to see when
+ * playing the game. In addition to that, the user can change the size of
+ * the map that they see if the map is on. Once the user has passed the
+ * finish line, the app then goes to WinningActivity. If the user presses
+ * the back arrow, then the app will return to AMazeActivity.
+ *
+ * 	Collaboration: AMazeActivity, GeneratingActivity, WinningActivity
+ *
+ * @author Tessie Baumann
+ */
 
 public class PlayManuallyActivity extends AppCompatActivity {
 

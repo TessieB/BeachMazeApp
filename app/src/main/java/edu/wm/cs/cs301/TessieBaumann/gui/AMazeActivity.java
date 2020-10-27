@@ -20,6 +20,21 @@ import android.widget.Toast;
 
 import edu.wm.cs.cs301.TessieBaumann.R;
 
+/**
+ * This class shows the welcome page of the app and allows the user
+ * to choose a difficulty level between one and sixteen, a maze generator
+ * that is either DFS, Prim, or Eller, and whether or not the maze will have rooms.
+ * It also allows the user to either press an explore button, which sends the
+ * app to the GeneratingActivity with the selected maze generator, difficulty
+ * level, and room values, or a revisit button, that once again sends the app
+ * to the GeneratingActivity, but this time with the same maze generator, difficulty
+ * level, and room values that were used in the last implementation of the game.
+ *
+ * 	Collaboration: GeneratingActivity, WinningActivity, LosingActivity
+ *
+ * @author Tessie Baumann
+ */
+
 public class AMazeActivity extends AppCompatActivity  {
 
     private static final int SKILL_LEVEL_MAX = 16;  //max skill level that can be picked

@@ -20,6 +20,25 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import edu.wm.cs.cs301.TessieBaumann.R;
 
+/**
+ * This class allows the user to pick whether or not they
+ * want to play the maze manually or want the maze solved with a
+ * Wizard or Wall Follower robot. Additionally, this class allows
+ * the user to choose a robot that either has all reliable sensors,
+ * all unreliable sensors, or a mixture of reliable and unreliable sensors.
+ * While the user is picking these options, the maze is being loaded with
+ * a progress bar showing how much of the maze has been loaded at the bottom
+ * of the screen. Once the maze has been loaded and the driver has been selected,
+ * a button pops up that allows the user to start playing the game. If the user
+ * selected to play the game manually, the app then goes to PlayManuallyActivity.
+ * Otherwise, the app goes to PlayAnimationActivity. If the user presses the back
+ * arrow, then the app will return to AMazeActivity.
+ *
+ * 	Collaboration: AMazeActivity, PlayManuallyActivity, PlayAnimationActivity
+ *
+ * @author Tessie Baumann
+ */
+
 public class GeneratingActivity extends AppCompatActivity {
 
 

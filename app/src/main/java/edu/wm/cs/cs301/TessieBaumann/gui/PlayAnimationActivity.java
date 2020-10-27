@@ -16,6 +16,25 @@ import androidx.core.content.ContextCompat;
 
 import edu.wm.cs.cs301.TessieBaumann.R;
 
+/**
+ * This class plays the maze with either a Wall Follower or Wizard driver,
+ * depending on what the user chose in GeneratingActivity, and goes to
+ * the WinningActivity if the driver reaches the end of the maze successfully,
+ * or goes to the LosingState if the driver runs out of energy or fails for
+ * some other reason. There is also an option to show the map that can be
+ * turned on with a button and an option to change the size of the map with a
+ * seek bar at the top of the screen. If the user chooses to, they can pause
+ * the game and restart it with a button at the bottom, or they can slow down
+ * or speed up the driver with a seek bar at the bottom of the screen. Finally,
+ * this class also shows how much energy the robot has left at the bottom of the
+ * screen with a progress bar. If the user presses the back arrow, then the app
+ * will return to AMazeActivity.
+ *
+ * 	Collaboration: AMazeActivity, GeneratingActivity, WinningActivity, LosingActivity
+ *
+ * @author Tessie Baumann
+ */
+
 public class PlayAnimationActivity extends AppCompatActivity {
 
     private static final String TAG = "message";  //string message key

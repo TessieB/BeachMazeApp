@@ -11,6 +11,20 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import edu.wm.cs.cs301.TessieBaumann.R;
 
+/**
+ * This class displays a losing message for the user, which includes
+ * the length of the shortest path through the maze, the length of
+ * the path taken by the user, why the robot stopped, and the amount
+ * of energy consumed by the robot if the maze was played with a driver.
+ * There is also a button in the botttom right hand corner that the user
+ * can press to play again, which returns the app to AMazeActivity, or
+ * they can also press the backspace button to return to AMazeActivity.
+ *
+ * 	Collaboration: AMazeActivity, PlayAnimationActivity
+ *
+ * @author Tessie Baumann
+ */
+
 public class LosingActivity extends AppCompatActivity {
 
     private static final String TAG = "message";  //string message
