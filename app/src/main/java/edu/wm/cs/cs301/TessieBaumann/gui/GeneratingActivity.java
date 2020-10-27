@@ -23,19 +23,22 @@ import edu.wm.cs.cs301.TessieBaumann.R;
 public class GeneratingActivity extends AppCompatActivity {
 
 
-    private static final String TAG = "Run Thread";
-    private static final String KEY = "my message key";
-    private ProgressBar loadingBar;
-    private Handler myHandler;
-    private String driver;
-    private boolean backPressed = false;
-    private String robot = "Premium";
+    private static final String TAG = "Run Thread";  //message key
+    private static final String KEY = "my message key";  //message key
+    private ProgressBar loadingBar;  //progress bar for loading maze
+    private Handler myHandler;  //handler to send messages from background thread to UI thread
+    private String driver;  //driver that the maze is going to use
+    private boolean backPressed = false;  //tells whether or not the back button has been pressed
+    private String robot = "Premium";  //sensor configuration that the user chooses
 
 
     /**
-     This method checks to see what maze builder
-     the user wants to use and tells that to the builder.
-     The default value for this method is DFS
+     This method sets the content view to the
+     xml file generating_activity.xml, puts possible
+     robot values into a spinner, updates the app on what
+     robot was chosen, and receives messages from the runThread(View view)
+     method on when to update the progress of the progress bar
+     that tells how much of the maze has been loaded.
      @param savedInstanceState
      */
     @Override

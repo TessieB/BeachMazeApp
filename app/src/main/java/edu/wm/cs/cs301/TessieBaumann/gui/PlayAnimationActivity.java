@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -16,9 +18,22 @@ import edu.wm.cs.cs301.TessieBaumann.R;
 
 public class PlayAnimationActivity extends AppCompatActivity {
 
-    private static final String TAG = "message";
-    private String robot;
+    private static final String TAG = "message";  //string message key
+    private static final int MAX_MAP_SIZE = 10;  //max size that the map can be
+    private String robot;  //sensor configuration chosen by user
+    private int mapSize = 5;  //default map size
+    private int animationSpeed = 5;  //default animation speed
+    private ProgressBar remainingEnergy;  //remaining energy of robot
 
+
+    /**
+     This method sets the content view to the
+     xml file play_animation_activity.xml and
+     sets the size of the map according to the user input,
+     sets the animation speed according to the user input,
+     and sets the progress bar with the robot's remaining energy.
+     @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,16 +43,117 @@ public class PlayAnimationActivity extends AppCompatActivity {
         if(robot != null) {
             setRobotSensors(robot);
         }
+        setSizeOfMap();
+        setAnimationSpeed();
+        remainingEnergy = (ProgressBar) findViewById(R.id.remainingEnergyProgressBar);
+        remainingEnergy.setMax(3500);
+        remainingEnergy.setProgress(1500);
+        TextView remainingEnergyText = (TextView) findViewById(R.id.remainingEnergyTextView);
+        remainingEnergyText.setText("Remaining Energy: " + remainingEnergy.getProgress());
     }
 
+    /**
+     This method sets the size of the map to the
+     size requested by the user.
+     */
+    private void setSizeOfMap(){
+        final SeekBar mapSize1 = (SeekBar) findViewById(R.id.animatedMapSizeSeekBar);
+        final TextView skillLevelText = (TextView) findViewById(R.id.skillLevelTextView);
+        mapSize1.setProgress(0);
+        mapSize1.setMax(MAX_MAP_SIZE);
+        mapSize1.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            int tempMapSize = 0;
+
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                tempMapSize = i;
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {}
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                setMapSize(tempMapSize);
+            }
+        });
+    }
+
+
+    /**
+     This method sets the map to be
+     the size requested by the user, which
+     was passed down to it through setSizeOfMap().
+     @param size of the map
+     */
+    private void setMapSize(int size){
+        mapSize = size;
+        Log.v(TAG, "Map Size: " + mapSize);
+        Toast toast = Toast.makeText(getApplicationContext(), "Map Size: " + mapSize, Toast.LENGTH_SHORT);
+        toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 0);
+        toast.show();
+    }
+
+    /**
+     This method sets the speed of the animation to what
+     is requested by the user.
+     */
+    private void setAnimationSpeed(){
+        final SeekBar animationSpeed1 = (SeekBar) findViewById(R.id.animationSpeedSeekBar);
+        final TextView skillLevelText = (TextView) findViewById(R.id.skillLevelTextView);
+        animationSpeed1.setProgress(0);
+        animationSpeed1.setMax(MAX_MAP_SIZE);
+        animationSpeed1.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            int tempAnimationSpeed = 0;
+
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                tempAnimationSpeed = i;
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {}
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                setTheAnimationSpeed(tempAnimationSpeed);
+            }
+        });
+    }
+
+
+    /**
+     This method sets the animation to be
+     the speed requested by the user, which
+     was passed down to it through setAnimationSpeed().
+     @param speed of the animation
+     */
+    private void setTheAnimationSpeed(int speed){
+        animationSpeed = speed;
+        Log.v(TAG, "Animation Speed: " + animationSpeed);
+        Toast toast = Toast.makeText(getApplicationContext(), "Animation Speed: " + animationSpeed, Toast.LENGTH_SHORT);
+        toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 0);
+        toast.show();
+    }
+
+
+
+    /**
+     This method makes the app switch
+     to the LosingActivity
+     @param view of the GO2LOSING button
+     */
     public void sendLosingMessage(View view){
         Intent intent = new Intent(this, LosingActivity.class);
-        //EditText editText = (EditText) findViewById(R.id.editText);
-        //String message = editText.getText().toString();
-        //intent.putExtra(EXTRA_MESSAGE, message);
         startActivity(intent);
     }
 
+
+    /**
+     This method makes the app switch
+     to the WinningActivity
+     @param view of the GO2WINNING button
+     */
     public void sendWinningMessage(View view){
         Intent intent = new Intent(this, WinningActivity.class);
         //EditText editText = (EditText) findViewById(R.id.editText);
@@ -46,6 +162,13 @@ public class PlayAnimationActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+
+    /**
+     This method checks to see if the
+     back button has been pressed, and if
+     finds the answer to be true, makes the app return
+     to AMazeActivity.
+     */
     @Override
     public void onBackPressed(){
         Log.v(TAG, "back button pressed in PlayAnimationActivity");
@@ -56,6 +179,13 @@ public class PlayAnimationActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+
+    /**
+     This method makes the map appear
+     on the screen if turned on and makes it
+     disappear if turned off
+     @param view of the show map button
+     */
     public void showMap(View view){
         if(((ToggleButton)view).isChecked()) {
             Log.v(TAG, "Showing Map: On");
@@ -71,6 +201,13 @@ public class PlayAnimationActivity extends AppCompatActivity {
         }
     }
 
+
+    /**
+     This method makes the animation
+     pause if turned on, or continue
+     playing if turned off
+     @param view of the play/pause button
+     */
     public void playOrPauseGame(View view){
         if(((ToggleButton)view).isChecked()) {
             Log.v(TAG, "Play");
@@ -87,6 +224,12 @@ public class PlayAnimationActivity extends AppCompatActivity {
     }
 
 
+    /**
+     This method makes the sensors on the screen
+     show up as green if they are reliable
+     and red if they are unreliable
+     @param robot with specified sensors picked by the user
+     */
     private void setRobotSensors(String robot){
         Log.v(TAG, "Robot; " + robot);
         if(robot.equals("Premium")){
@@ -103,6 +246,13 @@ public class PlayAnimationActivity extends AppCompatActivity {
         }
     }
 
+
+    /**
+     This method sets the sensors on the screen to
+     green if they are reliable and red if they
+     are unreliable
+     @param sensorGreen tells which sensors are reliable
+     */
     private void setRobotSensorsColors(boolean[] sensorGreen){
         Log.v(TAG, "Robot; " + sensorGreen[0]);
         TextView leftSensorText = (TextView) findViewById(R.id.leftSensorTextView);

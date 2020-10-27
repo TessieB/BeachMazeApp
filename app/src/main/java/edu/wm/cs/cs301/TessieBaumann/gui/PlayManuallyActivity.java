@@ -6,7 +6,9 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.SeekBar;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -17,35 +19,100 @@ import edu.wm.cs.cs301.TessieBaumann.R;
 public class PlayManuallyActivity extends AppCompatActivity {
 
 
-    private static final String TAG = "Move";
-    private int pathLength = 0;
+    private static final String TAG = "Move";  //message string
+    private static final int MAX_MAP_SIZE = 10;  //max size that the map can be
+    private int pathLength = 0;  //length of the path the user has taken
+    private int mapSize = 5;  //default map size
 
+    /**
+     This method sets the content view to the
+     xml file play_manually_activity.xml and
+     sets the size of the map according to the user input.
+     @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.play_manually_activity);
-
+        setSizeOfMap();
 
     }
 
+
+    /**
+     This method sets the size of the map to the
+     size requested by the user.
+     */
+    private void setSizeOfMap(){
+        final SeekBar mapSize1 = (SeekBar) findViewById(R.id.mapSizeSeekBar);
+        final TextView skillLevelText = (TextView) findViewById(R.id.skillLevelTextView);
+        mapSize1.setProgress(0);
+        mapSize1.setMax(MAX_MAP_SIZE);
+        mapSize1.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            int tempMapSize = 0;
+
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                tempMapSize = i;
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {}
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                setMapSize(tempMapSize);
+            }
+        });
+    }
+
+
+    /**
+     This method sets the map to be
+     the size requested by the user, which
+     was passed down to it through setSizeOfMap().
+     @param size of the map
+     */
+    private void setMapSize(int size){
+        mapSize = size;
+        Log.v(TAG, "Map Size: " + mapSize);
+        Toast toast = Toast.makeText(getApplicationContext(), "Map Size: " + mapSize, Toast.LENGTH_SHORT);
+        toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 0);
+        toast.show();
+    }
+
+
+
+    /**
+     This method checks to see if the
+     back button has been pressed, and if
+     finds the answer to be true, makes the app return
+     to AMazeActivity.
+     */
     @Override
     public void onBackPressed(){
         Log.v(TAG, "back button pressed in PlayManuallyActivity");
         Intent intent = new Intent(this, AMazeActivity.class);
-        //EditText editText = (EditText) findViewById(R.id.editText);
-        //String message = editText.getText().toString();
-        //intent.putExtra(EXTRA_MESSAGE, message);
         startActivity(intent);
     }
 
+
+    /**
+     This method makes the app switch to
+     the WinningActivity state
+     @param view of the short cut button
+     */
     public void sendWinningMessage(View view){
         Intent intent = new Intent(this, WinningActivity.class);
-        //EditText editText = (EditText) findViewById(R.id.editText);
-        //String message = editText.getText().toString();
-        //intent.putExtra(EXTRA_MESSAGE, message);
         startActivity(intent);
     }
 
+
+    /**
+     This method makes the user move one
+     step forwards through the maze
+     @param view of the top arrow
+     */
     public void moveForwards(View view){
         pathLength++;
         Log.v(TAG, "Moves forwards one step");
@@ -54,6 +121,12 @@ public class PlayManuallyActivity extends AppCompatActivity {
         toast.show();
     }
 
+
+    /**
+     This method makes the user turn
+     left in the maze
+     @param view of the top left
+     */
     public void turnLeft(View view){
         Log.v(TAG, "Turns left");
         Toast toast = Toast.makeText(getApplicationContext(), "Turned left", Toast.LENGTH_SHORT);
@@ -61,6 +134,12 @@ public class PlayManuallyActivity extends AppCompatActivity {
         toast.show();
     }
 
+
+    /**
+     This method makes the user turn
+     right in the maze
+     @param view of the right arrow
+     */
     public void turnRight(View view){
         Log.v(TAG, "Turns right");
         Toast toast = Toast.makeText(getApplicationContext(), "Turned right", Toast.LENGTH_SHORT);
@@ -68,6 +147,12 @@ public class PlayManuallyActivity extends AppCompatActivity {
         toast.show();
     }
 
+
+    /**
+     This method makes the user jump
+     forwards over a wall in the maze
+     @param view of the jump button
+     */
     public void jump(View view){
         pathLength++;
         Log.v(TAG, "Jump forwards");
@@ -76,6 +161,13 @@ public class PlayManuallyActivity extends AppCompatActivity {
         toast.show();
     }
 
+
+    /**
+     This method makes the map appear
+     on the screen if turned on and makes it
+     disappear if turned off
+     @param view of the show map button
+     */
     public void showMap(View view){
         if(((ToggleButton)view).isChecked()) {
             Log.v(TAG, "Showing Map: On");
@@ -91,6 +183,13 @@ public class PlayManuallyActivity extends AppCompatActivity {
         }
     }
 
+
+    /**
+     This method makes the solution appear
+     on the screen if turned on and makes it
+     disappear if turned off
+     @param view of the show solution button
+     */
     public void showSolution(View view){
         if(((ToggleButton)view).isChecked()) {
             Log.v(TAG, "Showing Solution: On");
@@ -106,6 +205,13 @@ public class PlayManuallyActivity extends AppCompatActivity {
         }
     }
 
+
+    /**
+     This method makes any visible walls appear
+     on the screen if turned on and makes them
+     disappear if turned off
+     @param view of the show visible walls button
+     */
     public void showVisibleWalls(View view){
         if(((ToggleButton)view).isChecked()) {
             Log.v(TAG, "Showing Visible Walls: On");

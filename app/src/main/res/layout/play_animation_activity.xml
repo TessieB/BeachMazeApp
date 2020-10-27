@@ -8,7 +8,7 @@
     android:background="@drawable/beachpic">
 
     <ProgressBar
-        android:id="@+id/progressBar3"
+        android:id="@+id/remainingEnergyProgressBar"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="278dp"
         android:layout_height="23dp"
@@ -18,21 +18,21 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView13" />
+        app:layout_constraintTop_toBottomOf="@+id/remainingEnergyTextView" />
 
     <TextView
-        android:id="@+id/textView13"
+        android:id="@+id/remainingEnergyTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="149dp"
         android:layout_marginEnd="148dp"
         android:layout_marginBottom="9dp"
-        android:text="Remaining Energy"
+        android:text="Remaining Energy:"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-        app:layout_constraintBottom_toTopOf="@+id/progressBar3"
+        app:layout_constraintBottom_toTopOf="@+id/remainingEnergyProgressBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/seekBar4" />
+        app:layout_constraintTop_toBottomOf="@+id/animationSpeedSeekBar" />
 
     <ToggleButton
         android:id="@+id/toggleButton4"
@@ -44,7 +44,7 @@
         android:onClick="showMap"
         android:text="ToggleButton"
         app:layout_constraintBottom_toTopOf="@+id/textView14"
-        app:layout_constraintEnd_toStartOf="@+id/seekBar2"
+        app:layout_constraintEnd_toStartOf="@+id/animatedMapSizeSeekBar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -62,7 +62,7 @@
         app:layout_constraintTop_toBottomOf="@+id/toggleButton4" />
 
     <SeekBar
-        android:id="@+id/seekBar2"
+        android:id="@+id/animatedMapSizeSeekBar"
         android:layout_width="260dp"
         android:layout_height="21dp"
         android:layout_marginStart="23dp"
@@ -82,7 +82,7 @@
         android:layout_marginEnd="115dp"
         android:text="Size of Map"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-        app:layout_constraintBottom_toTopOf="@+id/seekBar2"
+        app:layout_constraintBottom_toTopOf="@+id/animatedMapSizeSeekBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/toggleButton4"
         app:layout_constraintTop_toTopOf="parent" />
@@ -98,19 +98,19 @@
         android:text="ToggleButton"
         android:textOff="PAUSE"
         android:textOn="START"
-        app:layout_constraintBottom_toTopOf="@+id/progressBar3"
-        app:layout_constraintEnd_toStartOf="@+id/seekBar4"
+        app:layout_constraintBottom_toTopOf="@+id/remainingEnergyProgressBar"
+        app:layout_constraintEnd_toStartOf="@+id/animationSpeedSeekBar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rightSensorTextView" />
 
     <SeekBar
-        android:id="@+id/seekBar4"
+        android:id="@+id/animationSpeedSeekBar"
         android:layout_width="243dp"
         android:layout_height="29dp"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="25dp"
         android:layout_marginBottom="11dp"
-        app:layout_constraintBottom_toTopOf="@+id/textView13"
+        app:layout_constraintBottom_toTopOf="@+id/remainingEnergyTextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/toggleButton5"
         app:layout_constraintTop_toBottomOf="@+id/textView16" />
@@ -123,7 +123,7 @@
         android:layout_marginEnd="82dp"
         android:text="Animation Speed"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-        app:layout_constraintBottom_toTopOf="@+id/seekBar4"
+        app:layout_constraintBottom_toTopOf="@+id/animationSpeedSeekBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/toggleButton5"
         app:layout_constraintTop_toBottomOf="@+id/button7" />
@@ -142,7 +142,7 @@
         app:layout_constraintBottom_toTopOf="@+id/button7"
         app:layout_constraintEnd_toStartOf="@+id/frontSensorTextView"
         app:layout_constraintStart_toEndOf="@+id/leftSensorTextView"
-        app:layout_constraintTop_toBottomOf="@+id/seekBar2" />
+        app:layout_constraintTop_toBottomOf="@+id/animatedMapSizeSeekBar" />
 
     <Button
         android:id="@+id/button7"
@@ -188,7 +188,7 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         android:textColor="@color/sensor"
         android:textSize="15sp"
-        app:layout_constraintBottom_toTopOf="@+id/seekBar4"
+        app:layout_constraintBottom_toTopOf="@+id/animationSpeedSeekBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/button7"
         app:layout_constraintTop_toBottomOf="@+id/frontSensorTextView" />
@@ -225,6 +225,6 @@
         app:layout_constraintBottom_toTopOf="@+id/backSensorTextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/button6"
-        app:layout_constraintTop_toBottomOf="@+id/seekBar2" />
+        app:layout_constraintTop_toBottomOf="@+id/animatedMapSizeSeekBar" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
