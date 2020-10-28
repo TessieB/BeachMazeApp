@@ -1,11 +1,14 @@
 package edu.wm.cs.cs301.TessieBaumann.gui;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.VibrationEffect;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.os.Vibrator;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -20,7 +23,7 @@ import edu.wm.cs.cs301.TessieBaumann.R;
  * can press to play again, which returns the app to AMazeActivity, or
  * they can also press the backspace button to return to AMazeActivity.
  *
- * 	Collaboration: AMazeActivity, PlayAnimationActivity
+ *  Collaboration: AMazeActivity, PlayAnimationActivity
  *
  * @author Tessie Baumann
  */

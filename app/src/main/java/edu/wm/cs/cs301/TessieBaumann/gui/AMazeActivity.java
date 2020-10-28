@@ -163,6 +163,20 @@ public class AMazeActivity extends AppCompatActivity  {
 
 
     /**
+     * This method checks to see if the
+     * back button has been pressed, and if
+     * finds the answer to be true, makes the app return
+     * to AMazeActivity.
+     */
+    @Override
+    public void onBackPressed(){
+        Log.v(TAG, "back button pressed in PlayManuallyActivity");
+        Intent intent = new Intent(this, AMazeActivity.class);
+        startActivity(intent);
+    }
+
+
+    /**
      * This method makes the app move to the
      * next activity with the same complexity
      * values of the previously played maze when the revisit
@@ -172,6 +186,7 @@ public class AMazeActivity extends AppCompatActivity  {
     public void sendRevisitMessage(View view){
         Intent intent = new Intent(this, GeneratingActivity.class);
         Bundle bundle = getIntent().getExtras();
+        bundle.putString("Energy Consumption", null);
         intent.putExtras(bundle);
         startActivity(intent);
     }
