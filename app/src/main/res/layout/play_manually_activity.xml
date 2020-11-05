@@ -26,10 +26,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="3dp"
-        android:layout_marginBottom="50dp"
         android:text="Show Visible Walls"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-        app:layout_constraintBottom_toTopOf="@+id/button5"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/textView10"
         app:layout_constraintTop_toBottomOf="@+id/toggleButton3" />
@@ -91,10 +89,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="27dp"
         android:layout_marginEnd="67dp"
-        android:layout_marginBottom="50dp"
         android:text="Show Map"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-        app:layout_constraintBottom_toTopOf="@+id/button5"
         app:layout_constraintEnd_toStartOf="@+id/textView10"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toggleButton" />
@@ -104,10 +100,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="39dp"
-        android:layout_marginBottom="50dp"
         android:text="Show Solution"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-        app:layout_constraintBottom_toTopOf="@+id/button5"
         app:layout_constraintEnd_toStartOf="@+id/textView11"
         app:layout_constraintStart_toEndOf="@+id/textView9"
         app:layout_constraintTop_toBottomOf="@+id/toggleButton2" />
@@ -117,7 +111,6 @@
         android:layout_width="67dp"
         android:layout_height="54dp"
         android:layout_marginStart="85dp"
-        android:layout_marginTop="84dp"
         android:layout_marginEnd="3dp"
         android:layout_marginBottom="44dp"
         android:backgroundTint="#002196F3"
@@ -128,15 +121,12 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/imageButton9"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button5"
-        app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@android:drawable/arrow_down_float" />
 
     <ImageButton
         android:id="@+id/imageButton8"
         android:layout_width="67dp"
         android:layout_height="54dp"
-        android:layout_marginTop="83dp"
         android:layout_marginEnd="85dp"
         android:layout_marginBottom="52dp"
         android:backgroundTint="#002196F3"
@@ -147,8 +137,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/imageButton9"
-        app:layout_constraintTop_toBottomOf="@+id/button5"
-        app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@android:drawable/arrow_down_float" />
 
     <ImageButton
@@ -165,7 +153,6 @@
         app:layout_constraintBottom_toTopOf="@+id/imageButton6"
         app:layout_constraintEnd_toStartOf="@+id/imageButton8"
         app:layout_constraintStart_toEndOf="@+id/imageButton6"
-        app:layout_constraintTop_toBottomOf="@+id/button5"
         app:srcCompat="@android:drawable/arrow_down_float" />
 
     <Button
@@ -181,18 +168,14 @@
         app:layout_constraintStart_toEndOf="@+id/imageButton6"
         app:layout_constraintTop_toBottomOf="@+id/imageButton9" />
 
-    <Button
-        android:id="@+id/button5"
-        android:layout_width="258dp"
-        android:layout_height="239dp"
-        android:layout_marginStart="77dp"
-        android:layout_marginEnd="77dp"
-        android:layout_marginBottom="33dp"
-        android:background="#B1BD33"
-        android:onClick="sendWinningMessage"
-        android:text="SHORT CUT"
-        android:textColor="@color/white"
-        android:textSize="70sp"
+    <edu.wm.cs.cs301.TessieBaumann.gui.MazePanel
+        android:id="@+id/mazePanelView"
+        android:layout_width="290dp"
+        android:layout_height="285dp"
+        android:layout_marginStart="60dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="60dp"
+        android:layout_marginBottom="5dp"
         app:layout_constraintBottom_toTopOf="@+id/imageButton9"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -9,7 +9,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".gui.AMazeActivity">
+        <activity android:name=".gui.PlayManuallyActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -22,7 +22,7 @@
             android:name="android.support.PARENT_ACTIVITY"
             android:value=".gui.AMazeActivity" />
         </activity>
-        <activity android:name=".gui.PlayManuallyActivity"
+        <activity android:name=".gui.AMazeActivity"
             android:parentActivityName=".gui.AMazeActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
