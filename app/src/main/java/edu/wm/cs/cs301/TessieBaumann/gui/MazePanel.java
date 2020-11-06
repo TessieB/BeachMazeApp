@@ -46,10 +46,10 @@ public class MazePanel extends View {
     @Override
     public void onDraw(Canvas canvas){
         super.onDraw(canvas);
-        init();
         Log.d("Canvas", canvas.toString());
-        //canvas.drawRect(0,0,200,400,paint);
+        canvas.drawColor(Color.WHITE);
         myTestImage(canvas);
+        bitmap = Bitmap.createScaledBitmap(bitmap, 1050, 1050, true);
         paint(canvas);
 
     }
@@ -64,20 +64,21 @@ public class MazePanel extends View {
 
 
     private void myTestImage(Canvas c){
-        setColor(Color.BLUE);
-        c.drawRect(300, 300, 200, 200, paint);
+        canvas.drawColor(Color.BLACK);
         setColor(Color.RED);
-        //addFilledOval(0, 0, 250, 250);
+        addFilledOval(0, 0, 150, 150);
         setColor(Color.GREEN);
-        addFilledOval(100, 300, 150, 150);
+        addFilledOval(50, 200, 100, 300);
         setColor(Color.YELLOW);
         addFilledRectangle(300, 300, 200, 200);
         setColor(Color.BLUE);
         int[] temp = new int[]{20, 0, 30, 80, 45};
         int[] yp = new int[]{0, 20, 400, 20, 0};
-        //addFilledPolygon(temp, yp, 5);
-        setColor(Color.BLACK);
+        addFilledPolygon(temp, yp, 5);
+        setColor(Color.WHITE);
         addPolygon(temp, yp, 5);
+        addLine(100, 0, 200, 200);
+        addArc(200, 200, 300, 300, 30, 50);
     }
 
 
@@ -91,6 +92,8 @@ public class MazePanel extends View {
         //graphics = null;	// same for graphics
         bitmap = null;
         canvas = null;
+        init();
+
     }
 
     public void update(Canvas c) {
@@ -391,14 +394,14 @@ public class MazePanel extends View {
      * x-axis and the height for the y-axis. An oval is
      * described like a rectangle.
      * Substitute for Graphics.fillOval method
-     * @param x is the x-coordinate of the top left corner
-     * @param y is the y-coordinate of the top left corner
-     * @param width is the width of the oval
-     * @param height is the height of the oval
+     * @param left is the x-coordinate of the top left corner
+     * @param top is the y-coordinate of the top left corner
+     * @param right is the width of the oval
+     * @param bottom is the height of the oval
      */
-    public void addFilledOval(float x, float y, float width, float height) {
+    public void addFilledOval(float left, float top, float right, float bottom) {
         paint.setStyle(Paint.Style.FILL);
-        canvas.drawOval(x, y, x + width, y + height, paint);
+        canvas.drawOval(left, top, right, bottom, paint);
 
     }
 
@@ -420,15 +423,15 @@ public class MazePanel extends View {
      * and end of the arc segment will be skewed farther along the longer
      * axis of the bounds.
      * Substitute for Graphics.drawArc method
-     * @param x the x coordinate of the upper-left corner of the arc to be drawn.
-     * @param y the y coordinate of the upper-left corner of the arc to be drawn.
-     * @param width the width of the arc to be drawn.
-     * @param height the height of the arc to be drawn.
+     * @param left the x coordinate of the upper-left corner of the arc to be drawn.
+     * @param top the y coordinate of the upper-left corner of the arc to be drawn.
+     * @param right the width of the arc to be drawn.
+     * @param bottom the height of the arc to be drawn.
      * @param startAngle the beginning angle.
-     * @param arcAngle the angular extent of the arc, relative to the start angle.
+     * @param sweepAngle the angular extent of the arc, relative to the start angle.
      */
-    public void addArc(int x, int y, int width, int height, int startAngle, int arcAngle) {
-        canvas.drawArc(x, y, x + width, y + height, startAngle, arcAngle, true, paint);
+    public void addArc(float left, float top, float right, float bottom, float startAngle, float sweepAngle) {
+        canvas.drawArc(left, top, right, bottom, startAngle, sweepAngle, true, paint);
 
     }
 
