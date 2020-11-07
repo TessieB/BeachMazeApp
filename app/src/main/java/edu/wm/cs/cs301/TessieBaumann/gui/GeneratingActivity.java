@@ -19,6 +19,10 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import edu.wm.cs.cs301.TessieBaumann.R;
+import edu.wm.cs.cs301.TessieBaumann.generation.Factory;
+import edu.wm.cs.cs301.TessieBaumann.generation.Maze;
+import edu.wm.cs.cs301.TessieBaumann.generation.MazeFactory;
+import edu.wm.cs.cs301.TessieBaumann.generation.Order;
 
 /**
  * This class allows the user to pick whether or not they
@@ -39,7 +43,7 @@ import edu.wm.cs.cs301.TessieBaumann.R;
  * @author Tessie Baumann
  */
 
-public class GeneratingActivity extends AppCompatActivity {
+public class GeneratingActivity extends AppCompatActivity implements Order {
 
 
     private static final String TAG = "Run Thread";  //message key
@@ -49,6 +53,54 @@ public class GeneratingActivity extends AppCompatActivity {
     private String driver;  //driver that the maze is going to use
     private boolean backPressed = false;  //tells whether or not the back button has been pressed
     private String robot = "Premium";  //sensor configuration that the user chooses
+    private Order.Builder builder;
+    private int skillLevel;
+    private boolean rooms;
+    private int seed;
+    protected Factory factory;
+    private int percentdone = 0;
+    public static Maze mazeConfig;
+
+
+    public GeneratingActivity(){
+    }
+
+    /*public GeneratingActivity(Bundle bundle){
+        factory = new MazeFactory();
+        switch(bundle.getString("Maze Generator")){
+            case "Prim":
+                builder = Builder.Prim;
+                break;
+            case "Eller":
+                builder = Builder.Eller;
+                break;
+            case "DFS":
+                builder = Builder.DFS;
+                break;
+        }
+        skillLevel = bundle.getInt("Skill Level");
+        rooms = bundle.getBoolean("Rooms");
+        seed = 13;
+    }*/
+
+
+    private void init(Bundle bundle){
+        factory = new MazeFactory();
+        switch(bundle.getString("Maze Generator")){
+            case "Prim":
+                builder = Builder.Prim;
+                break;
+            case "Eller":
+                builder = Builder.Eller;
+                break;
+            case "DFS":
+                builder = Builder.DFS;
+                break;
+        }
+        skillLevel = bundle.getInt("Skill Level");
+        rooms = bundle.getBoolean("Rooms");
+        seed = 13;
+    }
 
 
     /**
@@ -63,6 +115,11 @@ public class GeneratingActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Bundle bundle = getIntent().getExtras();
+        Log.d("bundle", bundle.getString("Maze Generator"));
+        init(bundle);
+        //Log.d("builder", builder.toString());
+        factory.order(this);
         setContentView(R.layout.generating_activity);
         Spinner sensorSpinner = (Spinner) findViewById(R.id.sensorspinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.sensor, android.R.layout.simple_spinner_item);
@@ -82,8 +139,8 @@ public class GeneratingActivity extends AppCompatActivity {
 
         loadingBar = (ProgressBar) findViewById(R.id.generatingProgressBar);
         loadingBar.setMax(100);
-        runThread(loadingBar);
-        myHandler = new Handler(Looper.getMainLooper()){
+        //runThread(loadingBar);
+        /*myHandler = new Handler(Looper.getMainLooper()){
             @Override
             public void handleMessage(Message msg){
                 Bundle bundle = msg.getData();
@@ -92,8 +149,22 @@ public class GeneratingActivity extends AppCompatActivity {
                 loadingBar.incrementProgressBy(10);
                 showStartButton();
             }
-        };
+        };*/
 
+    }
+
+    /**
+     * Allows external increase to percentage in generating mode.
+     * Internal value is only updated if it exceeds the last value and is less or equal 100
+     * @param percentage gives the new percentage on a range [0,100]
+     * @return true if percentage was updated, false otherwise
+     */
+    @Override
+    public void updateProgress(int percentage) {
+        if (this.percentdone < percentage && percentage <= 100) {
+            this.percentdone = percentage;
+            loadingBar.setProgress(percentdone);
+        }
     }
 
     /**
@@ -115,7 +186,7 @@ public class GeneratingActivity extends AppCompatActivity {
      * a maze is being loaded.
      * @param view which is the progress bar that loads the maze
      */
-    public void runThread(View view){
+    /*public void runThread(View view){
         loadingBar.setProgress(0);
         Runnable runnable = new Runnable() {
             @Override
@@ -143,7 +214,7 @@ public class GeneratingActivity extends AppCompatActivity {
         };
         Thread thread = new Thread(runnable);
         thread.start();
-    }
+    }*/
 
 
     /**
@@ -237,4 +308,30 @@ public class GeneratingActivity extends AppCompatActivity {
         toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 0);
         toast.show();
     }
+
+    @Override
+    public int getSkillLevel() {
+        return skillLevel;
+    }
+
+    @Override
+    public Builder getBuilder() {
+        return builder;
+    }
+
+    @Override
+    public boolean isPerfect() {
+        return false;
+    }
+
+    @Override
+    public int getSeed() {
+        return seed;
+    }
+
+    @Override
+    public void deliver(Maze mazeConfig) {
+        this.mazeConfig = mazeConfig;
+    }
+
 }

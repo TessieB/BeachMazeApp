@@ -48,7 +48,6 @@ public class MazePanel extends View {
         super.onDraw(canvas);
         Log.d("Canvas", canvas.toString());
         canvas.drawColor(Color.WHITE);
-        myTestImage(canvas);
         bitmap = Bitmap.createScaledBitmap(bitmap, 1050, 1050, true);
         paint(canvas);
 
@@ -79,6 +78,8 @@ public class MazePanel extends View {
         addPolygon(temp, yp, 5);
         addLine(100, 0, 200, 200);
         addArc(200, 200, 300, 300, 30, 50);
+        addLine(250, 250, 300, 300);
+        commit();
     }
 
 
@@ -93,6 +94,7 @@ public class MazePanel extends View {
         bitmap = null;
         canvas = null;
         init();
+        myTestImage(canvas);
 
     }
 
@@ -217,7 +219,7 @@ public class MazePanel extends View {
      * @param extensionX is the wall's length and direction (sign), horizontal dimension
      * @return the rgb value for the color of the wall
      */
-    public int getWallColor(int distance, int cc, int extensionX) {
+    public static int getWallColor(int distance, int cc, int extensionX) {
         final int d = distance / 4;
         // mod used to limit the number of colors to 6
         final int part1 = distance & 7;

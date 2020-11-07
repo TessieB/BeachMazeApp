@@ -152,11 +152,12 @@ public class AMazeActivity extends AppCompatActivity  {
      * @param view of the explore button
      */
     public void sendMessage(View view){
+        //GeneratingActivity generatingActivity = new GeneratingActivity(builder, skillLevelNum, wantRooms, 13);
         Intent intent = new Intent(this, GeneratingActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putString("Skill Level", skillLevelNum + "");
+        bundle.putInt("Skill Level", skillLevelNum);
         bundle.putString("Maze Generator", builder);
-        bundle.putString("Rooms", wantRooms + "");
+        bundle.putBoolean("Rooms", wantRooms);
         intent.putExtras(bundle);
         startActivity(intent);
     }
