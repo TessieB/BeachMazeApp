@@ -45,9 +45,11 @@ public class MazePanel extends View {
 
     @Override
     public void onDraw(Canvas canvas){
+        Log.d("in on draw", "yay");
         super.onDraw(canvas);
         Log.d("Canvas", canvas.toString());
         canvas.drawColor(Color.WHITE);
+        //myTestImage(this.canvas);
         bitmap = Bitmap.createScaledBitmap(bitmap, 1050, 1050, true);
         paint(canvas);
 
@@ -58,7 +60,7 @@ public class MazePanel extends View {
         paint = new Paint();
         setColor(greenWM);
         paint.setStyle(Paint.Style.FILL);
-        canvas = getBitmap();
+        //canvas = getBitmap();
     }
 
 
@@ -79,7 +81,6 @@ public class MazePanel extends View {
         addLine(100, 0, 200, 200);
         addArc(200, 200, 300, 300, 30, 50);
         addLine(250, 250, 300, 300);
-        commit();
     }
 
 
@@ -89,12 +90,11 @@ public class MazePanel extends View {
     public MazePanel(Context context, AttributeSet attrs) {
         super(context, attrs);
         setFocusable(false);
-        //bufferImage = null; // bufferImage initialized separately and later
-        //graphics = null;	// same for graphics
-        bitmap = null;
-        canvas = null;
+        config = Bitmap.Config.ARGB_8888;
+        bitmap = Bitmap.createBitmap(Constants.VIEW_WIDTH, Constants.VIEW_HEIGHT, config);
+        canvas = new Canvas(bitmap);
         init();
-        myTestImage(canvas);
+        //myTestImage(canvas);
 
     }
 
@@ -110,6 +110,7 @@ public class MazePanel extends View {
      */
     public void paint(Canvas c) {
         if (null == c) {
+            Log.d("oh no", "canvas is null");
             System.out.println("MazePanel.paint: no canvas object, skipping drawImage operation");
         }
         else {
@@ -164,9 +165,9 @@ public class MazePanel extends View {
      * Substitute for MazePanel.update method.
      */
     public void commit() {
+        Log.d("in commit", "thankfully");
         invalidate();
-        requestLayout();
-
+        //requestLayout();
     }
 
     /**

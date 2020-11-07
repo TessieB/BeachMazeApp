@@ -2,6 +2,7 @@ package edu.wm.cs.cs301.TessieBaumann.gui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -37,6 +38,7 @@ public class PlayManuallyActivity extends AppCompatActivity {
     private int pathLength = 3;  //length of the path the user has taken
     private int mapSize = 5;  //default map size
     private int shortestPathLength = 1;  //shortest possible path length, temp value
+    private MazePanel panel;
 
     /**
      * This method sets the content view to the
@@ -48,6 +50,9 @@ public class PlayManuallyActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.play_manually_activity);
+        StatePlaying statePlaying = new StatePlaying();
+        panel = findViewById(R.id.mazePanelView);
+        statePlaying.start(panel);
         setSizeOfMap();
 
     }
