@@ -30,10 +30,10 @@ public class MazePanel extends View {
     // graphics is stored to allow clients to draw on the same graphics object repeatedly
     // has benefits if color settings should be remembered for subsequent drawing operations
 
-    private Bitmap bitmap;
-    private Canvas canvas;
+    private Bitmap.Config config = Bitmap.Config.ARGB_8888;
+    private Bitmap bitmap = Bitmap.createBitmap(Constants.VIEW_WIDTH, Constants.VIEW_HEIGHT, config);
+    private Canvas canvas = new Canvas(bitmap);
     private Paint paint;
-    private Bitmap.Config config;
 
     private int color;
     private static final int greenWM = Color.parseColor("#115740");
@@ -48,10 +48,14 @@ public class MazePanel extends View {
         Log.d("in on draw", "yay");
         super.onDraw(canvas);
         Log.d("Canvas", canvas.toString());
-        canvas.drawColor(Color.WHITE);
-        //myTestImage(this.canvas);
-        bitmap = Bitmap.createScaledBitmap(bitmap, 1050, 1050, true);
-        paint(canvas);
+        //canvas.drawColor(Color.WHITE);
+        Bitmap myBitmap = Bitmap.createScaledBitmap(bitmap, 1050, 1050, true);
+        //paint(canvas);
+        canvas.drawBitmap(myBitmap, 0, 0, paint);
+        //bitmap = Bitmap.createBitmap(Constants.VIEW_WIDTH, Constants.VIEW_HEIGHT, config);
+        //this.canvas = new Canvas(bitmap);
+        this.canvas.drawColor(Color.WHITE);
+
 
     }
 
@@ -64,10 +68,12 @@ public class MazePanel extends View {
     }
 
 
-    private void myTestImage(Canvas c){
-        canvas.drawColor(Color.BLACK);
+    public void myTestImage(){
+        Log.d("inside", "my test image");
+        //canvas.drawColor(Color.BLACK);
         setColor(Color.RED);
         addFilledOval(0, 0, 150, 150);
+        Log.d("inside", "my test image");
         setColor(Color.GREEN);
         addFilledOval(50, 200, 100, 300);
         setColor(Color.YELLOW);
@@ -83,6 +89,16 @@ public class MazePanel extends View {
         addLine(250, 250, 300, 300);
     }
 
+    public void second(){
+        setColor(Color.BLACK);
+        addLine(100, 0, 200, 200);
+        //canvas.drawColor(Color.BLUE);
+    }
+
+    public void third(){
+        canvas.drawColor(Color.BLUE);
+    }
+
 
     /**
      * Constructor. Object is not focusable.
@@ -90,12 +106,11 @@ public class MazePanel extends View {
     public MazePanel(Context context, AttributeSet attrs) {
         super(context, attrs);
         setFocusable(false);
-        config = Bitmap.Config.ARGB_8888;
-        bitmap = Bitmap.createBitmap(Constants.VIEW_WIDTH, Constants.VIEW_HEIGHT, config);
-        canvas = new Canvas(bitmap);
+        //config = Bitmap.Config.ARGB_8888;
+        //bitmap = Bitmap.createBitmap(Constants.VIEW_WIDTH, Constants.VIEW_HEIGHT, config);
+        //canvas = new Canvas(bitmap);
         init();
-        //myTestImage(canvas);
-
+        //myTestImage();
     }
 
     public void update(Canvas c) {
@@ -114,7 +129,7 @@ public class MazePanel extends View {
             System.out.println("MazePanel.paint: no canvas object, skipping drawImage operation");
         }
         else {
-            c.drawBitmap(bitmap,0,0,null);
+            c.drawBitmap(bitmap,0,0,paint);
         }
     }
 
@@ -167,6 +182,7 @@ public class MazePanel extends View {
     public void commit() {
         Log.d("in commit", "thankfully");
         invalidate();
+        //postInvalidate();
         //requestLayout();
     }
 
@@ -263,7 +279,11 @@ public class MazePanel extends View {
      * @param percentToExit gives the distance to exit
      */
     public void addBackground(float percentToExit) {
-        paint.setColor(getBackgroundColor(percentToExit, top));
+        //paint.setColor(getBackgroundColor(percentToExit, top));
+        paint.setColor(Color.BLACK);
+        if(!top){
+            paint.setColor(Color.WHITE);
+        }
         top = !top;
     }
 

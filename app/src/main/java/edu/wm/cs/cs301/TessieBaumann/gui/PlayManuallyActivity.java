@@ -39,6 +39,7 @@ public class PlayManuallyActivity extends AppCompatActivity {
     private int mapSize = 5;  //default map size
     private int shortestPathLength = 1;  //shortest possible path length, temp value
     private MazePanel panel;
+    StatePlaying statePlaying;
 
     /**
      * This method sets the content view to the
@@ -50,10 +51,16 @@ public class PlayManuallyActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.play_manually_activity);
-        StatePlaying statePlaying = new StatePlaying();
+        statePlaying = new StatePlaying();
         panel = findViewById(R.id.mazePanelView);
+        panel.myTestImage();
+        //panel.second();
+        Log.d("inside", "on create");
+        //setContentView(R.layout.play_manually_activity);
+        //panel.commit();
         statePlaying.start(panel);
         setSizeOfMap();
+        //setContentView(R.layout.play_manually_activity);
 
     }
 
@@ -100,6 +107,10 @@ public class PlayManuallyActivity extends AppCompatActivity {
         toast.show();
     }
 
+    public void sendToWinningMessage(){
+        sendWinningMessage(panel);
+    }
+
 
     /**
      * This method checks to see if the
@@ -137,10 +148,16 @@ public class PlayManuallyActivity extends AppCompatActivity {
      */
     public void moveForwards(View view){
         pathLength++;
+        statePlaying.keyDown(Constants.UserInput.Up, 1);
+        //panel.third();
+        //panel.commit();
         Log.v(TAG, "Moves forwards one step");
         Toast toast = Toast.makeText(getApplicationContext(), "Moved forwards 1 step", Toast.LENGTH_SHORT);
         toast.setGravity(Gravity.BOTTOM|Gravity.CENTER, 0, 0);
         toast.show();
+        if(StatePlaying.isOutside){
+            sendWinningMessage(view);
+        }
     }
 
 
@@ -150,6 +167,9 @@ public class PlayManuallyActivity extends AppCompatActivity {
      * @param view of the top left
      */
     public void turnLeft(View view){
+        //panel.second();
+        //panel.commit();
+        statePlaying.keyDown(Constants.UserInput.Left, 1);
         Log.v(TAG, "Turns left");
         Toast toast = Toast.makeText(getApplicationContext(), "Turned left", Toast.LENGTH_SHORT);
         toast.setGravity(Gravity.BOTTOM|Gravity.CENTER, 0, 0);
@@ -163,6 +183,9 @@ public class PlayManuallyActivity extends AppCompatActivity {
      * @param view of the right arrow
      */
     public void turnRight(View view){
+        statePlaying.keyDown(Constants.UserInput.Right, 1);
+        //panel.myTestImage();
+        //panel.commit();
         Log.v(TAG, "Turns right");
         Toast toast = Toast.makeText(getApplicationContext(), "Turned right", Toast.LENGTH_SHORT);
         toast.setGravity(Gravity.BOTTOM|Gravity.CENTER, 0, 0);
@@ -176,11 +199,15 @@ public class PlayManuallyActivity extends AppCompatActivity {
      * @param view of the jump button
      */
     public void jump(View view){
+        statePlaying.keyDown(Constants.UserInput.Jump, 1);
         pathLength++;
         Log.v(TAG, "Jump forwards");
         Toast toast = Toast.makeText(getApplicationContext(), "Jumped forwards", Toast.LENGTH_SHORT);
         toast.setGravity(Gravity.BOTTOM|Gravity.CENTER, 0, 0);
         toast.show();
+        if(StatePlaying.isOutside){
+            sendWinningMessage(view);
+        }
     }
 
 
@@ -191,6 +218,7 @@ public class PlayManuallyActivity extends AppCompatActivity {
      * @param view of the show map button
      */
     public void showMap(View view){
+        statePlaying.keyDown(Constants.UserInput.ToggleFullMap, 1);
         if(((ToggleButton)view).isChecked()) {
             Log.v(TAG, "Showing Map: On");
             Toast toast = Toast.makeText(getApplicationContext(), "Showing Map: On", Toast.LENGTH_SHORT);
@@ -213,6 +241,7 @@ public class PlayManuallyActivity extends AppCompatActivity {
      * @param view of the show solution button
      */
     public void showSolution(View view){
+        statePlaying.keyDown(Constants.UserInput.ToggleSolution, 1);
         if(((ToggleButton)view).isChecked()) {
             Log.v(TAG, "Showing Solution: On");
             Toast toast = Toast.makeText(getApplicationContext(), "Showing Solution: On", Toast.LENGTH_SHORT);
@@ -235,15 +264,16 @@ public class PlayManuallyActivity extends AppCompatActivity {
      * @param view of the show visible walls button
      */
     public void showVisibleWalls(View view){
+        statePlaying.keyDown(Constants.UserInput.ToggleLocalMap, 1);
         if(((ToggleButton)view).isChecked()) {
-            Log.v(TAG, "Showing Visible Walls: On");
-            Toast toast = Toast.makeText(getApplicationContext(), "Showing Visible Walls: On", Toast.LENGTH_SHORT);
+            Log.v(TAG, "Showing Visible Walls: Off");
+            Toast toast = Toast.makeText(getApplicationContext(), "Showing Visible Walls: Off", Toast.LENGTH_SHORT);
             toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 0);
             toast.show();
         }
         else{
-            Log.v(TAG, "Showing Visible Walls: Off");
-            Toast toast = Toast.makeText(getApplicationContext(), "Showing Visible Walls: Off", Toast.LENGTH_SHORT);
+            Log.v(TAG, "Showing Visible Walls: On");
+            Toast toast = Toast.makeText(getApplicationContext(), "Showing Visible Walls: On", Toast.LENGTH_SHORT);
             toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 0);
             toast.show();
         }

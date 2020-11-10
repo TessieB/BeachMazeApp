@@ -1,6 +1,9 @@
 package edu.wm.cs.cs301.TessieBaumann.gui;
 
+import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 
 import edu.wm.cs.cs301.TessieBaumann.gui.Constants.UserInput;
 
@@ -37,6 +40,7 @@ public class StatePlaying  {
     FirstPersonView firstPersonView;
     Map mapView;
     MazePanel panel;
+    public static boolean isOutside = false;
 
     //Maze mazeConfig;
 
@@ -159,13 +163,18 @@ public class StatePlaying  {
                 // check termination, did we leave the maze?
                 if (isOutside(px,py)) {
                     //control.switchFromPlayingToWinning(0);
+                    isOutside = true;
+                    break;
                 }
+                draw();
                 break;
             case Left: // turn left
                 rotate(1);
+                draw();
                 break;
             case Right: // turn right
                 rotate(-1);
+                draw();
                 break;
             case Down: // move backward
                 walk(-1);
@@ -173,6 +182,7 @@ public class StatePlaying  {
                 // check termination, did we leave the maze?
                 if (isOutside(px,py)) {
                     //control.switchFromPlayingToWinning(0);
+                    isOutside = true;
                 }
                 break;
             case ReturnToTitle: // escape to title screen
@@ -212,6 +222,7 @@ public class StatePlaying  {
         } // end of internal switch statement for playing state
         return true;
     }
+
     /**
      * Draws the current content on panel to show it on screen.
      */
@@ -318,12 +329,19 @@ public class StatePlaying  {
      */
     private void slowedDownRedraw() {
         draw() ;
-        try {
-            Thread.sleep(25);
-        } catch (Exception e) {
-            // may happen if thread is interrupted
-            // no reason to do anything about it, ignore exception
-        }
+        //panel.commit();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(25);
+                } catch (Exception e) {
+                    // may happen if thread is interrupted
+                    // no reason to do anything about it, ignore exception
+                }
+
+            }
+        };
     }
 
     /**
@@ -343,6 +361,7 @@ public class StatePlaying  {
             // draw method is called and uses angle field for direction
             // information.
             slowedDownRedraw();
+
         }
         // update maze direction only after intermediate steps are done
         // because choice of direction values are more limited.

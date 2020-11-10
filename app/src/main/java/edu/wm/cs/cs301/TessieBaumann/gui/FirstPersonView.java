@@ -156,6 +156,8 @@ public class FirstPersonView {
      */
     public void draw(MazePanel panel, int x, int y, int walkStep, int ang, float percentToExit) {
         // viewers draw on the buffer graphics
+        //panel.third();
+        //panel.commit();
         Log.d("first person", "in draw method");
         if (null == panel.getBitmap()) {
             System.out.println("FirstPersonDrawer.draw: can't get graphics object to draw on, skipping redraw operation") ;
