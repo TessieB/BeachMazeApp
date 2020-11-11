@@ -34,10 +34,11 @@ public class PlayManuallyActivity extends AppCompatActivity {
 
 
     private static final String TAG = "Move";  //message string
-    private static final int MAX_MAP_SIZE = 10;  //max size that the map can be
-    private int pathLength = 3;  //length of the path the user has taken
-    private int mapSize = 5;  //default map size
-    private int shortestPathLength = 1;  //shortest possible path length, temp value
+    private static final int MAX_MAP_SIZE = 80;  //max size that the map can be
+    private static final int MIN_MAP_SIZE = 1;  //min size that the map can be
+    private int pathLength = 0;  //length of the path the user has taken
+    private int mapSize = 15;  //default map size
+    private int shortestPathLength = 0;  //shortest possible path length, temp value
     private MazePanel panel;
     StatePlaying statePlaying;
 
@@ -51,17 +52,13 @@ public class PlayManuallyActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.play_manually_activity);
-        statePlaying = new StatePlaying();
+        //statePlaying = new StatePlaying();
         panel = findViewById(R.id.mazePanelView);
-        panel.myTestImage();
-        //panel.second();
         Log.d("inside", "on create");
-        //setContentView(R.layout.play_manually_activity);
-        //panel.commit();
-        statePlaying.start(panel);
+        //int[] startPos = GeneratingActivity.mazeConfig.getStartingPosition();
+        //shortestPathLength = GeneratingActivity.mazeConfig.getDistanceToExit(startPos[0], startPos[1]);
+        //statePlaying.start(panel);
         setSizeOfMap();
-        //setContentView(R.layout.play_manually_activity);
-
     }
 
 
@@ -72,13 +69,20 @@ public class PlayManuallyActivity extends AppCompatActivity {
     private void setSizeOfMap(){
         final SeekBar mapSize1 = (SeekBar) findViewById(R.id.mapSizeSeekBar);
         final TextView skillLevelText = (TextView) findViewById(R.id.skillLevelTextView);
-        mapSize1.setProgress(0);
+        mapSize1.setMin(MIN_MAP_SIZE);
+        mapSize1.setProgress(15);
         mapSize1.setMax(MAX_MAP_SIZE);
         mapSize1.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             int tempMapSize = 0;
 
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+//                if(i>tempMapSize){
+//                    statePlaying.keyDown(Constants.UserInput.ZoomIn, 1);
+//                }
+//                else{
+//                    statePlaying.keyDown(Constants.UserInput.ZoomOut, 1);
+//                }
                 tempMapSize = i;
             }
 
@@ -101,14 +105,11 @@ public class PlayManuallyActivity extends AppCompatActivity {
      */
     private void setMapSize(int size){
         mapSize = size;
+        statePlaying.setMapScale(mapSize);
         Log.v(TAG, "Map Size: " + mapSize);
         Toast toast = Toast.makeText(getApplicationContext(), "Map Size: " + mapSize, Toast.LENGTH_SHORT);
         toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 0);
         toast.show();
-    }
-
-    public void sendToWinningMessage(){
-        sendWinningMessage(panel);
     }
 
 
@@ -149,13 +150,12 @@ public class PlayManuallyActivity extends AppCompatActivity {
     public void moveForwards(View view){
         pathLength++;
         statePlaying.keyDown(Constants.UserInput.Up, 1);
-        //panel.third();
-        //panel.commit();
         Log.v(TAG, "Moves forwards one step");
         Toast toast = Toast.makeText(getApplicationContext(), "Moved forwards 1 step", Toast.LENGTH_SHORT);
         toast.setGravity(Gravity.BOTTOM|Gravity.CENTER, 0, 0);
         toast.show();
         if(StatePlaying.isOutside){
+            StatePlaying.isOutside = false;
             sendWinningMessage(view);
         }
     }
@@ -167,8 +167,6 @@ public class PlayManuallyActivity extends AppCompatActivity {
      * @param view of the top left
      */
     public void turnLeft(View view){
-        //panel.second();
-        //panel.commit();
         statePlaying.keyDown(Constants.UserInput.Left, 1);
         Log.v(TAG, "Turns left");
         Toast toast = Toast.makeText(getApplicationContext(), "Turned left", Toast.LENGTH_SHORT);
@@ -184,8 +182,6 @@ public class PlayManuallyActivity extends AppCompatActivity {
      */
     public void turnRight(View view){
         statePlaying.keyDown(Constants.UserInput.Right, 1);
-        //panel.myTestImage();
-        //panel.commit();
         Log.v(TAG, "Turns right");
         Toast toast = Toast.makeText(getApplicationContext(), "Turned right", Toast.LENGTH_SHORT);
         toast.setGravity(Gravity.BOTTOM|Gravity.CENTER, 0, 0);
@@ -206,6 +202,7 @@ public class PlayManuallyActivity extends AppCompatActivity {
         toast.setGravity(Gravity.BOTTOM|Gravity.CENTER, 0, 0);
         toast.show();
         if(StatePlaying.isOutside){
+            StatePlaying.isOutside = false;
             sendWinningMessage(view);
         }
     }
@@ -218,7 +215,7 @@ public class PlayManuallyActivity extends AppCompatActivity {
      * @param view of the show map button
      */
     public void showMap(View view){
-        statePlaying.keyDown(Constants.UserInput.ToggleFullMap, 1);
+        statePlaying.keyDown(Constants.UserInput.ToggleLocalMap, 1);
         if(((ToggleButton)view).isChecked()) {
             Log.v(TAG, "Showing Map: On");
             Toast toast = Toast.makeText(getApplicationContext(), "Showing Map: On", Toast.LENGTH_SHORT);
@@ -264,7 +261,7 @@ public class PlayManuallyActivity extends AppCompatActivity {
      * @param view of the show visible walls button
      */
     public void showVisibleWalls(View view){
-        statePlaying.keyDown(Constants.UserInput.ToggleLocalMap, 1);
+        statePlaying.keyDown(Constants.UserInput.ToggleFullMap, 1);
         if(((ToggleButton)view).isChecked()) {
             Log.v(TAG, "Showing Visible Walls: Off");
             Toast toast = Toast.makeText(getApplicationContext(), "Showing Visible Walls: Off", Toast.LENGTH_SHORT);

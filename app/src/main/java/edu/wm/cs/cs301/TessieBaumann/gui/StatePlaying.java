@@ -166,15 +166,18 @@ public class StatePlaying  {
                     isOutside = true;
                     break;
                 }
-                draw();
+                //draw();
+                //drawHintIfNecessary();
                 break;
             case Left: // turn left
                 rotate(1);
-                draw();
+                //draw();
+                //drawHintIfNecessary();
                 break;
             case Right: // turn right
                 rotate(-1);
-                draw();
+                //draw();
+                //drawHintIfNecessary();
                 break;
             case Down: // move backward
                 walk(-1);
@@ -193,6 +196,7 @@ public class StatePlaying  {
                 if (GeneratingActivity.mazeConfig.isValidPosition(px + dx, py + dy)) {
                     setCurrentPosition(px + dx, py + dy) ;
                     draw() ;
+                    //drawHintIfNecessary();
                 }
                 break;
             case ToggleLocalMap: // show local information: current position and visible walls
@@ -223,6 +227,11 @@ public class StatePlaying  {
         return true;
     }
 
+    public void setMapScale(int scale){
+        mapView.setScale(scale);
+        draw();
+    }
+
     /**
      * Draws the current content on panel to show it on screen.
      */
@@ -235,6 +244,7 @@ public class StatePlaying  {
         firstPersonView.draw(panel, px, py, walkStep, angle,
                 getPercentageForDistanceToExit()) ;
         if (isInMapMode()) {
+            Log.d("in", "map mode in StatePlaying.draw");
             mapView.draw(panel, px, py, angle, walkStep,
                     isInShowMazeMode(),isInShowSolutionMode()) ;
         }
@@ -330,18 +340,24 @@ public class StatePlaying  {
     private void slowedDownRedraw() {
         draw() ;
         //panel.commit();
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(25);
-                } catch (Exception e) {
-                    // may happen if thread is interrupted
-                    // no reason to do anything about it, ignore exception
-                }
-
-            }
-        };
+        try {
+            Thread.sleep(25);
+        } catch (Exception e) {
+            // may happen if thread is interrupted
+            // no reason to do anything about it, ignore exception
+        }
+//        Runnable runnable = new Runnable() {
+//            @Override
+//            public void run() {
+//                try {
+//                    Thread.sleep(25);
+//                } catch (Exception e) {
+//                    // may happen if thread is interrupted
+//                    // no reason to do anything about it, ignore exception
+//                }
+//
+//            }
+//        };
     }
 
     /**
@@ -411,20 +427,24 @@ public class StatePlaying  {
      */
     private void drawHintIfNecessary() {
         if (isInMapMode())
+            //Log.d("in map mode", "in draw hint if necessary");
             return; // no need for help
         // in testing environments, there is sometimes no panel to draw on
         // check this and quietly move on if drawing is impossible
         if (panel == null || panel.getBitmap() == null) {
+            Log.d("in panel is null", "in draw hint if necessary");
             printWarning();
             return;
         }
         // if current position faces a dead end, show map with solution
         // for guidance
         if (isFacingDeadEnd()) {
+            Log.d("in facing dead end", "in draw hint if necessary");
             //System.out.println("Facing deadend, help by showing solution");
             mapView.draw(panel, px, py, angle, walkStep, true, true) ;
         }
         else {
+            Log.d("in compass rose drawing", "in draw hint if necessary");
             // draw compass rose
             cr.setCurrentDirection(getCurrentDirection());
             cr.paintComponent(panel);

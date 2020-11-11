@@ -22,58 +22,41 @@ public class MazePanel extends View {
      * http://www.codeproject.com/Articles/2136/Double-buffer-in-standard-Java-AWT
      * for details
      */
-    // bufferImage can only be initialized if the container is displayable,
-    // uses a delayed initialization and relies on client class to call initBufferImage()
-    // before first use
-    //private Image bufferImage;
-    //private Graphics2D graphics; // obtained from bufferImage,
-    // graphics is stored to allow clients to draw on the same graphics object repeatedly
-    // has benefits if color settings should be remembered for subsequent drawing operations
 
-    private Bitmap.Config config = Bitmap.Config.ARGB_8888;
-    private Bitmap bitmap = Bitmap.createBitmap(Constants.VIEW_WIDTH, Constants.VIEW_HEIGHT, config);
-    private Canvas canvas = new Canvas(bitmap);
-    private Paint paint;
+    private Bitmap.Config config; //bitmap configuration settings
+    private Bitmap bitmap;  //bitmap with graphics drawn on it
+    private Canvas canvas;  //canvas to draw images on the bitmap
+    private Paint paint;  //paint being used at the time
 
-    private int color;
+    private int color;  //int color that paint is currently set on
     private static final int greenWM = Color.parseColor("#115740");
     private static final int goldWM = Color.parseColor("#916f41");
     private static final int yellowWM = Color.parseColor("#FFFF99");
-    private boolean top = true;
-    private String markerFont;
+    private boolean top = true;  //boolean value that tells if top or bottom background rectangle is being drawn
+    private String markerFont;  //current font of the marker
 
 
+    /**
+     * This method scales the bitmap so that it fits into the view that is
+     * in playManuallyActivity and PlayAnimationActivity, then paints the
+     * scaled bitmap onto the canvas of the view that was passed in
+     * @param canvas
+     */
     @Override
     public void onDraw(Canvas canvas){
-        Log.d("in on draw", "yay");
         super.onDraw(canvas);
-        Log.d("Canvas", canvas.toString());
-        //canvas.drawColor(Color.WHITE);
         Bitmap myBitmap = Bitmap.createScaledBitmap(bitmap, 1050, 1050, true);
-        //paint(canvas);
         canvas.drawBitmap(myBitmap, 0, 0, paint);
-        //bitmap = Bitmap.createBitmap(Constants.VIEW_WIDTH, Constants.VIEW_HEIGHT, config);
-        //this.canvas = new Canvas(bitmap);
-        this.canvas.drawColor(Color.WHITE);
-
-
     }
 
-
-    private void init(){
-        paint = new Paint();
-        setColor(greenWM);
-        paint.setStyle(Paint.Style.FILL);
-        //canvas = getBitmap();
-    }
-
-
+    /**
+     * This method tests to make sure that the different drawing properties of
+     * MazePanel work in android studio by drawing practice lines and shapes
+     */
     public void myTestImage(){
-        Log.d("inside", "my test image");
-        //canvas.drawColor(Color.BLACK);
+        canvas.drawColor(Color.BLACK);
         setColor(Color.RED);
         addFilledOval(0, 0, 150, 150);
-        Log.d("inside", "my test image");
         setColor(Color.GREEN);
         addFilledOval(50, 200, 100, 300);
         setColor(Color.YELLOW);
@@ -89,16 +72,6 @@ public class MazePanel extends View {
         addLine(250, 250, 300, 300);
     }
 
-    public void second(){
-        setColor(Color.BLACK);
-        addLine(100, 0, 200, 200);
-        //canvas.drawColor(Color.BLUE);
-    }
-
-    public void third(){
-        canvas.drawColor(Color.BLUE);
-    }
-
 
     /**
      * Constructor. Object is not focusable.
@@ -106,15 +79,11 @@ public class MazePanel extends View {
     public MazePanel(Context context, AttributeSet attrs) {
         super(context, attrs);
         setFocusable(false);
-        //config = Bitmap.Config.ARGB_8888;
-        //bitmap = Bitmap.createBitmap(Constants.VIEW_WIDTH, Constants.VIEW_HEIGHT, config);
-        //canvas = new Canvas(bitmap);
-        init();
-        //myTestImage();
-    }
-
-    public void update(Canvas c) {
-        paint(c);
+        config = Bitmap.Config.ARGB_8888;
+        bitmap = Bitmap.createBitmap(Constants.VIEW_WIDTH, Constants.VIEW_HEIGHT, config);
+        canvas = new Canvas(bitmap);
+        paint = new Paint();
+        myTestImage();
     }
 
     /**
@@ -123,15 +92,15 @@ public class MazePanel extends View {
      * The given graphics object is the one that actually shows
      * on the screen.
      */
-    public void paint(Canvas c) {
-        if (null == c) {
-            Log.d("oh no", "canvas is null");
-            System.out.println("MazePanel.paint: no canvas object, skipping drawImage operation");
-        }
-        else {
-            c.drawBitmap(bitmap,0,0,paint);
-        }
-    }
+//    public void paint(Canvas c) {
+//        if (null == c) {
+//            Log.d("oh no", "canvas is null");
+//            System.out.println("MazePanel.paint: no canvas object, skipping drawImage operation");
+//        }
+//        else {
+//            c.drawBitmap(bitmap,0,0,paint);
+//        }
+//    }
 
     /**
      * Obtains a graphics object that can be used for drawing.
@@ -182,8 +151,6 @@ public class MazePanel extends View {
     public void commit() {
         Log.d("in commit", "thankfully");
         invalidate();
-        //postInvalidate();
-        //requestLayout();
     }
 
     /**
@@ -279,11 +246,11 @@ public class MazePanel extends View {
      * @param percentToExit gives the distance to exit
      */
     public void addBackground(float percentToExit) {
-        //paint.setColor(getBackgroundColor(percentToExit, top));
-        paint.setColor(Color.BLACK);
-        if(!top){
-            paint.setColor(Color.WHITE);
-        }
+        paint.setColor(getBackgroundColor(percentToExit, top));
+        //paint.setColor(Color.BLACK);
+//        if(!top){
+//            paint.setColor(Color.WHITE);
+//        }
         top = !top;
     }
 
@@ -467,7 +434,6 @@ public class MazePanel extends View {
      */
     public void addMarker(float x, float y, String str) {
         canvas.drawText(str, x, y, paint);
-
     }
 
 
@@ -480,7 +446,6 @@ public class MazePanel extends View {
     public void setFont(String fontName) {
         markerFont = fontName;
         paint.setFontFeatureSettings(fontName);
-        draw(canvas);
     }
 
 

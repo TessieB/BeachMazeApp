@@ -321,7 +321,7 @@ public class GeneratingActivity extends AppCompatActivity implements Order {
 
     @Override
     public boolean isPerfect() {
-        return false;
+        return !rooms;
     }
 
     @Override

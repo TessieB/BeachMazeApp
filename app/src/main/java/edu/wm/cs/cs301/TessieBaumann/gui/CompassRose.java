@@ -1,5 +1,7 @@
 package edu.wm.cs.cs301.TessieBaumann.gui;
 
+import android.graphics.Color;
+
 import edu.wm.cs.cs301.TessieBaumann.generation.CardinalDirection;
 
 /**
@@ -26,7 +28,7 @@ public class CompassRose {
     private static final int CIRCLE_SHADE = MazePanel.createNewColor(1.0f, 1.0f, 1.0f, 0.3f); //new Color(0.0f, 0.0f, 0.0f, 0.2f);
 
     private static final int BLACK = 0;
-    private static final int MARKER_COLOR = BLACK; //Color.WHITE; //Color.BLACK;
+    private static final int MARKER_COLOR = Color.BLACK; //Color.WHITE; //Color.BLACK;
     private static final int WHITE = 16777215;
 
 
@@ -119,11 +121,11 @@ public class CompassRose {
 
 
     private void drawBackground(MazePanel panel, int width) {
-        panel.setColor(WHITE);
+        panel.setColor(Color.WHITE);
         final int x = centerX - size;
         final int y = centerY - size;
         final int w = 2 * size;// - 2 * CIRCLE_BORDER;
-        panel.addFilledOval(x,y,w,w);
+        panel.addFilledOval(x,y,x+w,y+w);
     }
 
 
@@ -165,9 +167,9 @@ public class CompassRose {
         final int y = centerY - width / 2 + CIRCLE_BORDER;
         final int w = width - 2 * CIRCLE_BORDER;
         panel.setColor(CIRCLE_SHADE);
-        panel.addArc(x, y, w, w, 45, 180);
+        panel.addArc(x, y, x+w, y+w, 45, 180);
         panel.setColor(CIRCLE_HIGHLIGHT);
-        panel.addArc(x, y, w, w, 180 + 45, 180);
+        panel.addArc(x, y, x+w, y+w, 180 + 45, 180);
     }
 
 
@@ -192,24 +194,24 @@ public class CompassRose {
                 panel.setColor(MARKER_COLOR);
             else
                 panel.setColor(goldWM);
-            drawMarker(panel, centerX, centerY - pos, "N");
+            drawMarker(panel, centerX-2, centerY - pos+3, "N");
             if (CardinalDirection.East == currentDir)
                 panel.setColor(MARKER_COLOR);
             else
                 panel.setColor(goldWM);
-            drawMarker(panel, centerX + pos, centerY, "E");
+            drawMarker(panel, centerX + pos-3, centerY+2, "E");
             // WARNING: north south confusion
             // currendDir North is going downwards on the map
             if (CardinalDirection.North == currentDir)
                 panel.setColor(MARKER_COLOR);
             else
                 panel.setColor(goldWM);
-            drawMarker(panel, centerX, centerY + pos, "S");
+            drawMarker(panel, centerX-2, centerY + pos+3, "S");
             if (CardinalDirection.West == currentDir)
                 panel.setColor(MARKER_COLOR);
             else
                 panel.setColor(goldWM);
-            drawMarker(panel, centerX - pos, centerY, "W");
+            drawMarker(panel, centerX - pos-3, centerY+2, "W");
         }
     }
 

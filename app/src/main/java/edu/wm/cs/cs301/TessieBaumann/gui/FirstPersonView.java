@@ -37,7 +37,7 @@ public class FirstPersonView {
     final private int stepSize;   // = map_unit/4;
     // map scale may be adjusted by user input, controlled in StatePlaying
     // colors for background
-    private static final int WHITE = 16777215;
+    private static final int WHITE = Color.WHITE;
     //private static final int greenWM = MazePanel.decode("#115740");
     //private static final int goldWM = Color.decode("#916f41");
     //private static final int yellowWM = Color.decode("#FFFF99");

@@ -1,8 +1,13 @@
 package edu.wm.cs.cs301.TessieBaumann.gui;
 
+import android.graphics.Color;
+import android.util.Log;
+
 import edu.wm.cs.cs301.TessieBaumann.generation.CardinalDirection;
 import edu.wm.cs.cs301.TessieBaumann.generation.Floorplan;
 import edu.wm.cs.cs301.TessieBaumann.generation.Maze;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * This class encapsulates all functionality to draw a map of the overall maze,
@@ -31,9 +36,9 @@ public class Map {
     final int viewHeight; // set to Constants.VIEW_HEIGHT
     final int mapUnit;    // set to Constants.MAP_UNIT
     final int stepSize;  // set to Constants.STEP_SIZE, typical value: map_unit/4
-    private static final int WHITE = 16777215;
-    private static final int RED = 16711680;
-    private static final int YELLOW = 16776960;
+    private static final int WHITE = Color.WHITE;
+    private static final int RED = Color.RED;
+    private static final int YELLOW = Color.YELLOW;
 
     /**
      * The user can increment or decrement the scale of the map.
@@ -123,8 +128,10 @@ public class Map {
                      boolean showMaze, boolean showSolution) {
         //Graphics g = panel.getBufferGraphics() ;
         // viewers draw on the buffer graphics
+        Log.d("inside", "draw public method in map.java");
         if (null == panel.getBitmap()) {
             System.out.println("MapDrawer.draw: can't get graphics object to draw on, skipping draw operation") ;
+            Log.v(TAG, "MapDrawer.draw: can't get canvas to draw on, skipping draw operation");
             return;
         }
         final int viewDX = getViewDX(angle);
@@ -132,6 +139,13 @@ public class Map {
         drawMap(panel, x, y, walkStep, viewDX, viewDY, showMaze, showSolution) ;
         drawCurrentLocation(panel, viewDX, viewDY) ;
     }
+
+
+    public void setScale(int scale){
+        mapScale = scale;
+    }
+
+
     //////////////////////////////// private, internal methods //////////////////////////////
     private int getViewDX(int angle) {
         return (int) (Math.cos(radify(angle))*(1<<16));
@@ -156,8 +170,10 @@ public class Map {
         // dimensions of the maze in terms of cell ids
         final int mazeWidth = maze.getWidth() ;
         final int mazeHeight = maze.getHeight() ;
-
+        Log.d("inside", "drawMap private method in map.java");
         panel.setColor(WHITE);
+        //panel.setColor(Color.GREEN);
+        //panel.addFilledOval(0, 0, 200, 200);
 
         // note: 1/2 of width and height is the center of the screen
         // the whole map is centered at the current position
@@ -188,7 +204,7 @@ public class Map {
                         maze.hasWall(x,y, CardinalDirection.North) :
                         maze.hasWall(x,y-1, CardinalDirection.South));
 
-                panel.setColor(seenWalls.hasWall(x,y, CardinalDirection.North) ? 16777215 : 8421504);
+                panel.setColor(seenWalls.hasWall(x,y, CardinalDirection.North) ? WHITE : Color.GRAY);
                 if ((seenWalls.hasWall(x,y, CardinalDirection.North) || showMaze) && theCondition)
                     panel.addLine(startX, startY, startX + mapScale, startY); // y coordinate same
 
@@ -197,7 +213,7 @@ public class Map {
                         maze.hasWall(x,y, CardinalDirection.West) :
                         maze.hasWall((x-1),y, CardinalDirection.East));
 
-                panel.setColor(seenWalls.hasWall(x,y, CardinalDirection.West) ? 16777215 : 8421504);
+                panel.setColor(seenWalls.hasWall(x,y, CardinalDirection.West) ? WHITE : Color.GRAY);
                 if ((seenWalls.hasWall(x,y, CardinalDirection.West) || showMaze) && theCondition)
                     panel.addLine(startX, startY, startX, startY - mapScale); // x coordinate same
             }
@@ -324,7 +340,7 @@ public class Map {
         // and its width and height to draw the circle
         // top left corner is (centerX-radius, centerY-radius)
         // width and height is simply the diameter
-        panel.addFilledOval(centerX-diameter/2, centerY-diameter/2, diameter, diameter);
+        panel.addFilledOval(centerX-diameter/2, centerY-diameter/2, centerX-diameter/2 + diameter, centerY-diameter/2 + diameter+1);
         // draw a red arrow with the oval to show current direction
         drawArrow(panel, viewDX, viewDY, centerX, centerY);
     }
