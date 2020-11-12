@@ -37,7 +37,7 @@ import edu.wm.cs.cs301.TessieBaumann.R;
 
 public class AMazeActivity extends AppCompatActivity  {
 
-    private static final int SKILL_LEVEL_MAX = 16;  //max skill level that can be picked
+    private static final int SKILL_LEVEL_MAX = 15;  //max skill level that can be picked
     private int skillLevelNum = 0;  //tells the maze what skill level to use
     private static final String TAG = "message";
     private String builder = "DFS";  //tells the maze what builder to use

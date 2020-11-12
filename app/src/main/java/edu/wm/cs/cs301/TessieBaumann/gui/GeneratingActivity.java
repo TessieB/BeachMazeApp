@@ -18,6 +18,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.Random;
+
 import edu.wm.cs.cs301.TessieBaumann.R;
 import edu.wm.cs.cs301.TessieBaumann.generation.Factory;
 import edu.wm.cs.cs301.TessieBaumann.generation.Maze;
@@ -56,10 +58,11 @@ public class GeneratingActivity extends AppCompatActivity implements Order {
     private Order.Builder builder;
     private int skillLevel;
     private boolean rooms;
-    private int seed;
+    private int seed = 13;
     protected Factory factory;
     private int percentdone = 0;
     public static Maze mazeConfig;
+    private boolean deterministic = false;
 
 
     public GeneratingActivity(){
@@ -99,7 +102,10 @@ public class GeneratingActivity extends AppCompatActivity implements Order {
         }
         skillLevel = bundle.getInt("Skill Level");
         rooms = bundle.getBoolean("Rooms");
-        seed = 13;
+        if(!deterministic){
+            Random rand = new Random();
+            seed = rand.nextInt();
+        }
     }
 
 
@@ -309,26 +315,58 @@ public class GeneratingActivity extends AppCompatActivity implements Order {
         toast.show();
     }
 
+    /**
+     * Sets deterministic to true in order to generate
+     * the same maze over and over again and to false
+     * in order to generate random mazes
+     * @param deterministic
+     */
+    public void setDeterministic(boolean deterministic){
+        this.deterministic = deterministic;
+    }
+
+    /**
+     * Returns the difficulty level that the user chooses
+     * @return int skill level
+     */
     @Override
     public int getSkillLevel() {
         return skillLevel;
     }
 
+    /**
+     * Returns the builder that the user chooses
+     * @return Builder builder
+     */
     @Override
     public Builder getBuilder() {
         return builder;
     }
 
+    /**
+     * Returns whether or not the user wants rooms
+     * @return boolean rooms
+     */
     @Override
     public boolean isPerfect() {
         return !rooms;
     }
 
+    /**
+     * Returns the random seed
+     * @return int seed
+     */
     @Override
     public int getSeed() {
         return seed;
     }
 
+
+    /**
+     * Sets the static variable mazeConfig so that
+     * every class can access the maze once it has been
+     * created
+     */
     @Override
     public void deliver(Maze mazeConfig) {
         this.mazeConfig = mazeConfig;

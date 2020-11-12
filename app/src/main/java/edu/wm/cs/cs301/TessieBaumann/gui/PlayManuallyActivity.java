@@ -105,7 +105,7 @@ public class PlayManuallyActivity extends AppCompatActivity {
      */
     private void setMapSize(int size){
         mapSize = size;
-        statePlaying.setMapScale(mapSize);
+        //statePlaying.setMapScale(mapSize);
         Log.v(TAG, "Map Size: " + mapSize);
         Toast toast = Toast.makeText(getApplicationContext(), "Map Size: " + mapSize, Toast.LENGTH_SHORT);
         toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 0);
@@ -149,15 +149,15 @@ public class PlayManuallyActivity extends AppCompatActivity {
      */
     public void moveForwards(View view){
         pathLength++;
-        statePlaying.keyDown(Constants.UserInput.Up, 1);
+        //statePlaying.keyDown(Constants.UserInput.Up, 1);
         Log.v(TAG, "Moves forwards one step");
         Toast toast = Toast.makeText(getApplicationContext(), "Moved forwards 1 step", Toast.LENGTH_SHORT);
         toast.setGravity(Gravity.BOTTOM|Gravity.CENTER, 0, 0);
         toast.show();
-        if(StatePlaying.isOutside){
-            StatePlaying.isOutside = false;
-            sendWinningMessage(view);
-        }
+//        if(StatePlaying.isOutside){
+//            StatePlaying.isOutside = false;
+//            sendWinningMessage(view);
+//        }
     }
 
 
@@ -167,7 +167,7 @@ public class PlayManuallyActivity extends AppCompatActivity {
      * @param view of the top left
      */
     public void turnLeft(View view){
-        statePlaying.keyDown(Constants.UserInput.Left, 1);
+        //statePlaying.keyDown(Constants.UserInput.Left, 1);
         Log.v(TAG, "Turns left");
         Toast toast = Toast.makeText(getApplicationContext(), "Turned left", Toast.LENGTH_SHORT);
         toast.setGravity(Gravity.BOTTOM|Gravity.CENTER, 0, 0);
@@ -181,7 +181,7 @@ public class PlayManuallyActivity extends AppCompatActivity {
      * @param view of the right arrow
      */
     public void turnRight(View view){
-        statePlaying.keyDown(Constants.UserInput.Right, 1);
+        //statePlaying.keyDown(Constants.UserInput.Right, 1);
         Log.v(TAG, "Turns right");
         Toast toast = Toast.makeText(getApplicationContext(), "Turned right", Toast.LENGTH_SHORT);
         toast.setGravity(Gravity.BOTTOM|Gravity.CENTER, 0, 0);
@@ -195,16 +195,16 @@ public class PlayManuallyActivity extends AppCompatActivity {
      * @param view of the jump button
      */
     public void jump(View view){
-        statePlaying.keyDown(Constants.UserInput.Jump, 1);
+        //statePlaying.keyDown(Constants.UserInput.Jump, 1);
         pathLength++;
         Log.v(TAG, "Jump forwards");
         Toast toast = Toast.makeText(getApplicationContext(), "Jumped forwards", Toast.LENGTH_SHORT);
         toast.setGravity(Gravity.BOTTOM|Gravity.CENTER, 0, 0);
         toast.show();
-        if(StatePlaying.isOutside){
-            StatePlaying.isOutside = false;
-            sendWinningMessage(view);
-        }
+//        if(StatePlaying.isOutside){
+//            StatePlaying.isOutside = false;
+//            sendWinningMessage(view);
+//        }
     }
 
 
@@ -215,7 +215,7 @@ public class PlayManuallyActivity extends AppCompatActivity {
      * @param view of the show map button
      */
     public void showMap(View view){
-        statePlaying.keyDown(Constants.UserInput.ToggleLocalMap, 1);
+        //statePlaying.keyDown(Constants.UserInput.ToggleLocalMap, 1);
         if(((ToggleButton)view).isChecked()) {
             Log.v(TAG, "Showing Map: On");
             Toast toast = Toast.makeText(getApplicationContext(), "Showing Map: On", Toast.LENGTH_SHORT);
@@ -238,7 +238,7 @@ public class PlayManuallyActivity extends AppCompatActivity {
      * @param view of the show solution button
      */
     public void showSolution(View view){
-        statePlaying.keyDown(Constants.UserInput.ToggleSolution, 1);
+        //statePlaying.keyDown(Constants.UserInput.ToggleSolution, 1);
         if(((ToggleButton)view).isChecked()) {
             Log.v(TAG, "Showing Solution: On");
             Toast toast = Toast.makeText(getApplicationContext(), "Showing Solution: On", Toast.LENGTH_SHORT);
@@ -261,7 +261,7 @@ public class PlayManuallyActivity extends AppCompatActivity {
      * @param view of the show visible walls button
      */
     public void showVisibleWalls(View view){
-        statePlaying.keyDown(Constants.UserInput.ToggleFullMap, 1);
+        //statePlaying.keyDown(Constants.UserInput.ToggleFullMap, 1);
         if(((ToggleButton)view).isChecked()) {
             Log.v(TAG, "Showing Visible Walls: Off");
             Toast toast = Toast.makeText(getApplicationContext(), "Showing Visible Walls: Off", Toast.LENGTH_SHORT);
