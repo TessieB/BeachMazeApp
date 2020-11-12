@@ -2,10 +2,13 @@ package edu.wm.cs.cs301.TessieBaumann.gui;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.Shader;
 import android.graphics.fonts.Font;
 import android.os.Bundle;
 import android.util.AttributeSet;
@@ -45,6 +48,8 @@ public class MazePanel extends View {
     @Override
     public void onDraw(Canvas canvas){
         super.onDraw(canvas);
+        canvas.drawColor(Color.WHITE);
+        //addBackground(3);
         Bitmap myBitmap = Bitmap.createScaledBitmap(bitmap, 1050, 1050, true);
         canvas.drawBitmap(myBitmap, 0, 0, paint);
     }
@@ -83,7 +88,6 @@ public class MazePanel extends View {
         bitmap = Bitmap.createBitmap(Constants.VIEW_WIDTH, Constants.VIEW_HEIGHT, config);
         canvas = new Canvas(bitmap);
         paint = new Paint();
-        myTestImage();
     }
 
     /**
@@ -247,10 +251,20 @@ public class MazePanel extends View {
      */
     public void addBackground(float percentToExit) {
         paint.setColor(getBackgroundColor(percentToExit, top));
-        //paint.setColor(Color.BLACK);
-//        if(!top){
-//            paint.setColor(Color.WHITE);
-//        }
+//        Bitmap bitmap2 = BitmapFactory.decodeResource(getResources(), R.drawable.sandy3);
+//        BitmapShader sandShader = new BitmapShader(bitmap2, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
+//        paint.setShader(sandShader);
+//        //canvas.drawRect(0, 0, 400, 400, paint);
+//        Bitmap bitmap3 = BitmapFactory.decodeResource(getResources(), R.drawable.clouds);
+//        BitmapShader cloudShader = new BitmapShader(bitmap3, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
+//        paint.setShader(cloudShader);
+//        canvas.drawBitmap(bitmap2, 0, 0, null);
+        //canvas.drawRect(0, 0, 400, 200, paint);
+        //canvas.drawPicture(R.id.);
+        paint.setColor(Color.BLACK);
+        if(!top){
+            paint.setColor(Color.WHITE);
+        }
         top = !top;
     }
 
