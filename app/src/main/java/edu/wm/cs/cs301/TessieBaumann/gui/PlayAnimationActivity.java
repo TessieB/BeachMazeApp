@@ -10,6 +10,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
+import edu.wm.cs.cs301.TessieBaumann.gui.Robot.Direction;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -40,13 +41,23 @@ public class PlayAnimationActivity extends AppCompatActivity {
     private static final String TAG = "message";  //string message key
     private static final int MAX_MAP_SIZE = 10;  //max size that the map can be
     private static final int ROBOT_INITIAL_ENERGY = 3500;  //amount of energy driver starts with
-    private String robot;  //sensor configuration chosen by user
+    private String sensorConfig;  //sensor configuration chosen by user
     private int mapSize = 5;  //default map size
     private int animationSpeed = 5;  //default animation speed
     private ProgressBar remainingEnergy;  //remaining energy of robot
     private int pathLength = 10;  //path length of robot through maze
-    private int shortestPathLength = 8;  //shortest possible path length through the maze
+    private int shortestPathLength;  //shortest possible path length through the maze
     private String reasonLost = "Broken Robot"; //if the robot lost, tells why
+    private StatePlaying statePlaying;
+    private MazePanel panel;
+    private Robot robot;
+    boolean[] reliableSensor;
+    private DistanceSensor leftSensor;
+    private DistanceSensor rightSensor;
+    private DistanceSensor frontSensor;
+    private DistanceSensor backSensor;
+    private static final int MEAN_TIME_BETWEEN_FAILURES = 4000;
+    private static final int MEAN_TIME_TO_REPAIR = 2000;
 
 
     /**
@@ -61,18 +72,222 @@ public class PlayAnimationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.play_animation_activity);
+
+        setProgressBar();
+
         Bundle bundle = getIntent().getExtras();
-        robot = bundle.getString("Robot");
-        if(robot != null) {
-            setRobotSensors(robot);
+        startDriverPlaying(bundle);
+
+        sensorConfig = bundle.getString("Robot");
+        if(sensorConfig != null) {
+            setRobotSensors(sensorConfig);
         }
+
+        statePlaying = new StatePlaying();
+        panel = findViewById(R.id.mazePanelViewAnimated);
+        Log.d("inside", "on create");
+        int[] startPos = GeneratingActivity.mazeConfig.getStartingPosition();
+        shortestPathLength = GeneratingActivity.mazeConfig.getDistanceToExit(startPos[0], startPos[1]);
+        statePlaying.start(panel);
+
         setSizeOfMap();
         setAnimationSpeed();
+    }
+
+    private void setProgressBar(){
         remainingEnergy = (ProgressBar) findViewById(R.id.remainingEnergyProgressBar);
         remainingEnergy.setMax(ROBOT_INITIAL_ENERGY);
         remainingEnergy.setProgress(1500);
         TextView remainingEnergyText = (TextView) findViewById(R.id.remainingEnergyTextView);
         remainingEnergyText.setText("Remaining Energy: " + remainingEnergy.getProgress());
+    }
+
+
+    private void startDriverPlaying(Bundle bundle){
+        String driver = bundle.getString("Driver");
+        if(driver.equalsIgnoreCase("Wizard")){
+            setWizardPlaying();
+        }
+        else{
+            setWallFollowerPlaying();
+        }
+    }
+
+    /**
+     * Sets up the wizard class and everything
+     * that is necessary for the wizard to run
+     * so that the maze is solved automatically by
+     * the wizard algorithm
+     */
+    private void setWizardPlaying() {
+        ReliableRobot robot = new ReliableRobot();
+        Wizard wizard = new Wizard();
+        robot.setStatePlaying(statePlaying);
+        wizard.setRobot(robot);
+        wizard.setMaze(GeneratingActivity.mazeConfig);
+        //this.setRobotAndDriver(robot, wizard);
+        try {
+            wizard.drive2Exit();
+        }
+        catch(Exception e) {
+            sendLosingMessage(panel);
+        }
+    }
+
+
+    /**
+     * Sets up the wallFollower class and everything
+     * that is necessary for the wallFollower to run
+     * so that the maze is solved automatically by
+     * the wallFollower algorithm
+     */
+    private void setWallFollowerPlaying() {
+        //statePlaying.keyDown(Constants.UserInput.ToggleLocalMap, 1);
+        //statePlaying.keyDown(Constants.UserInput.ToggleFullMap, 1);
+        //statePlaying.keyDown(Constants.UserInput.ToggleSolution, 1);
+        robot = new UnreliableRobot();
+        RobotDriver wallFollower = new WallFollower();
+        //this.setRobotAndDriver(robot, wallFollower);
+        robot.setStatePlaying(statePlaying);
+        robot.setPlayAnimationActivity(this);
+        if(reliableSensor != null) {
+            for(int i = 0; i < reliableSensor.length; i++) {
+                if(reliableSensor[i]) {
+                    switch(i) {
+                        case 0:
+                            setSensor("front", true);
+                            break;
+                        case 1:
+                            setSensor("left", true);
+                            break;
+                        case 2:
+                            setSensor("right", true);
+                            break;
+                        case 3:
+                            setSensor("back", true);
+                            break;
+                    }
+                }
+                else {
+                    if(i-1 >= 0 && !reliableSensor[i-1] || i-2 >= 0 && !reliableSensor[i-2] || i-3 >= 0 && !reliableSensor[i-3]) {
+                        try {
+                            Thread.sleep(1300);
+                        }
+                        catch(Exception e) {
+                            System.out.println("wallFollowerPlaying in Controller.java: Error with sleeping");
+                        }
+                    }
+
+                    switch(i) {
+                        case 0:
+                            setSensor("front", false);
+                            break;
+                        case 1:
+                            setSensor("left", false);
+                            break;
+                        case 2:
+                            setSensor("right", false);
+                            break;
+                        case 3:
+                            setSensor("back", false);
+                            break;
+                    }
+                }
+            }
+        }
+        else {
+            setSensor("front", true);
+            setSensor("left", true);
+            setSensor("right", true);
+            setSensor("back", true);
+        }
+        wallFollower.setRobot(robot);
+        wallFollower.setMaze(GeneratingActivity.mazeConfig);
+        try {
+            wallFollower.drive2Exit();
+        }
+        catch(Exception e) {
+            sendLosingMessage(panel);
+        }
+    }
+
+
+    /**
+     * Creates a new reliable or unreliable
+     * sensor in the direction passed in by the
+     * parameter
+     * @param whichSensor that tells what sensor is being set
+     * @param reliable that is true if the sensor
+     * is supposed to be reliable and false if
+     * it is supposed to be unreliable
+     */
+    public void setSensor(String whichSensor, boolean reliable) {
+        if(whichSensor.equalsIgnoreCase("left")) {
+            if(reliable) {
+                leftSensor = new ReliableSensor();
+                leftSensor.setSensorDirection(Direction.LEFT);
+                leftSensor.setMaze(GeneratingActivity.mazeConfig);
+            }
+            else {
+                leftSensor = new UnreliableSensor();
+                leftSensor.setSensorDirection(Direction.LEFT);
+                leftSensor.setMaze(GeneratingActivity.mazeConfig);
+                robot.startFailureAndRepairProcess(Direction.LEFT, MEAN_TIME_BETWEEN_FAILURES, MEAN_TIME_TO_REPAIR);
+            }
+        }
+        else if(whichSensor.equalsIgnoreCase("right")) {
+            if(reliable) {
+                rightSensor = new ReliableSensor();
+                rightSensor.setSensorDirection(Direction.RIGHT);
+                rightSensor.setMaze(GeneratingActivity.mazeConfig);
+            }
+            else {
+                rightSensor = new UnreliableSensor();
+                rightSensor.setSensorDirection(Direction.RIGHT);
+                rightSensor.setMaze(GeneratingActivity.mazeConfig);
+                robot.startFailureAndRepairProcess(Direction.RIGHT, MEAN_TIME_BETWEEN_FAILURES, MEAN_TIME_TO_REPAIR);
+            }
+        }
+        else if(whichSensor.equalsIgnoreCase("front")) {
+            if(reliable) {
+                frontSensor = new ReliableSensor();
+                frontSensor.setSensorDirection(Direction.FORWARD);
+                frontSensor.setMaze(GeneratingActivity.mazeConfig);
+            }
+            else {
+                frontSensor = new UnreliableSensor();
+                frontSensor.setSensorDirection(Direction.FORWARD);
+                frontSensor.setMaze(GeneratingActivity.mazeConfig);
+                robot.startFailureAndRepairProcess(Direction.FORWARD, MEAN_TIME_BETWEEN_FAILURES, MEAN_TIME_TO_REPAIR);
+            }
+        }
+        else if(whichSensor.equalsIgnoreCase("back")) {
+            if(reliable) {
+                backSensor = new ReliableSensor();
+                backSensor.setSensorDirection(Direction.BACKWARD);
+                backSensor.setMaze(GeneratingActivity.mazeConfig);
+            }
+            else {
+                backSensor = new UnreliableSensor();
+                backSensor.setSensorDirection(Direction.BACKWARD);
+                backSensor.setMaze(GeneratingActivity.mazeConfig);
+                robot.startFailureAndRepairProcess(Direction.BACKWARD, MEAN_TIME_BETWEEN_FAILURES, MEAN_TIME_TO_REPAIR);
+            }
+        }
+    }
+
+    public DistanceSensor getSensor(Direction direction) {
+        switch(direction){
+            case FORWARD :
+                return frontSensor;
+            case BACKWARD :
+                return backSensor;
+            case LEFT :
+                return leftSensor;
+            case RIGHT :
+                return rightSensor;
+        }
+        return frontSensor;
     }
 
     /**
