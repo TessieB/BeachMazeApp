@@ -2,6 +2,9 @@ package edu.wm.cs.cs301.TessieBaumann.gui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -16,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import edu.wm.cs.cs301.TessieBaumann.R;
+
 
 /**
  * This class plays the maze with either a Wall Follower or Wizard driver,
@@ -39,18 +43,21 @@ import edu.wm.cs.cs301.TessieBaumann.R;
 public class PlayAnimationActivity extends AppCompatActivity {
 
     private static final String TAG = "message";  //string message key
-    private static final int MAX_MAP_SIZE = 10;  //max size that the map can be
+    private static final String KEY = "my message key";  //message key
+    private static final int MAX_MAP_SIZE = 80;  //max size that the map can be
+    private static final int MAX_ANIMATION_SPEED = 20;  //max animation speed for the robot
     private static final int ROBOT_INITIAL_ENERGY = 3500;  //amount of energy driver starts with
     private String sensorConfig;  //sensor configuration chosen by user
-    private int mapSize = 5;  //default map size
+    private int mapSize = 15;  //default map size
     private int animationSpeed = 5;  //default animation speed
     private ProgressBar remainingEnergy;  //remaining energy of robot
-    private int pathLength = 10;  //path length of robot through maze
     private int shortestPathLength;  //shortest possible path length through the maze
     private String reasonLost = "Broken Robot"; //if the robot lost, tells why
     private StatePlaying statePlaying;
     private MazePanel panel;
     private Robot robot;
+    private Wizard wizard;
+    private RobotDriver wallFollower;
     boolean[] reliableSensor;
     private DistanceSensor leftSensor;
     private DistanceSensor rightSensor;
@@ -58,6 +65,8 @@ public class PlayAnimationActivity extends AppCompatActivity {
     private DistanceSensor backSensor;
     private static final int MEAN_TIME_BETWEEN_FAILURES = 4000;
     private static final int MEAN_TIME_TO_REPAIR = 2000;
+    private boolean isWizard = false;
+    public static Handler myHandler;
 
 
     /**
@@ -75,6 +84,14 @@ public class PlayAnimationActivity extends AppCompatActivity {
 
         setProgressBar();
 
+        statePlaying = new StatePlaying();
+        panel = findViewById(R.id.mazePanelViewAnimated);
+        Log.d("inside", "on create");
+        int[] startPos = GeneratingActivity.mazeConfig.getStartingPosition();
+        shortestPathLength = GeneratingActivity.mazeConfig.getDistanceToExit(startPos[0], startPos[1]);
+        statePlaying.setPlayAnimationActivity(this);
+        statePlaying.start(panel);
+
         Bundle bundle = getIntent().getExtras();
         startDriverPlaying(bundle);
 
@@ -83,13 +100,6 @@ public class PlayAnimationActivity extends AppCompatActivity {
             setRobotSensors(sensorConfig);
         }
 
-        statePlaying = new StatePlaying();
-        panel = findViewById(R.id.mazePanelViewAnimated);
-        Log.d("inside", "on create");
-        int[] startPos = GeneratingActivity.mazeConfig.getStartingPosition();
-        shortestPathLength = GeneratingActivity.mazeConfig.getDistanceToExit(startPos[0], startPos[1]);
-        statePlaying.start(panel);
-
         setSizeOfMap();
         setAnimationSpeed();
     }
@@ -97,9 +107,19 @@ public class PlayAnimationActivity extends AppCompatActivity {
     private void setProgressBar(){
         remainingEnergy = (ProgressBar) findViewById(R.id.remainingEnergyProgressBar);
         remainingEnergy.setMax(ROBOT_INITIAL_ENERGY);
-        remainingEnergy.setProgress(1500);
-        TextView remainingEnergyText = (TextView) findViewById(R.id.remainingEnergyTextView);
+        remainingEnergy.setProgress(ROBOT_INITIAL_ENERGY);
+        final TextView remainingEnergyText = (TextView) findViewById(R.id.remainingEnergyTextView);
         remainingEnergyText.setText("Remaining Energy: " + remainingEnergy.getProgress());
+        myHandler = new Handler(Looper.getMainLooper()){
+            @Override
+            public void handleMessage(Message msg){
+                Bundle bundle = msg.getData();
+                int remainingEnergyMessage = bundle.getInt(KEY);
+                Log.v(TAG, remainingEnergyMessage + "");
+                remainingEnergy.setProgress(remainingEnergyMessage);
+                remainingEnergyText.setText("Remaining Energy: " + remainingEnergy.getProgress());
+            }
+        };
     }
 
 
@@ -113,6 +133,7 @@ public class PlayAnimationActivity extends AppCompatActivity {
         }
     }
 
+
     /**
      * Sets up the wizard class and everything
      * that is necessary for the wizard to run
@@ -120,16 +141,19 @@ public class PlayAnimationActivity extends AppCompatActivity {
      * the wizard algorithm
      */
     private void setWizardPlaying() {
+        isWizard = true;
         ReliableRobot robot = new ReliableRobot();
-        Wizard wizard = new Wizard();
+        wizard = new Wizard();
         robot.setStatePlaying(statePlaying);
+        robot.setPlayAnimationActivity(this);
         wizard.setRobot(robot);
         wizard.setMaze(GeneratingActivity.mazeConfig);
-        //this.setRobotAndDriver(robot, wizard);
         try {
-            wizard.drive2Exit();
+            Log.d("inside set", "wizard playing try statement");
+            boolean wizard1 = wizard.drive2Exit();
         }
         catch(Exception e) {
+            Log.d("exception e", e.getMessage());
             sendLosingMessage(panel);
         }
     }
@@ -142,12 +166,8 @@ public class PlayAnimationActivity extends AppCompatActivity {
      * the wallFollower algorithm
      */
     private void setWallFollowerPlaying() {
-        //statePlaying.keyDown(Constants.UserInput.ToggleLocalMap, 1);
-        //statePlaying.keyDown(Constants.UserInput.ToggleFullMap, 1);
-        //statePlaying.keyDown(Constants.UserInput.ToggleSolution, 1);
         robot = new UnreliableRobot();
-        RobotDriver wallFollower = new WallFollower();
-        //this.setRobotAndDriver(robot, wallFollower);
+        wallFollower = new WallFollower();
         robot.setStatePlaying(statePlaying);
         robot.setPlayAnimationActivity(this);
         if(reliableSensor != null) {
@@ -297,8 +317,9 @@ public class PlayAnimationActivity extends AppCompatActivity {
     private void setSizeOfMap(){
         final SeekBar mapSize1 = (SeekBar) findViewById(R.id.animatedMapSizeSeekBar);
         final TextView skillLevelText = (TextView) findViewById(R.id.skillLevelTextView);
-        mapSize1.setProgress(0);
+        mapSize1.setMin(1);
         mapSize1.setMax(MAX_MAP_SIZE);
+        mapSize1.setProgress(mapSize);
         mapSize1.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             int tempMapSize = 0;
 
@@ -326,6 +347,7 @@ public class PlayAnimationActivity extends AppCompatActivity {
      */
     private void setMapSize(int size){
         mapSize = size;
+        statePlaying.setMapScale(mapSize);
         Log.v(TAG, "Map Size: " + mapSize);
         Toast toast = Toast.makeText(getApplicationContext(), "Map Size: " + mapSize, Toast.LENGTH_SHORT);
         toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 0);
@@ -339,8 +361,8 @@ public class PlayAnimationActivity extends AppCompatActivity {
     private void setAnimationSpeed(){
         final SeekBar animationSpeed1 = (SeekBar) findViewById(R.id.animationSpeedSeekBar);
         final TextView skillLevelText = (TextView) findViewById(R.id.skillLevelTextView);
-        animationSpeed1.setProgress(0);
-        animationSpeed1.setMax(MAX_MAP_SIZE);
+        animationSpeed1.setMax(MAX_ANIMATION_SPEED);
+        animationSpeed1.setProgress(animationSpeed);
         animationSpeed1.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             int tempAnimationSpeed = 0;
 
@@ -368,6 +390,12 @@ public class PlayAnimationActivity extends AppCompatActivity {
      */
     private void setTheAnimationSpeed(int speed){
         animationSpeed = speed;
+        if(wizard!= null){
+            wizard.setAnimationSpeed(animationSpeed);
+        }
+        else{
+            wallFollower.setAnimationSpeed(animationSpeed);
+        }
         Log.v(TAG, "Animation Speed: " + animationSpeed);
         Toast toast = Toast.makeText(getApplicationContext(), "Animation Speed: " + animationSpeed, Toast.LENGTH_SHORT);
         toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 0);
@@ -383,10 +411,20 @@ public class PlayAnimationActivity extends AppCompatActivity {
     public void sendLosingMessage(View view){
         Intent intent = new Intent(this, LosingActivity.class);
         Bundle bundle = getIntent().getExtras();
+        float energyConsump = 0;
+        int pathLength = 0;
+        if(isWizard){
+            pathLength = wizard.getPathLength();
+            energyConsump = wizard.getEnergyConsumption();
+        }
+        else{
+            pathLength = wallFollower.getPathLength();
+            energyConsump = wallFollower.getEnergyConsumption();
+        }
         bundle.putString("Reason Lost", reasonLost);
-        bundle.putString("Path Length", pathLength + "");
-        bundle.putString("Shortest Path Length", shortestPathLength + "");
-        bundle.putString("Energy Consumption", (ROBOT_INITIAL_ENERGY - remainingEnergy.getProgress()) + "");
+        bundle.putInt("Path Length", pathLength);
+        bundle.putInt("Shortest Path Length", shortestPathLength);
+        bundle.putFloat("Energy Consumption", energyConsump);
         intent.putExtras(bundle);
         startActivity(intent);
     }
@@ -400,9 +438,19 @@ public class PlayAnimationActivity extends AppCompatActivity {
     public void sendWinningMessage(View view){
         Intent intent = new Intent(this, WinningActivity.class);
         Bundle bundle = getIntent().getExtras();
-        bundle.putString("Path Length", pathLength + "");
-        bundle.putString("Shortest Path Length", shortestPathLength + "");
-        bundle.putString("Energy Consumption", (ROBOT_INITIAL_ENERGY - remainingEnergy.getProgress()) + "");
+        float energyConsump = 0;
+        int pathLength = 0;
+        if(isWizard){
+            pathLength = wizard.getPathLength();
+            energyConsump = wizard.getEnergyConsumption();
+        }
+        else{
+            pathLength = wallFollower.getPathLength();
+            energyConsump = wallFollower.getEnergyConsumption();
+        }
+        bundle.putInt("Path Length", pathLength);
+        bundle.putInt("Shortest Path Length", shortestPathLength);
+        bundle.putFloat("Energy Consumption",  energyConsump);
         intent.putExtras(bundle);
         startActivity(intent);
     }
@@ -429,6 +477,9 @@ public class PlayAnimationActivity extends AppCompatActivity {
      * @param view of the show map button
      */
     public void showMap(View view){
+        statePlaying.keyDown(Constants.UserInput.ToggleLocalMap, 1);
+        statePlaying.keyDown(Constants.UserInput.ToggleSolution, 1);
+        statePlaying.keyDown(Constants.UserInput.ToggleFullMap, 1);
         if(((ToggleButton)view).isChecked()) {
             Log.v(TAG, "Showing Map: On");
             Toast toast = Toast.makeText(getApplicationContext(), "Showing Map: On", Toast.LENGTH_SHORT);
@@ -452,12 +503,24 @@ public class PlayAnimationActivity extends AppCompatActivity {
      */
     public void playOrPauseGame(View view){
         if(((ToggleButton)view).isChecked()) {
+            if(wizard != null){
+                wizard.pauseThread();
+            }
+            else{
+                wallFollower.pauseThread();
+            }
             Log.v(TAG, "Play");
             Toast toast = Toast.makeText(getApplicationContext(), "Pause", Toast.LENGTH_SHORT);
             toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 0);
             toast.show();
         }
         else{
+            if(wizard != null){
+                wizard.playThread();
+            }
+            else{
+                wallFollower.playThread();
+            }
             Log.v(TAG, "Pause");
             Toast toast = Toast.makeText(getApplicationContext(), "Play", Toast.LENGTH_SHORT);
             toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 0);

@@ -1,5 +1,10 @@
 package edu.wm.cs.cs301.TessieBaumann.gui;
 
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
+
 import edu.wm.cs.cs301.TessieBaumann.generation.Maze;
 import edu.wm.cs.cs301.TessieBaumann.gui.Robot.Direction;
 import edu.wm.cs.cs301.TessieBaumann.gui.Robot.Turn;
@@ -24,11 +29,18 @@ import edu.wm.cs.cs301.TessieBaumann.gui.Robot.Turn;
 public class WallFollower extends Wizard implements RobotDriver {
 
     private Robot robot;
+    private static final String KEY = "my message key";  //message key
     private Maze mazeConfig;
     private static final int INITIAL_ENERGY = 3500;
     private boolean failedAtLeft = false;
+    private static final String TAG = "WallFollower";  //message key
+    private Thread wallFollowerThread;
+    private int speed = 500;
+    private int[] speedOptions;
+    public static Handler wallFollowerHandler;
 
     public WallFollower() {
+        speedOptions = new int[]{5, 10, 25, 50, 100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 900, 1000};
     }
 
     @Override
@@ -42,6 +54,61 @@ public class WallFollower extends Wizard implements RobotDriver {
         mazeConfig = maze;
 
     }
+
+    public void runThread(int d){
+        final int distance = d;
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                while (distance >= 0) {
+                    try {
+                        boolean facingExit = drive1Step2Exit();
+                        if(robot.isAtExit() && !facingExit) {
+                            robot.move(1);
+                            stopFailureAndRepairThreads();
+                            break;
+                        }
+                    }
+                    catch(Exception e){
+                        Log.v(TAG, "Error: Robot has run out of energy or crashed");
+                        try {
+                            throw new Exception("Error: Robot has run out of energy or crashed");
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                    Log.v(TAG, "Running thread inside run method");
+                    try{
+                        Thread.sleep(speed);
+                    }
+                    catch (InterruptedException e){
+                        System.out.println("Thread was interrupted");
+                    }
+                    Message message = new Message();
+                    Bundle bundle = new Bundle();
+                    bundle.putInt(KEY, (int)robot.getBatteryLevel());
+                    Log.v(TAG, "Battery Level: " + robot.getBatteryLevel());
+                    message.setData(bundle);
+                    PlayAnimationActivity.myHandler.sendMessage(message);
+                }
+                Log.v(TAG, "Thread is done running");
+            }
+        };
+        Log.v(TAG, "making new thread");
+        wallFollowerThread = new Thread(runnable);
+        wallFollowerThread.start();
+    }
+
+    @Override
+    public void pauseThread(){
+        if(wallFollowerThread != null){
+            try {
+                wallFollowerThread.sleep(500);
+            }
+            catch(Exception e){}
+        }
+    }
+
     /**
      * Drives the robot towards the exit following
      * its solution strategy and given the exit exists and
@@ -62,19 +129,7 @@ public class WallFollower extends Wizard implements RobotDriver {
         try {
             int[] currentPos = robot.getCurrentPosition();
             int distance = mazeConfig.getDistanceToExit(currentPos[0], currentPos[1]);
-            while (distance >= 0) {
-                try {
-                    boolean facingExit = drive1Step2Exit();
-                    if(robot.isAtExit() && !facingExit) {
-                        robot.move(1);
-                        stopFailureAndRepairThreads();
-                        return true;
-                    }
-                }
-                catch(Exception e){
-                    throw new Exception("Error: Robot has run out of energy or crashed");
-                }
-            }
+            runThread(distance);
         }
         catch(IndexOutOfBoundsException e) {
             System.out.println("Error: Current Position Not In Maze5");
@@ -302,8 +357,8 @@ public class WallFollower extends Wizard implements RobotDriver {
      * runs those values through the drive1Step2Exit algorithm
      * for WallFollower.
      *
-     * @param left sensor's distance to an obstacle
-     * @param front sensor's distance to an obstacle
+     * @param leftDistance sensor's distance to an obstacle
+     * @param frontDistance sensor's distance to an obstacle
      * @return true if robot moves a step forwards and false
      * if robot does not move forwards
      * @throws Exception if the robot runs out or energy or crashes into a wall
@@ -437,6 +492,11 @@ public class WallFollower extends Wizard implements RobotDriver {
             catch(Exception e) {continue;}
         }
         return tempDistance;
+    }
+
+    @Override
+    public void setAnimationSpeed(int speed){
+        this.speed = speedOptions[speed];
     }
 }
 

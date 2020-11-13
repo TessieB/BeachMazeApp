@@ -57,6 +57,7 @@ public class PlayManuallyActivity extends AppCompatActivity {
         Log.d("inside", "on create");
         int[] startPos = GeneratingActivity.mazeConfig.getStartingPosition();
         shortestPathLength = GeneratingActivity.mazeConfig.getDistanceToExit(startPos[0], startPos[1]);
+        statePlaying.setPlayManuallyActivity(this);
         statePlaying.start(panel);
         setSizeOfMap();
     }
@@ -148,10 +149,6 @@ public class PlayManuallyActivity extends AppCompatActivity {
         Toast toast = Toast.makeText(getApplicationContext(), "Moved forwards 1 step", Toast.LENGTH_SHORT);
         toast.setGravity(Gravity.BOTTOM|Gravity.CENTER, 0, 0);
         toast.show();
-        if(StatePlaying.isOutside){
-            StatePlaying.isOutside = false;
-            sendWinningMessage(view);
-        }
     }
 
 
@@ -195,10 +192,6 @@ public class PlayManuallyActivity extends AppCompatActivity {
         Toast toast = Toast.makeText(getApplicationContext(), "Jumped forwards", Toast.LENGTH_SHORT);
         toast.setGravity(Gravity.BOTTOM|Gravity.CENTER, 0, 0);
         toast.show();
-        if(StatePlaying.isOutside){
-            StatePlaying.isOutside = false;
-            sendWinningMessage(view);
-        }
     }
 
 

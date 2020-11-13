@@ -40,7 +40,9 @@ public class StatePlaying  {
     FirstPersonView firstPersonView;
     Map mapView;
     MazePanel panel;
-    public static boolean isOutside = false;
+    private PlayAnimationActivity playAnimationActivity;
+    private PlayManuallyActivity playManuallyActivity;
+    private boolean playManually = false;
 
     //Maze mazeConfig;
 
@@ -68,6 +70,15 @@ public class StatePlaying  {
 
     public StatePlaying() {
         started = false;
+    }
+
+    public void setPlayAnimationActivity(PlayAnimationActivity playAnimationActivity){
+        this.playAnimationActivity = playAnimationActivity;
+    }
+
+    public void setPlayManuallyActivity(PlayManuallyActivity playManuallyActivity){
+        this.playManuallyActivity = playManuallyActivity;
+        playManually = true;
     }
 
     /**
@@ -163,7 +174,12 @@ public class StatePlaying  {
                 // check termination, did we leave the maze?
                 if (isOutside(px,py)) {
                     //control.switchFromPlayingToWinning(0);
-                    isOutside = true;
+                    if(playManually){
+                        playManuallyActivity.sendWinningMessage(panel);
+                    }
+                    else{
+                        playAnimationActivity.sendWinningMessage(panel);
+                    }
                     break;
                 }
                 //draw();
@@ -185,8 +201,14 @@ public class StatePlaying  {
                 // check termination, did we leave the maze?
                 if (isOutside(px,py)) {
                     //control.switchFromPlayingToWinning(0);
-                    isOutside = true;
+                    if(playManually){
+                        playManuallyActivity.sendWinningMessage(panel);
+                    }
+                    else{
+                        playAnimationActivity.sendWinningMessage(panel);
+                    }
                 }
+                //draw();
                 break;
             case ReturnToTitle: // escape to title screen
                 //control.switchToTitle();

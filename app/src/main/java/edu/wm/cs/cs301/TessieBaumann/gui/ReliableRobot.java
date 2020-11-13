@@ -1,5 +1,7 @@
 package edu.wm.cs.cs301.TessieBaumann.gui;
 
+import android.util.Log;
+
 import edu.wm.cs.cs301.TessieBaumann.generation.CardinalDirection;
 import edu.wm.cs.cs301.TessieBaumann.gui.Constants.UserInput;
 
@@ -25,6 +27,7 @@ import edu.wm.cs.cs301.TessieBaumann.gui.Constants.UserInput;
 public class ReliableRobot implements Robot {
 
 
+    private static final String TAG = "ReliableRobot";  //string message key
     private StatePlaying statePlaying;
     private PlayAnimationActivity playAnimationActivity;
     private ReliableSensor sensor;
@@ -54,9 +57,9 @@ public class ReliableRobot implements Robot {
      */
     @Override
     public void setStatePlaying(StatePlaying statePlaying) {
-//        if(statePlaying == null || GeneratingActivity.mazeConfig == null) {
-//            throw new IllegalArgumentException();
-//        }
+        if(statePlaying == null || GeneratingActivity.mazeConfig == null) {
+            throw new IllegalArgumentException();
+        }
         this.statePlaying = statePlaying;
     }
 
@@ -78,6 +81,7 @@ public class ReliableRobot implements Robot {
             return currentPosition;
         }
         else {
+            Log.v(TAG, "ReliableRobot.getCurrentPosition: Out of Bounds Exception");
             System.out.println("ReliableRobot.getCurrentPosition: Out of Bounds Exception");
             throw new IndexOutOfBoundsException();
         }
@@ -119,6 +123,7 @@ public class ReliableRobot implements Robot {
     @Override
     public void setBatteryLevel(float level) {
         if(level <= 0) {
+            Log.v(TAG, "ReliableRobot.setBatteryLevel: Illegal Argument Exception");
             System.out.println("ReliableRobot.setBatteryLevel: Illegal Argument Exception");
             throw new IllegalArgumentException();
         }
@@ -220,9 +225,11 @@ public class ReliableRobot implements Robot {
             currentPos = getCurrentPosition();
         }
         catch(Exception E) {
+            Log.v(TAG, "Current Position not in maze");
             System.out.println("Current Position not in maze");
         }
         if(distance < 0) {
+            Log.v(TAG, "ReliableRobot.move: Illegal Argument Exception");
             System.out.println("ReliableRobot.move: Illegal Argument Exception");
             throw new IllegalArgumentException();
         }
@@ -272,6 +279,7 @@ public class ReliableRobot implements Robot {
             }
         }
         catch(Exception e){
+            Log.v(TAG, "Error: Current Position Not In Maze1");
             System.out.println("Error: Current Position Not In Maze1");
         }
     }
@@ -291,6 +299,7 @@ public class ReliableRobot implements Robot {
             }
         }
         catch(Exception e) {
+            Log.v(TAG, "Error: Current Position Not In Maze2");
             System.out.println("Error: Current Position Not In Maze2");
         }
         return false;
@@ -309,6 +318,7 @@ public class ReliableRobot implements Robot {
             }
         }
         catch(Exception e) {
+            Log.v(TAG, "Error: Current Position Not In Maze3");
             System.out.println("Error: Current Position Not In Maze3");
         }
         return false;
@@ -355,6 +365,7 @@ public class ReliableRobot implements Robot {
             return sensor.distanceToObstacle(currentPos, getCurrentDirection(), tempBatteryLevel);
         }
         catch(Exception e) {
+            Log.v(TAG, "Error: Current Position Not In Maze4");
             System.out.println("Error: Current Position Not In Maze4");
         }
 
@@ -380,7 +391,8 @@ public class ReliableRobot implements Robot {
             }
         }
         catch(Exception e) {
-            System.out.println("Error: Current Position Not In Maze4");
+            Log.v(TAG, "Error: Current Position Not In Maze5");
+            System.out.println("Error: Current Position Not In Maze5");
         }
         return false;
     }

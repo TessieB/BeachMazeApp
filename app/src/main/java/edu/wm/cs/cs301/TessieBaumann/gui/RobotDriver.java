@@ -64,4 +64,10 @@ public interface RobotDriver {
      */
     int getPathLength();
 
+    public void pauseThread();
+
+    public void playThread();
+
+    public void setAnimationSpeed(int speed);
+
 }

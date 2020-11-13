@@ -1,5 +1,10 @@
 package edu.wm.cs.cs301.TessieBaumann.gui;
 
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
+
 import edu.wm.cs.cs301.TessieBaumann.generation.Maze;
 import edu.wm.cs.cs301.TessieBaumann.gui.Robot.Turn;
 
@@ -21,14 +26,23 @@ import edu.wm.cs.cs301.TessieBaumann.gui.Robot.Turn;
 
 public class Wizard implements RobotDriver {
 
+    private static final String TAG = "Wizard";  //message key
+    private static final String KEY = "my message key";  //message key
+    //public static Handler myHandler = new Handler();  //handler to send messages from background thread to UI thread
     private Robot robot;
     private ReliableSensor sensor;
     private Maze mazeConfig;
     private float batteryLevel1;
     private static final int INITIAL_ENERGY = 3500;
+    public static boolean getsToExit = false;
+    private Thread wizardThread;
+    private int speed = 500;
+    private int[] speedOptions;
+    //private Object lock = this;
 
 
     public Wizard() {
+        speedOptions = new int[]{5, 10, 25, 50, 100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 900, 1000};
     }
     /**
      * Assigns a robot platform to the driver.
@@ -52,6 +66,80 @@ public class Wizard implements RobotDriver {
 
     }
 
+    public void runThread(int d){
+        final int distance = d;
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                while (distance >= 0) {
+                    try {
+                        boolean facingExit = drive1Step2Exit();
+                        if(!facingExit) {
+                            robot.move(1);
+                            Log.v(TAG, "about to return true");
+                            setGetsToExit(true);
+                            Log.v(TAG, "gets to Exit: " + getsToExit);
+                            break;
+                        }
+                    }
+                    catch(Exception e){
+                        Log.v(TAG, "Error: Robot has run out of energy or crashed");
+                        try {
+                            throw new Exception("Error: Robot has run out of energy or crashed");
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                    Log.v(TAG, "Running thread inside run method");
+                    try{
+                        Thread.sleep(speed);
+                    }
+                    catch (InterruptedException e){
+                        System.out.println("Thread was interrupted");
+                    }
+                    Message message = new Message();
+                    Bundle bundle = new Bundle();
+                    bundle.putInt(KEY, (int)robot.getBatteryLevel());
+                    message.setData(bundle);
+                    PlayAnimationActivity.myHandler.sendMessage(message);
+                }
+                Log.v(TAG, "Thread is done running");
+            }
+        };
+        Log.v(TAG, "making new thread");
+        wizardThread = new Thread(runnable);
+        wizardThread.start();
+    }
+
+    @Override
+    public void pauseThread(){
+        synchronized (wizardThread){
+            try {
+                wizardThread.wait();
+            }
+            catch(Exception e){}
+        }
+//        if(wizardThread != null){
+//            try {
+//                wizardThread.wait();
+//            }
+//            catch(Exception e){}
+//        }
+    }
+
+    @Override
+    public void playThread(){
+        if(wizardThread != null){
+            try {
+                wizardThread.notify();
+            }
+            catch(Exception e){}
+        }
+    }
+
+
+
+
     /**
      * Drives the robot towards the exit following
      * its solution strategy and given the exit exists and
@@ -70,22 +158,15 @@ public class Wizard implements RobotDriver {
     @Override
     public boolean drive2Exit() throws Exception {
         try {
+            Log.v(TAG, "inside drive2exit method in wizard");
             int[] currentPos = robot.getCurrentPosition();
+            Log.v(TAG, "currentPos[0]: " + currentPos[0] + " currentPos[1]: " + currentPos[1]);
             int distance = mazeConfig.getDistanceToExit(currentPos[0], currentPos[1]);
-            while (distance >= 0) {
-                try {
-                    boolean facingExit = drive1Step2Exit();
-                    if(!facingExit) {
-                        robot.move(1);
-                        return true;
-                    }
-                }
-                catch(Exception e){
-                    throw new Exception("Error: Robot has run out of energy or crashed");
-                }
-            }
+            runThread(distance);
+            return getsToExit;
         }
         catch(IndexOutOfBoundsException e) {
+            Log.v(TAG, "Error: Current Position Not In Maze5");
             System.out.println("Error: Current Position Not In Maze5");
         }
         return false;
@@ -109,6 +190,7 @@ public class Wizard implements RobotDriver {
     @Override
     public boolean drive1Step2Exit() throws Exception {
         try {
+            Log.v(TAG, "inside drive1step2exit method in wizard");
             int[] currentPos = robot.getCurrentPosition();
             int[] neighbor = mazeConfig.getNeighborCloserToExit(currentPos[0], currentPos[1]) ;
             if (null == neighbor)
@@ -116,6 +198,7 @@ public class Wizard implements RobotDriver {
             makeRobotFaceCorrectDirectionForNextMove(currentPos, neighbor);
             robot.move(1);
             if(robot.hasStopped()) {
+                Log.v(TAG, "OH NO: Robot has run out of energy or crashed");
                 throw new Exception("OH NO: Robot has run out of energy or crashed");
             }
             if(robot.isAtExit()) {
@@ -128,6 +211,7 @@ public class Wizard implements RobotDriver {
                     while(sensor.distanceToObstacle(currentPos, robot.getCurrentDirection(), batteryLevel) != Integer.MAX_VALUE){
                         robot.rotate(Turn.LEFT);
                         if(robot.hasStopped()) {
+                            Log.v(TAG, "OH NO: Robot has run out of energy or crashed2");
                             throw new Exception("OH NO: Robot has run out of energy or crashed");
                         }
                         batteryLevel[0] = robot.getBatteryLevel();
@@ -137,11 +221,13 @@ public class Wizard implements RobotDriver {
                     }
                 }
                 catch(IndexOutOfBoundsException e) {
+                    Log.v(TAG, "Error: Current Position Not In Maze");
                     System.out.println("Error: Current Position Not In Maze");
                 }
             }
         }
         catch(IndexOutOfBoundsException e){
+            Log.v(TAG, "Error: Current Position Not In Maze2");
             System.out.println("Error: Current Position Not In Maze");
         }
         return true;
@@ -152,8 +238,8 @@ public class Wizard implements RobotDriver {
      * Turns the robot so that it faces the next spot in the
      * solution to get to the exit, allowing the robot to
      * move forward one space closer to the exit.
-     * @param current position of the robot
-     * @param position of the next step in the solution
+     * @param currentPos position of the robot
+     * @param neighbor of the next step in the solution
      */
     private void makeRobotFaceCorrectDirectionForNextMove(int[] currentPos, int[] neighbor) {
         switch(robot.getCurrentDirection()) {
@@ -226,6 +312,14 @@ public class Wizard implements RobotDriver {
     @Override
     public int getPathLength() {
         return robot.getOdometerReading();
+    }
+
+    private void setGetsToExit(boolean atExit){
+        getsToExit = atExit;
+    }
+
+    public void setAnimationSpeed(int speed){
+        this.speed = speedOptions[speed];
     }
 
 }

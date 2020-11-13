@@ -51,7 +51,7 @@ public class GeneratingActivity extends AppCompatActivity implements Order {
     private static final String TAG = "Run Thread";  //message key
     private static final String KEY = "my message key";  //message key
     private ProgressBar loadingBar;  //progress bar for loading maze
-    private Handler myHandler;  //handler to send messages from background thread to UI thread
+    //private Handler myHandler;  //handler to send messages from background thread to UI thread
     private String driver;  //driver that the maze is going to use
     private boolean backPressed = false;  //tells whether or not the back button has been pressed
     private String robot = "Premium";  //sensor configuration that the user chooses
