@@ -44,6 +44,7 @@ public class PlayAnimationActivity extends AppCompatActivity {
 
     private static final String TAG = "message";  //string message key
     private static final String KEY = "my message key";  //message key
+    private static final String FAILURE_KEY = "sensor has failed";  //message key
     private static final int MAX_MAP_SIZE = 80;  //max size that the map can be
     private static final int MAX_ANIMATION_SPEED = 20;  //max animation speed for the robot
     private static final int ROBOT_INITIAL_ENERGY = 3500;  //amount of energy driver starts with
@@ -83,6 +84,12 @@ public class PlayAnimationActivity extends AppCompatActivity {
         setContentView(R.layout.play_animation_activity);
         setProgressBar();
 
+        Bundle bundle = getIntent().getExtras();
+        sensorConfig = bundle.getString("Robot");
+        if(sensorConfig != null) {
+            setRobotSensors(sensorConfig);
+        }
+
         statePlaying = new StatePlaying();
         panel = findViewById(R.id.mazePanelViewAnimated);
         Log.d("inside", "on create");
@@ -91,16 +98,38 @@ public class PlayAnimationActivity extends AppCompatActivity {
         statePlaying.setPlayAnimationActivity(this);
         statePlaying.start(panel);
 
-        Bundle bundle = getIntent().getExtras();
         startDriverPlaying(bundle);
-
-        sensorConfig = bundle.getString("Robot");
-        if(sensorConfig != null) {
-            setRobotSensors(sensorConfig);
-        }
+        handleMessage();
 
         setSizeOfMap();
         setAnimationSpeed();
+    }
+
+    private void handleMessage(){
+        myHandler = new Handler(Looper.getMainLooper()){
+            @Override
+            public void handleMessage(Message msg){
+                Bundle bundle = msg.getData();
+                int remainingEnergyMessage = bundle.getInt(KEY, -1);
+                String[] sensorInfo = bundle.getStringArray(FAILURE_KEY);
+                if(remainingEnergyMessage != -1){
+                    updateProgressBar(remainingEnergyMessage);
+                }
+                if(sensorInfo != null){
+                    failAndRepairSensors(sensorInfo);
+                }
+                Log.v(TAG, remainingEnergyMessage + "");
+            }
+        };
+    }
+
+    private void failAndRepairSensors(String[] sensorInfo){
+        if(sensorInfo[1].equalsIgnoreCase("true")){
+            setRobotSensorsColors(true, sensorInfo[0]);
+        }
+        else {
+            setRobotSensorsColors(false, sensorInfo[0]);
+        }
     }
 
     private void setProgressBar(){
@@ -109,17 +138,31 @@ public class PlayAnimationActivity extends AppCompatActivity {
         remainingEnergy.setProgress(ROBOT_INITIAL_ENERGY);
         final TextView remainingEnergyText = (TextView) findViewById(R.id.remainingEnergyTextView);
         remainingEnergyText.setText("Remaining Energy: " + remainingEnergy.getProgress());
-        myHandler = new Handler(Looper.getMainLooper()){
-            @Override
-            public void handleMessage(Message msg){
-                Bundle bundle = msg.getData();
-                int remainingEnergyMessage = bundle.getInt(KEY);
-                Log.v(TAG, remainingEnergyMessage + "");
-                remainingEnergy.setProgress(remainingEnergyMessage);
-                remainingEnergyText.setText("Remaining Energy: " + remainingEnergy.getProgress());
-            }
-        };
     }
+
+    private void updateProgressBar(int remainingEnergy){
+        final TextView remainingEnergyText = (TextView) findViewById(R.id.remainingEnergyTextView);
+        this.remainingEnergy.setProgress(remainingEnergy);
+        remainingEnergyText.setText("Remaining Energy: " + this.remainingEnergy.getProgress());
+    }
+
+//    private void setProgressBar(){
+//        remainingEnergy = (ProgressBar) findViewById(R.id.remainingEnergyProgressBar);
+//        remainingEnergy.setMax(ROBOT_INITIAL_ENERGY);
+//        remainingEnergy.setProgress(ROBOT_INITIAL_ENERGY);
+//        final TextView remainingEnergyText = (TextView) findViewById(R.id.remainingEnergyTextView);
+//        remainingEnergyText.setText("Remaining Energy: " + remainingEnergy.getProgress());
+//        myHandler = new Handler(Looper.getMainLooper()){
+//            @Override
+//            public void handleMessage(Message msg){
+//                Bundle bundle = msg.getData();
+//                int remainingEnergyMessage = bundle.getInt(KEY);
+//                Log.v(TAG, remainingEnergyMessage + "");
+//                remainingEnergy.setProgress(remainingEnergyMessage);
+//                remainingEnergyText.setText("Remaining Energy: " + remainingEnergy.getProgress());
+//            }
+//        };
+//    }
 
 
     private void startDriverPlaying(Bundle bundle){
@@ -251,6 +294,7 @@ public class PlayAnimationActivity extends AppCompatActivity {
                 leftSensor = new UnreliableSensor();
                 leftSensor.setSensorDirection(Direction.LEFT);
                 leftSensor.setMaze(GeneratingActivity.mazeConfig);
+                leftSensor.setWhichSensor("Left");
                 robot.startFailureAndRepairProcess(Direction.LEFT, MEAN_TIME_BETWEEN_FAILURES, MEAN_TIME_TO_REPAIR);
             }
         }
@@ -264,6 +308,7 @@ public class PlayAnimationActivity extends AppCompatActivity {
                 rightSensor = new UnreliableSensor();
                 rightSensor.setSensorDirection(Direction.RIGHT);
                 rightSensor.setMaze(GeneratingActivity.mazeConfig);
+                rightSensor.setWhichSensor("Right");
                 robot.startFailureAndRepairProcess(Direction.RIGHT, MEAN_TIME_BETWEEN_FAILURES, MEAN_TIME_TO_REPAIR);
             }
         }
@@ -277,6 +322,7 @@ public class PlayAnimationActivity extends AppCompatActivity {
                 frontSensor = new UnreliableSensor();
                 frontSensor.setSensorDirection(Direction.FORWARD);
                 frontSensor.setMaze(GeneratingActivity.mazeConfig);
+                frontSensor.setWhichSensor("Front");
                 robot.startFailureAndRepairProcess(Direction.FORWARD, MEAN_TIME_BETWEEN_FAILURES, MEAN_TIME_TO_REPAIR);
             }
         }
@@ -290,6 +336,7 @@ public class PlayAnimationActivity extends AppCompatActivity {
                 backSensor = new UnreliableSensor();
                 backSensor.setSensorDirection(Direction.BACKWARD);
                 backSensor.setMaze(GeneratingActivity.mazeConfig);
+                backSensor.setWhichSensor("Back");
                 robot.startFailureAndRepairProcess(Direction.BACKWARD, MEAN_TIME_BETWEEN_FAILURES, MEAN_TIME_TO_REPAIR);
             }
         }
@@ -410,20 +457,20 @@ public class PlayAnimationActivity extends AppCompatActivity {
     public void sendLosingMessage(View view){
         Intent intent = new Intent(this, LosingActivity.class);
         Bundle bundle = getIntent().getExtras();
-        float energyConsump = 0;
+        int energyConsump = 0;
         int pathLength = 0;
         if(isWizard){
             pathLength = wizard.getPathLength();
-            energyConsump = wizard.getEnergyConsumption();
+            energyConsump = (int)wizard.getEnergyConsumption();
         }
         else{
             pathLength = wallFollower.getPathLength();
-            energyConsump = wallFollower.getEnergyConsumption();
+            energyConsump = (int)wallFollower.getEnergyConsumption();
         }
         bundle.putString("Reason Lost", reasonLost);
         bundle.putInt("Path Length", pathLength);
         bundle.putInt("Shortest Path Length", shortestPathLength);
-        bundle.putFloat("Energy Consumption", energyConsump);
+        bundle.putInt("Energy Consumption", energyConsump);
         intent.putExtras(bundle);
         startActivity(intent);
     }
@@ -437,19 +484,20 @@ public class PlayAnimationActivity extends AppCompatActivity {
     public void sendWinningMessage(View view){
         Intent intent = new Intent(this, WinningActivity.class);
         Bundle bundle = getIntent().getExtras();
-        float energyConsump = 0;
+        int energyConsump = 0;
         int pathLength = 0;
         if(isWizard){
             pathLength = wizard.getPathLength();
-            energyConsump = wizard.getEnergyConsumption();
+            energyConsump = (int)wizard.getEnergyConsumption();
         }
         else{
             pathLength = wallFollower.getPathLength();
-            energyConsump = wallFollower.getEnergyConsumption();
+            energyConsump = (int)wallFollower.getEnergyConsumption();
         }
+        Log.d("energy consumption", energyConsump + "");
         bundle.putInt("Path Length", pathLength);
         bundle.putInt("Shortest Path Length", shortestPathLength);
-        bundle.putFloat("Energy Consumption",  energyConsump);
+        bundle.putInt("Energy Consumption",  energyConsump);
         intent.putExtras(bundle);
         startActivity(intent);
     }
@@ -560,17 +608,29 @@ public class PlayAnimationActivity extends AppCompatActivity {
      */
     private void setRobotSensors(String robot){
         Log.v(TAG, "Robot; " + robot);
-        if(robot.equals("Premium")){
-            setRobotSensorsColors(new boolean[]{true, true, true, true});
-        }
-        else if(robot.equals("Mediocre")){
-            setRobotSensorsColors(new boolean[]{false, false, true, true});
+        setRobotSensorsColors(true, "Left");
+        setRobotSensorsColors(true, "Right");
+        setRobotSensorsColors(true, "Front");
+        setRobotSensorsColors(true, "Back");
+        reliableSensor = new boolean[]{true, true, true, true};
+        if(robot.equals("Mediocre")){
+            setRobotSensorsColors(false, "Left");
+            setRobotSensorsColors(false, "Right");
+            reliableSensor[1] = false;
+            reliableSensor[2] = false;
         }
         else if(robot.equals("Soso")){
-            setRobotSensorsColors(new boolean[]{true, true, false, false});
+            setRobotSensorsColors(false, "Front");
+            setRobotSensorsColors(false, "Back");
+            reliableSensor[0] = false;
+            reliableSensor[3] = false;
         }
         else if(robot.equals("Shaky")){
-            setRobotSensorsColors(new boolean[]{false, false, false, false});
+            setRobotSensorsColors(false, "Left");
+            setRobotSensorsColors(false, "Right");
+            setRobotSensorsColors(false, "Front");
+            setRobotSensorsColors(false, "Back");
+            reliableSensor = new boolean[]{false, false, false, false};
         }
     }
 
@@ -581,36 +641,29 @@ public class PlayAnimationActivity extends AppCompatActivity {
      * are unreliable
      * @param sensorGreen tells which sensors are reliable
      */
-    private void setRobotSensorsColors(boolean[] sensorGreen){
-        Log.v(TAG, "Robot; " + sensorGreen[0]);
-        TextView leftSensorText = (TextView) findViewById(R.id.leftSensorTextView);
-        TextView rightSensorText = (TextView) findViewById(R.id.rightSensorTextView);
-        TextView frontSensorText = (TextView) findViewById(R.id.frontSensorTextView);
-        TextView backSensorText = (TextView) findViewById(R.id.backSensorTextView);
-        if(sensorGreen[0]){
-            leftSensorText.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.green));
+    private void setRobotSensorsColors(boolean sensorGreen, String sensor){
+        Log.v(TAG, "Robot; " + sensorGreen);
+        TextView sensorText = (TextView) findViewById(R.id.leftSensorTextView);
+        switch (sensor){
+            case "Left":
+                sensorText = (TextView) findViewById(R.id.leftSensorTextView);
+                break;
+            case "Right":
+                sensorText = (TextView) findViewById(R.id.rightSensorTextView);
+                break;
+            case "Front":
+                sensorText = (TextView) findViewById(R.id.frontSensorTextView);
+                break;
+            case "Back":
+                sensorText = (TextView) findViewById(R.id.backSensorTextView);
+                break;
+        }
+        if(sensorGreen){
+            sensorText.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.green));
         }
         else{
-            leftSensorText.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.red));
+            sensorText.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.red));
         }
-        if(sensorGreen[1]){
-            rightSensorText.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.green));
-        }
-        else{
-            rightSensorText.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.red));
-        }
-        if(sensorGreen[2]){
-            frontSensorText.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.green));
-        }
-        else{
-            frontSensorText.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.red));
-        }
-        if(sensorGreen[3]){
-            backSensorText.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.green));
-        }
-        else{
-            backSensorText.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.red));
-        }
-
     }
+
 }

@@ -289,6 +289,7 @@ public class WallFollower extends Wizard implements RobotDriver {
     private boolean planA() throws Exception {
         int leftDistance;
         int frontDistance;
+        Log.v(TAG, "inside PLAN A");
         if(failedAtLeft) {
             try {
                 leftDistance = getPlanALeftFailed();
@@ -331,6 +332,16 @@ public class WallFollower extends Wizard implements RobotDriver {
                 robot.rotate(Turn.LEFT);
                 if(robot.hasStopped()) {
                     throw new Exception("OH NO: Robot has run out of energy or crashed");
+                }
+                try {
+                    frontDistance = robot.distanceToObstacle(Direction.FORWARD);
+                }
+                catch(Exception e) {
+                    frontDistance = getPlanAFrontFailed();
+                    if(frontDistance == -1) {
+                        planB();
+                        return false;
+                    }
                 }
             }
             if(frontDistance == Integer.MAX_VALUE) {

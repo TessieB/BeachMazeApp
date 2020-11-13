@@ -199,5 +199,8 @@ public class ReliableSensor implements DistanceSensor {
 
     }
 
+    @Override
+    public void setWhichSensor(String sensor){}
+
 }
 

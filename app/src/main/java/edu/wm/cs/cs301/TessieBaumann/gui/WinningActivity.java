@@ -61,10 +61,10 @@ public class WinningActivity extends AppCompatActivity {
         int shortestPathLength = bundle.getInt("Shortest Path Length");
         shortPath.setText("Shortest Possible Path Length: " + shortestPathLength);
         userPath.setText("Your Path Length: " + pathLength);
-        if(bundle.getFloat("Energy Consumption") != 0){
+        if(bundle.getInt("Energy Consumption") != 0){
             TextView overallEnergyConsumption = (TextView) findViewById(R.id.energyConsumptionTextView);
             overallEnergyConsumption.setVisibility(View.VISIBLE);
-            Float energyConsumption = bundle.getFloat("Energy Consumption");
+            int energyConsumption = bundle.getInt("Energy Consumption");
             overallEnergyConsumption.setText("Overall Energy Consumption: " + energyConsumption);
         }
         Log.d("HEY", bundle.getString("Maze Generator"));

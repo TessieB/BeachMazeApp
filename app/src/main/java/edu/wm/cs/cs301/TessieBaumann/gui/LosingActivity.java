@@ -75,10 +75,10 @@ public class LosingActivity extends AppCompatActivity {
                 sleepingRobot.setVisibility(View.VISIBLE);
             }
         }
-        if(bundle.getFloat("Energy Consumption") != 0){
+        if(bundle.getInt("Energy Consumption") != 0){
             TextView overallEnergyConsumption = (TextView) findViewById(R.id.energyConsumptionTextView);
             overallEnergyConsumption.setVisibility(View.VISIBLE);
-            Float energyConsumption = bundle.getFloat("Energy Consumption");
+            int energyConsumption = bundle.getInt("Energy Consumption");
             overallEnergyConsumption.setText("Overall Energy Consumption: " + energyConsumption);
         }
     }

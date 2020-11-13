@@ -28,7 +28,6 @@ public class Wizard implements RobotDriver {
 
     private static final String TAG = "Wizard";  //message key
     private static final String KEY = "my message key";  //message key
-    //public static Handler myHandler = new Handler();  //handler to send messages from background thread to UI thread
     private Robot robot;
     private ReliableSensor sensor;
     private Maze mazeConfig;
@@ -38,7 +37,6 @@ public class Wizard implements RobotDriver {
     private Thread wizardThread;
     private int speed = 500;
     private int[] speedOptions;
-    //private Object lock = this;
 
 
     public Wizard() {

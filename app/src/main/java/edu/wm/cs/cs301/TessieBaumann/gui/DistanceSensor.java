@@ -147,7 +147,7 @@ public interface DistanceSensor {
      */
     void stopFailureAndRepairProcess() throws UnsupportedOperationException;
 
-
+    public void setWhichSensor(String sensor);
 
 }
 

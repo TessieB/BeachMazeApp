@@ -1,5 +1,9 @@
 package edu.wm.cs.cs301.TessieBaumann.gui;
 
+import android.os.Bundle;
+import android.os.Message;
+import android.util.Log;
+
 import edu.wm.cs.cs301.TessieBaumann.generation.CardinalDirection;
 
 /**
@@ -23,9 +27,15 @@ public class UnreliableSensor extends ReliableSensor implements DistanceSensor, 
     private int meanTimeBetweenFailures;
     private int meanTimeToRepair;
     private boolean failure = false;
+    private static final String FAILURE_KEY = "sensor has failed";  //message key
+    private String whichSensor;
+    private String[] sensorInfo;
+    private String[] sensorInfoRepaired;
 
     public UnreliableSensor() {
         super();
+        sensorInfo = new String[2];
+        sensorInfoRepaired = new String[2];
     }
 
 
@@ -88,9 +98,26 @@ public class UnreliableSensor extends ReliableSensor implements DistanceSensor, 
             while(sensorThread != null) {
                 setFailureOrRepair(true);
                 Thread.sleep(meanTimeBetweenFailures);
+
+                Message message = new Message();
+                Bundle bundle = new Bundle();
+                sensorInfo[0] = whichSensor;
+                sensorInfo[1] = "false";
+                bundle.putStringArray(FAILURE_KEY, sensorInfo);
+                message.setData(bundle);
+                PlayAnimationActivity.myHandler.sendMessage(message);
+
                 setFailureOrRepair(false);
                 Thread.sleep(meanTimeToRepair);
                 setFailureOrRepair(true);
+
+                message = new Message();
+                bundle = new Bundle();
+                sensorInfoRepaired[0] = whichSensor;
+                sensorInfoRepaired[1] = "true";
+                bundle.putStringArray(FAILURE_KEY, sensorInfoRepaired);
+                message.setData(bundle);
+                PlayAnimationActivity.myHandler.sendMessage(message);
             }
         }
         catch(InterruptedException e) {}
@@ -175,5 +202,10 @@ public class UnreliableSensor extends ReliableSensor implements DistanceSensor, 
      */
     synchronized public boolean isOperational() {
         return failure;
+    }
+
+    @Override
+    public void setWhichSensor(String sensor){
+        whichSensor = sensor;
     }
 }
