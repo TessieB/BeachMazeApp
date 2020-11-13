@@ -81,7 +81,6 @@ public class PlayAnimationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.play_animation_activity);
-
         setProgressBar();
 
         statePlaying = new StatePlaying();
@@ -465,7 +464,21 @@ public class PlayAnimationActivity extends AppCompatActivity {
     @Override
     public void onBackPressed(){
         Log.v(TAG, "back button pressed in PlayAnimationActivity");
+        if(isWizard){
+            try {
+                wizard.terminateThread();
+            }
+            catch(Exception e){}
+        }
+        else{
+            try {
+                wallFollower.terminateThread();
+            }
+            catch(Exception e){}
+        }
         Intent intent = new Intent(this, AMazeActivity.class);
+        Bundle bundle = getIntent().getExtras();
+        intent.putExtras(bundle);
         startActivity(intent);
     }
 

@@ -60,7 +60,7 @@ public class WallFollower extends Wizard implements RobotDriver {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                while (distance >= 0) {
+                while (distance >= 0 && wallFollowerThread != null) {
                     try {
                         boolean facingExit = drive1Step2Exit();
                         if(robot.isAtExit() && !facingExit) {
@@ -107,6 +107,15 @@ public class WallFollower extends Wizard implements RobotDriver {
             }
             catch(Exception e){}
         }
+    }
+
+    @Override
+    public void terminateThread()throws Exception{
+        if(wallFollowerThread != null){
+            wallFollowerThread.interrupt();
+            wallFollowerThread = null;
+        }
+        throw new Exception();
     }
 
     /**

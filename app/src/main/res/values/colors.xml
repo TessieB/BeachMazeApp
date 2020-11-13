@@ -10,4 +10,6 @@
     <color name="sensor">#030304</color>
     <color name="green">#237102</color>
     <color name="red">#F44336</color>
+    <color name="skyBlue">#39DDF3</color>
+    <color name="sand">#F4DA8A</color>
 </resources>

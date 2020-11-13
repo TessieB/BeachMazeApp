@@ -1,6 +1,8 @@
 package edu.wm.cs.cs301.TessieBaumann.gui;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -63,6 +65,12 @@ public class GeneratingActivity extends AppCompatActivity implements Order {
     private int percentdone = 0;
     public static Maze mazeConfig;
     private boolean deterministic = false;
+    private final int mode = Activity.MODE_PRIVATE;
+    private final String MYPREFS = "My Preferences";
+    private SharedPreferences myPreferences;
+    private SharedPreferences.Editor myEditor;
+    private final int DEFAULT_SEED = 13;
+
 
 
     public GeneratingActivity(){
@@ -108,6 +116,27 @@ public class GeneratingActivity extends AppCompatActivity implements Order {
         }
     }
 
+    private void storeMazeSettings(Boolean revisit){
+        myPreferences = getSharedPreferences(MYPREFS, mode);
+        myEditor = myPreferences.edit();
+        if(revisit){
+            generatePreviousMaze();
+        }
+        else{
+            storePreferences();
+        }
+    }
+
+    private void generatePreviousMaze(){
+        seed = myPreferences.getInt(builder + " " + skillLevel + " " + rooms, DEFAULT_SEED);
+    }
+
+    private void storePreferences(){
+        myEditor.clear();
+        myEditor.putInt(builder + " " + skillLevel + " " + rooms, seed);
+        myEditor.commit();
+    }
+
 
     /**
      * This method sets the content view to the
@@ -124,6 +153,11 @@ public class GeneratingActivity extends AppCompatActivity implements Order {
         Bundle bundle = getIntent().getExtras();
         Log.d("bundle", bundle.getString("Maze Generator"));
         init(bundle);
+        Boolean revist = bundle.getBoolean("Revisit");
+        storeMazeSettings(revist);
+        Toast toast = Toast.makeText(getApplicationContext(), "Builder: " + builder + " Skill Level: " + skillLevel + " Rooms: " + rooms + " Seed: " + seed, Toast.LENGTH_LONG);
+        toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 0);
+        toast.show();
         //Log.d("builder", builder.toString());
         factory.order(this);
         setContentView(R.layout.generating_activity);

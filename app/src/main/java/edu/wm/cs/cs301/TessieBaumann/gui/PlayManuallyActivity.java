@@ -118,6 +118,8 @@ public class PlayManuallyActivity extends AppCompatActivity {
     public void onBackPressed(){
         Log.v(TAG, "back button pressed in PlayManuallyActivity");
         Intent intent = new Intent(this, AMazeActivity.class);
+        Bundle bundle = getIntent().getExtras();
+        intent.putExtras(bundle);
         startActivity(intent);
     }
 
@@ -130,8 +132,8 @@ public class PlayManuallyActivity extends AppCompatActivity {
     public void sendWinningMessage(View view){
         Intent intent = new Intent(this, WinningActivity.class);
         Bundle bundle = getIntent().getExtras();
-        bundle.putString("Path Length", pathLength + "");
-        bundle.putString("Shortest Path Length", shortestPathLength + "");
+        bundle.putInt("Path Length", pathLength);
+        bundle.putInt("Shortest Path Length", shortestPathLength);
         intent.putExtras(bundle);
         startActivity(intent);
     }
@@ -146,9 +148,6 @@ public class PlayManuallyActivity extends AppCompatActivity {
         pathLength++;
         statePlaying.keyDown(Constants.UserInput.Up, 1);
         Log.v(TAG, "Moves forwards one step");
-        Toast toast = Toast.makeText(getApplicationContext(), "Moved forwards 1 step", Toast.LENGTH_SHORT);
-        toast.setGravity(Gravity.BOTTOM|Gravity.CENTER, 0, 0);
-        toast.show();
     }
 
 
@@ -160,9 +159,6 @@ public class PlayManuallyActivity extends AppCompatActivity {
     public void turnLeft(View view){
         statePlaying.keyDown(Constants.UserInput.Left, 1);
         Log.v(TAG, "Turns left");
-        Toast toast = Toast.makeText(getApplicationContext(), "Turned left", Toast.LENGTH_SHORT);
-        toast.setGravity(Gravity.BOTTOM|Gravity.CENTER, 0, 0);
-        toast.show();
     }
 
 
@@ -174,9 +170,6 @@ public class PlayManuallyActivity extends AppCompatActivity {
     public void turnRight(View view){
         statePlaying.keyDown(Constants.UserInput.Right, 1);
         Log.v(TAG, "Turns right");
-        Toast toast = Toast.makeText(getApplicationContext(), "Turned right", Toast.LENGTH_SHORT);
-        toast.setGravity(Gravity.BOTTOM|Gravity.CENTER, 0, 0);
-        toast.show();
     }
 
 
@@ -189,9 +182,6 @@ public class PlayManuallyActivity extends AppCompatActivity {
         statePlaying.keyDown(Constants.UserInput.Jump, 1);
         pathLength++;
         Log.v(TAG, "Jump forwards");
-        Toast toast = Toast.makeText(getApplicationContext(), "Jumped forwards", Toast.LENGTH_SHORT);
-        toast.setGravity(Gravity.BOTTOM|Gravity.CENTER, 0, 0);
-        toast.show();
     }
 
 

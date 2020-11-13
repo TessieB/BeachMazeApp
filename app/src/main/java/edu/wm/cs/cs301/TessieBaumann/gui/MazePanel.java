@@ -15,6 +15,8 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 
+import androidx.core.content.ContextCompat;
+
 import edu.wm.cs.cs301.TessieBaumann.R;
 
 public class MazePanel extends View {
@@ -261,9 +263,9 @@ public class MazePanel extends View {
 //        canvas.drawBitmap(bitmap2, 0, 0, null);
         //canvas.drawRect(0, 0, 400, 200, paint);
         //canvas.drawPicture(R.id.);
-        paint.setColor(Color.BLACK);
+        paint.setColor(ContextCompat.getColor(getContext(), R.color.skyBlue));
         if(!top){
-            paint.setColor(Color.WHITE);
+            paint.setColor(ContextCompat.getColor(getContext(), R.color.sand));
         }
         top = !top;
     }

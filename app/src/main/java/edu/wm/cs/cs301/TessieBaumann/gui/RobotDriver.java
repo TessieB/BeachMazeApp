@@ -70,4 +70,6 @@ public interface RobotDriver {
 
     public void setAnimationSpeed(int speed);
 
+    public void terminateThread() throws Exception;
+
 }

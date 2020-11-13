@@ -158,6 +158,7 @@ public class AMazeActivity extends AppCompatActivity  {
         bundle.putInt("Skill Level", skillLevelNum);
         bundle.putString("Maze Generator", builder);
         bundle.putBoolean("Rooms", wantRooms);
+        bundle.putBoolean("Revisit", false);
         intent.putExtras(bundle);
         startActivity(intent);
     }
@@ -188,6 +189,7 @@ public class AMazeActivity extends AppCompatActivity  {
         Intent intent = new Intent(this, GeneratingActivity.class);
         Bundle bundle = getIntent().getExtras();
         bundle.putString("Energy Consumption", null);
+        bundle.putBoolean("Revisit", true);
         intent.putExtras(bundle);
         startActivity(intent);
     }
