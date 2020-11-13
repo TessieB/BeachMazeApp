@@ -100,22 +100,11 @@ public class WallFollower extends Wizard implements RobotDriver {
     }
 
     @Override
-    public void pauseThread(){
-        if(wallFollowerThread != null){
-            try {
-                wallFollowerThread.sleep(500);
-            }
-            catch(Exception e){}
-        }
-    }
-
-    @Override
-    public void terminateThread()throws Exception{
+    public void terminateThread(){
         if(wallFollowerThread != null){
             wallFollowerThread.interrupt();
             wallFollowerThread = null;
         }
-        throw new Exception();
     }
 
     /**

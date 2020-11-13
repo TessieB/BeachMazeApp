@@ -112,41 +112,12 @@ public class Wizard implements RobotDriver {
     }
 
     @Override
-    public void terminateThread() throws Exception{
+    public void terminateThread(){
         if(wizardThread != null){
             wizardThread.interrupt();
             wizardThread = null;
         }
-        throw new Exception();
     }
-
-    @Override
-    public void pauseThread(){
-        synchronized (wizardThread){
-            try {
-                wizardThread.wait();
-            }
-            catch(Exception e){}
-        }
-//        if(wizardThread != null){
-//            try {
-//                wizardThread.wait();
-//            }
-//            catch(Exception e){}
-//        }
-    }
-
-    @Override
-    public void playThread(){
-        if(wizardThread != null){
-            try {
-                wizardThread.notify();
-            }
-            catch(Exception e){}
-        }
-    }
-
-
 
 
     /**

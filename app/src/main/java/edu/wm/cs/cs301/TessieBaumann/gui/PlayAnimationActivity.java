@@ -516,11 +516,11 @@ public class PlayAnimationActivity extends AppCompatActivity {
      */
     public void playOrPauseGame(View view){
         if(((ToggleButton)view).isChecked()) {
-            if(wizard != null){
-                wizard.pauseThread();
+            if(isWizard){
+                wizard.terminateThread();
             }
             else{
-                wallFollower.pauseThread();
+                wallFollower.terminateThread();
             }
             Log.v(TAG, "Play");
             Toast toast = Toast.makeText(getApplicationContext(), "Pause", Toast.LENGTH_SHORT);
@@ -528,11 +528,21 @@ public class PlayAnimationActivity extends AppCompatActivity {
             toast.show();
         }
         else{
-            if(wizard != null){
-                wizard.playThread();
+            if(isWizard){
+                try{
+                    wizard.drive2Exit();
+                }
+                catch(Exception e){
+                    sendLosingMessage(panel);
+                }
             }
             else{
-                wallFollower.playThread();
+                try{
+                    wallFollower.drive2Exit();
+                }
+                catch(Exception e){
+                    sendLosingMessage(panel);
+                }
             }
             Log.v(TAG, "Pause");
             Toast toast = Toast.makeText(getApplicationContext(), "Play", Toast.LENGTH_SHORT);
