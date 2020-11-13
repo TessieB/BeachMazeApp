@@ -37,10 +37,12 @@ public class WallFollower extends Wizard implements RobotDriver {
     private Thread wallFollowerThread;
     private int speed = 500;
     private int[] speedOptions;
+    private boolean lost;
     public static Handler wallFollowerHandler;
 
     public WallFollower() {
-        speedOptions = new int[]{5, 10, 25, 50, 100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 900, 1000};
+        speedOptions = new int[]{2000, 1500, 1000, 900, 800, 700, 600, 500, 450, 400, 350, 300, 250, 200, 150, 100, 50, 25, 10, 5, 1};
+        lost = false;
     }
 
     @Override
@@ -63,30 +65,27 @@ public class WallFollower extends Wizard implements RobotDriver {
                 while (distance >= 0 && wallFollowerThread != null) {
                     try {
                         boolean facingExit = drive1Step2Exit();
-                        if(robot.isAtExit() && !facingExit) {
+                        if (robot.isAtExit() && !facingExit) {
                             robot.move(1);
                             stopFailureAndRepairThreads();
                             break;
                         }
-                    }
-                    catch(Exception e){
+                    } catch (Exception e) {
                         Log.v(TAG, "Error: Robot has run out of energy or crashed");
-                        try {
-                            throw new Exception("Error: Robot has run out of energy or crashed");
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                        }
+                        wallFollowerThread = null;
+                        stopFailureAndRepairThreads();
+                        lost = true;
                     }
                     Log.v(TAG, "Running thread inside run method");
-                    try{
+                    try {
                         Thread.sleep(speed);
-                    }
-                    catch (InterruptedException e){
+                    } catch (InterruptedException e) {
                         System.out.println("Thread was interrupted");
                     }
                     Message message = new Message();
                     Bundle bundle = new Bundle();
-                    bundle.putInt(KEY, (int)robot.getBatteryLevel());
+                    bundle.putBoolean("lost", lost);
+                    bundle.putInt(KEY, (int) robot.getBatteryLevel());
                     Log.v(TAG, "Battery Level: " + robot.getBatteryLevel());
                     message.setData(bundle);
                     PlayAnimationActivity.myHandler.sendMessage(message);

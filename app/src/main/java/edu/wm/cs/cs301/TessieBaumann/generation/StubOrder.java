@@ -49,4 +49,5 @@ public class StubOrder implements Order {
     @Override
     public void updateProgress(int percentage) {
     }
+
 }

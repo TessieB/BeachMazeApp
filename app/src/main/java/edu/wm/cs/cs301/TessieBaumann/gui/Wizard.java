@@ -28,19 +28,22 @@ public class Wizard implements RobotDriver {
 
     private static final String TAG = "Wizard";  //message key
     private static final String KEY = "my message key";  //message key
+    private static final String LOST_KEY = "my message key";  //message key
     private Robot robot;
     private ReliableSensor sensor;
     private Maze mazeConfig;
     private float batteryLevel1;
     private static final int INITIAL_ENERGY = 3500;
     public static boolean getsToExit = false;
+    private boolean lost;
     private Thread wizardThread;
     private int speed = 500;
     private int[] speedOptions;
 
 
     public Wizard() {
-        speedOptions = new int[]{5, 10, 25, 50, 100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 900, 1000};
+        speedOptions = new int[]{2000, 1500, 1000, 900, 800, 700, 600, 500, 450, 400, 350, 300, 250, 200, 150, 100, 50, 25, 10, 5, 1};
+        lost = false;
     }
     /**
      * Assigns a robot platform to the driver.
@@ -64,7 +67,7 @@ public class Wizard implements RobotDriver {
 
     }
 
-    public void runThread(int d){
+    public void runThread(int d) throws Exception{
         final int distance = d;
         Runnable runnable = new Runnable() {
             @Override
@@ -82,11 +85,8 @@ public class Wizard implements RobotDriver {
                     }
                     catch(Exception e){
                         Log.v(TAG, "Error: Robot has run out of energy or crashed");
-                        try {
-                            throw new Exception("Error: Robot has run out of energy or crashed");
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                        }
+                        wizardThread = null;
+                        lost = true;
                     }
                     Log.v(TAG, "Running thread inside run method");
                     try{
@@ -97,6 +97,8 @@ public class Wizard implements RobotDriver {
                     }
                     Message message = new Message();
                     Bundle bundle = new Bundle();
+                    Log.d("lost boolean", lost + "");
+                    bundle.putBoolean("lost", lost);
                     bundle.putInt(KEY, (int)robot.getBatteryLevel());
                     message.setData(bundle);
                     PlayAnimationActivity.myHandler.sendMessage(message);
@@ -108,6 +110,7 @@ public class Wizard implements RobotDriver {
         wizardThread = new Thread(runnable);
         wizardThread.start();
     }
+
 
     @Override
     public void terminateThread(){

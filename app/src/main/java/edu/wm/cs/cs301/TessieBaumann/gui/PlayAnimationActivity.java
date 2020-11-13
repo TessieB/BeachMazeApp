@@ -44,6 +44,7 @@ public class PlayAnimationActivity extends AppCompatActivity {
 
     private static final String TAG = "message";  //string message key
     private static final String KEY = "my message key";  //message key
+    private static final String LOST_KEY = "my message key";  //message key
     private static final String FAILURE_KEY = "sensor has failed";  //message key
     private static final int MAX_MAP_SIZE = 80;  //max size that the map can be
     private static final int MAX_ANIMATION_SPEED = 20;  //max animation speed for the robot
@@ -53,7 +54,7 @@ public class PlayAnimationActivity extends AppCompatActivity {
     private int animationSpeed = 5;  //default animation speed
     private ProgressBar remainingEnergy;  //remaining energy of robot
     private int shortestPathLength;  //shortest possible path length through the maze
-    private String reasonLost = "Broken Robot"; //if the robot lost, tells why
+    private String reasonLost = "Ran Out of Energy"; //if the robot lost, tells why
     private StatePlaying statePlaying;
     private MazePanel panel;
     private Robot robot;
@@ -119,6 +120,10 @@ public class PlayAnimationActivity extends AppCompatActivity {
                     failAndRepairSensors(sensorInfo);
                 }
                 Log.v(TAG, remainingEnergyMessage + "");
+                boolean lostGame = bundle.getBoolean("lost", false);
+                if(lostGame){
+                    sendLosingMessage(panel);
+                }
             }
         };
     }

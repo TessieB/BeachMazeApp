@@ -51,9 +51,9 @@ public class GeneratingActivity extends AppCompatActivity implements Order {
 
 
     private static final String TAG = "Run Thread";  //message key
-    private static final String KEY = "my message key";  //message key
+    private static final String PROGRESS_KEY = "my message key";  //message key
     private ProgressBar loadingBar;  //progress bar for loading maze
-    //private Handler myHandler;  //handler to send messages from background thread to UI thread
+    private Handler handler;  //handler to send messages from background thread to UI thread
     private String driver;  //driver that the maze is going to use
     private boolean backPressed = false;  //tells whether or not the back button has been pressed
     private String robot = "Premium";  //sensor configuration that the user chooses
@@ -180,16 +180,14 @@ public class GeneratingActivity extends AppCompatActivity implements Order {
         loadingBar = (ProgressBar) findViewById(R.id.generatingProgressBar);
         loadingBar.setMax(100);
         //runThread(loadingBar);
-        /*myHandler = new Handler(Looper.getMainLooper()){
+        handler = new Handler(Looper.getMainLooper()){
             @Override
             public void handleMessage(Message msg){
                 Bundle bundle = msg.getData();
-                String progressBarMessage = bundle.getString(KEY);
-                Log.v(TAG, progressBarMessage);
-                loadingBar.incrementProgressBy(10);
+                int progressBarMessage = bundle.getInt(PROGRESS_KEY);
                 showStartButton();
             }
-        };*/
+        };
 
     }
 
@@ -205,6 +203,11 @@ public class GeneratingActivity extends AppCompatActivity implements Order {
             this.percentdone = percentage;
             loadingBar.setProgress(percentdone);
         }
+        Message message = new Message();
+        Bundle bundle = new Bundle();
+        bundle.putInt(PROGRESS_KEY, this.percentdone);
+        message.setData(bundle);
+        handler.sendMessage(message);
     }
 
     /**
@@ -266,9 +269,6 @@ public class GeneratingActivity extends AppCompatActivity implements Order {
         RadioButton tempDriver = (RadioButton) view;
         driver = tempDriver.getText().toString();
         Log.d(TAG, "Driver: " + driver);
-        Toast toast = Toast.makeText(getApplicationContext(), "Driver: " + driver, Toast.LENGTH_SHORT);
-        toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 0);
-        toast.show();
         showStartButton();
     }
 
@@ -344,9 +344,6 @@ public class GeneratingActivity extends AppCompatActivity implements Order {
     private void setRobot(String str){
         robot = str;
         Log.v(TAG, "Setting robot to " + robot);
-        Toast toast = Toast.makeText(getApplicationContext(), "Robot: " + robot, Toast.LENGTH_SHORT);
-        toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 0);
-        toast.show();
     }
 
     /**
