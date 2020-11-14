@@ -81,6 +81,7 @@ public class WinningActivity extends AppCompatActivity {
         Intent intent = new Intent(this, AMazeActivity.class);
         Bundle bundle = getIntent().getExtras();
         intent.putExtras(bundle);
+        AMazeActivity.mediaPlayer.stop();
         startActivity(intent);
     }
 
@@ -95,6 +96,7 @@ public class WinningActivity extends AppCompatActivity {
     public void onBackPressed(){
         Log.v(TAG, "back button pressed in WinningActivity");
         Intent intent = new Intent(this, AMazeActivity.class);
+        AMazeActivity.mediaPlayer.stop();
         startActivity(intent);
     }
 }

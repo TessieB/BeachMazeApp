@@ -1,6 +1,7 @@
 package edu.wm.cs.cs301.TessieBaumann.gui;
 
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -50,6 +51,9 @@ public class PlayManuallyActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         setContentView(R.layout.play_manually_activity);
+        AMazeActivity.mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.christmas);
+        AMazeActivity.mediaPlayer.setLooping(true);
+        AMazeActivity.mediaPlayer.start();
         statePlaying = new StatePlaying();
         panel = findViewById(R.id.mazePanelView);
         int[] startPos = GeneratingActivity.mazeConfig.getStartingPosition();
@@ -114,6 +118,7 @@ public class PlayManuallyActivity extends AppCompatActivity {
         Intent intent = new Intent(this, AMazeActivity.class);
         Bundle bundle = getIntent().getExtras();
         intent.putExtras(bundle);
+        AMazeActivity.mediaPlayer.stop();
         startActivity(intent);
     }
 

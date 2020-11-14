@@ -95,6 +95,7 @@ public class LosingActivity extends AppCompatActivity {
         Intent intent = new Intent(this, AMazeActivity.class);
         Bundle bundle = getIntent().getExtras();
         intent.putExtras(bundle);
+        AMazeActivity.mediaPlayer.stop();
         startActivity(intent);
     }
 
@@ -109,6 +110,7 @@ public class LosingActivity extends AppCompatActivity {
     public void onBackPressed(){
         Log.v(TAG, "back button pressed in LosingActivity");
         Intent intent = new Intent(this, AMazeActivity.class);
+        AMazeActivity.mediaPlayer.stop();
         startActivity(intent);
     }
 }

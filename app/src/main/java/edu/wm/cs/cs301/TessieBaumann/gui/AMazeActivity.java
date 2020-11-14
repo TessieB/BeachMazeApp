@@ -3,6 +3,7 @@ package edu.wm.cs.cs301.TessieBaumann.gui;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -42,6 +43,7 @@ public class AMazeActivity extends AppCompatActivity  {
     private static final String TAG = "message";
     private String builder = "DFS";  //tells the maze what builder to use
     private boolean wantRooms = false;  //tells whether or not the user wants rooms in their maze
+    public static MediaPlayer mediaPlayer;
 
 
     /**
@@ -99,6 +101,9 @@ public class AMazeActivity extends AppCompatActivity  {
             }
         });
 
+        mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.ocean);
+        mediaPlayer.setLooping(true);
+        mediaPlayer.start();
     }
 
     /**

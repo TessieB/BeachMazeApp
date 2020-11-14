@@ -26,7 +26,7 @@ import edu.wm.cs.cs301.TessieBaumann.gui.Robot.Turn;
 public class Wizard implements RobotDriver {
 
     private static final String TAG = "Wizard";  //message key
-    private static final String KEY = "Wizard";  //message key
+    private static final String KEY = "my message key";  //message key
     private Robot robot;
     private ReliableSensor sensor;
     private Maze mazeConfig;
@@ -35,7 +35,7 @@ public class Wizard implements RobotDriver {
     public static boolean getsToExit = false;
     private boolean lost;
     private Thread wizardThread;
-    private int speed = 500;
+    private int speed = 400;
     private int[] speedOptions;
 
 

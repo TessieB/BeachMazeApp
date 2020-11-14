@@ -1,6 +1,7 @@
 package edu.wm.cs.cs301.TessieBaumann.gui;
 
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -42,7 +43,6 @@ public class PlayAnimationActivity extends AppCompatActivity {
 
     private static final String TAG = "message";  //string message key
     private static final String KEY = "my message key";  //message key
-    private static final String LOST_KEY = "my message key";  //message key
     private static final String FAILURE_KEY = "sensor has failed";  //message key
     private static final int MAX_MAP_SIZE = 80;  //max size that the map can be
     private static final int MAX_ANIMATION_SPEED = 20;  //max animation speed for the robot
@@ -50,7 +50,7 @@ public class PlayAnimationActivity extends AppCompatActivity {
 
     private String sensorConfig;  //sensor configuration chosen by user
     private int mapSize = 15;  //default map size
-    private int animationSpeed = 5;  //default animation speed
+    private int animationSpeed = 10;  //default animation speed
     private ProgressBar remainingEnergy;  //remaining energy of robot
     private int shortestPathLength;  //shortest possible path length through the maze
     private String reasonLost = "Ran Out of Energy"; //if the robot lost, tells why
@@ -85,6 +85,9 @@ public class PlayAnimationActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         setContentView(R.layout.play_animation_activity);
         setProgressBar();
+        AMazeActivity.mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.christmas);
+        AMazeActivity.mediaPlayer.setLooping(true);
+        AMazeActivity.mediaPlayer.start();
 
         Bundle bundle = getIntent().getExtras();
         sensorConfig = bundle.getString("Robot");
@@ -543,6 +546,7 @@ public class PlayAnimationActivity extends AppCompatActivity {
         Intent intent = new Intent(this, AMazeActivity.class);
         Bundle bundle = getIntent().getExtras();
         intent.putExtras(bundle);
+        AMazeActivity.mediaPlayer.stop();
         startActivity(intent);
     }
 

@@ -29,13 +29,13 @@ import edu.wm.cs.cs301.TessieBaumann.gui.Robot.Turn;
 public class WallFollower extends Wizard implements RobotDriver {
 
     private Robot robot;
-    private static final String KEY = "WallFollower";  //message key
+    private static final String KEY = "my message key";  //message key
     private Maze mazeConfig;
     private static final int INITIAL_ENERGY = 3500;
     private boolean failedAtLeft = false;
     private static final String TAG = "WallFollower";  //message key
     private Thread wallFollowerThread;
-    private int speed = 500;
+    private int speed = 400;
     private int[] speedOptions;
     private boolean lost;
     public static Handler wallFollowerHandler;
