@@ -208,7 +208,7 @@ public class Map {
                         maze.hasWall(x,y, CardinalDirection.North) :
                         maze.hasWall(x,y-1, CardinalDirection.South));
 
-                panel.setColor(seenWalls.hasWall(x,y, CardinalDirection.North) ? WHITE : Color.GRAY);
+                panel.setColor(seenWalls.hasWall(x,y, CardinalDirection.North) ? WHITE : Color.BLACK);
                 if ((seenWalls.hasWall(x,y, CardinalDirection.North) || showMaze) && theCondition)
                     panel.addLine(startX, startY, startX + mapScale, startY); // y coordinate same
 
@@ -217,7 +217,7 @@ public class Map {
                         maze.hasWall(x,y, CardinalDirection.West) :
                         maze.hasWall((x-1),y, CardinalDirection.East));
 
-                panel.setColor(seenWalls.hasWall(x,y, CardinalDirection.West) ? WHITE : Color.GRAY);
+                panel.setColor(seenWalls.hasWall(x,y, CardinalDirection.West) ? WHITE : Color.BLACK);
                 if ((seenWalls.hasWall(x,y, CardinalDirection.West) || showMaze) && theCondition)
                     panel.addLine(startX, startY, startX, startY - mapScale); // x coordinate same
             }

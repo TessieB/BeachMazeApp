@@ -204,6 +204,7 @@ public class PlayAnimationActivity extends AppCompatActivity {
      * the wizard algorithm
      */
     private void setWizardPlaying() {
+        Log.v(TAG, "setting Wizard as Animated Driver");
         isWizard = true;
         ReliableRobot robot = new ReliableRobot();
         wizard = new Wizard();
@@ -228,6 +229,7 @@ public class PlayAnimationActivity extends AppCompatActivity {
      * the wallFollower algorithm
      */
     private void setWallFollowerPlaying() {
+        Log.v(TAG, "setting WallFollower as Animated Driver");
         robot = new UnreliableRobot();
         wallFollower = new WallFollower();
         robot.setStatePlaying(statePlaying);

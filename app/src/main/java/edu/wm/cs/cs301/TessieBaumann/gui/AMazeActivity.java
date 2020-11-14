@@ -17,7 +17,6 @@ import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import edu.wm.cs.cs301.TessieBaumann.R;
 
@@ -116,9 +115,6 @@ public class AMazeActivity extends AppCompatActivity  {
         CheckBox rooms = (CheckBox) view;
         wantRooms = rooms.isChecked();
         Log.v(TAG, "User wants rooms: " + wantRooms);
-        Toast toast = Toast.makeText(getApplicationContext(), "Rooms: " + wantRooms, Toast.LENGTH_SHORT);
-        toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 0);
-        toast.show();
     }
 
     /**
@@ -131,9 +127,6 @@ public class AMazeActivity extends AppCompatActivity  {
         ProgressBar tempSkillLevel = (ProgressBar) view;
         skillLevelNum = tempSkillLevel.getProgress();
         Log.v(TAG, "Setting skill level to " + skillLevelNum);
-        Toast toast = Toast.makeText(getApplicationContext(), "Difficulty Level: " + skillLevelNum, Toast.LENGTH_SHORT);
-        toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 0);
-        toast.show();
     }
 
     /**
@@ -145,9 +138,6 @@ public class AMazeActivity extends AppCompatActivity  {
     private void setBuilder(String str){
         builder = str;
         Log.v(TAG, "Setting builder to " + builder);
-        Toast toast = Toast.makeText(getApplicationContext(), "Maze Generator: " + builder, Toast.LENGTH_SHORT);
-        toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 0);
-        toast.show();
     }
 
     /**
