@@ -62,6 +62,7 @@ public class PlayAnimationActivity extends AppCompatActivity {
     private RobotDriver wallFollower;  // driver that follows wallFollower algorithm
 
     boolean[] reliableSensor;  // tells what sensors are reliable and which are not
+    boolean[] currentSensors;
     private DistanceSensor leftSensor;  // robot's left sensor
     private DistanceSensor rightSensor;  // robot's right sensor
     private DistanceSensor frontSensor;  // robot's front sensor
@@ -93,6 +94,7 @@ public class PlayAnimationActivity extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         sensorConfig = bundle.getString("Robot");
         if(sensorConfig != null) {
+            currentSensors = new boolean[]{true, true, true, true};
             setRobotSensors(sensorConfig);
         }
 
@@ -104,6 +106,7 @@ public class PlayAnimationActivity extends AppCompatActivity {
         statePlaying.start(panel);
 
         startDriverPlaying(bundle);
+
         handleMessage();
 
         setSizeOfMap();
@@ -229,11 +232,18 @@ public class PlayAnimationActivity extends AppCompatActivity {
      * the wallFollower algorithm
      */
     private void setWallFollowerPlaying() {
+        boolean resume = false;
         Log.v(TAG, "setting WallFollower as Animated Driver");
-        robot = new UnreliableRobot();
-        wallFollower = new WallFollower();
-        robot.setStatePlaying(statePlaying);
-        robot.setPlayAnimationActivity(this);
+        if(wallFollower == null) {
+            currentSensors = new boolean[]{true, true, true, true};
+            robot = new UnreliableRobot();
+            wallFollower = new WallFollower();
+            robot.setStatePlaying(statePlaying);
+            robot.setPlayAnimationActivity(this);
+        }
+        else{
+            resume = true;
+        }
         if(reliableSensor != null) {
             for(int i = 0; i < reliableSensor.length; i++) {
                 if(reliableSensor[i]) {
@@ -284,6 +294,12 @@ public class PlayAnimationActivity extends AppCompatActivity {
             setSensor("left", true);
             setSensor("right", true);
             setSensor("back", true);
+        }
+        if(resume){
+            for(int i = 0; i < currentSensors.length; i++){
+                String[] tempSensors = new String[]{"Front", "Left", "Right", "Back"};
+                setRobotSensorsColors(currentSensors[i], tempSensors[i]);
+            }
         }
         wallFollower.setRobot(robot);
         wallFollower.setMaze(GeneratingActivity.mazeConfig);
@@ -600,7 +616,8 @@ public class PlayAnimationActivity extends AppCompatActivity {
             }
             else{
                 try{
-                    wallFollower.drive2Exit();
+                    //wallFollower.drive2Exit();
+                    setWallFollowerPlaying();
                 }
                 catch(Exception e){
                     sendLosingMessage(panel);
@@ -619,11 +636,11 @@ public class PlayAnimationActivity extends AppCompatActivity {
      */
     private void setRobotSensors(String robot){
         Log.v(TAG, "Robot; " + robot);
+        reliableSensor = new boolean[]{true, true, true, true};
         setRobotSensorsColors(true, "Left");
         setRobotSensorsColors(true, "Right");
         setRobotSensorsColors(true, "Front");
         setRobotSensorsColors(true, "Back");
-        reliableSensor = new boolean[]{true, true, true, true};
         if(robot.equals("Mediocre")){
             setRobotSensorsColors(false, "Left");
             setRobotSensorsColors(false, "Right");
@@ -658,15 +675,19 @@ public class PlayAnimationActivity extends AppCompatActivity {
         switch (sensor){
             case "Left":
                 sensorText = (TextView) findViewById(R.id.leftSensorTextView);
+                currentSensors[1] = sensorGreen;
                 break;
             case "Right":
                 sensorText = (TextView) findViewById(R.id.rightSensorTextView);
+                currentSensors[2] = sensorGreen;
                 break;
             case "Front":
                 sensorText = (TextView) findViewById(R.id.frontSensorTextView);
+                currentSensors[0] = sensorGreen;
                 break;
             case "Back":
                 sensorText = (TextView) findViewById(R.id.backSensorTextView);
+                currentSensors[3] = sensorGreen;
                 break;
         }
         if(sensorGreen){
