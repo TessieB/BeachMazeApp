@@ -32,6 +32,7 @@ public class MazePanel extends View {
     private Bitmap bitmap;  //bitmap with graphics drawn on it
     private Canvas canvas;  //canvas to draw images on the bitmap
     private Paint paint;  //paint being used at the time
+    private static final String TAG = "MazePanel";  //string message
 
     private int color;  //int color that paint is currently set on
     private static final int greenWM = Color.parseColor("#115740");
@@ -59,8 +60,10 @@ public class MazePanel extends View {
     /**
      * This method tests to make sure that the different drawing properties of
      * MazePanel work in android studio by drawing practice lines and shapes
+     *
+     * it is only used for testing purposes
      */
-    public void myTestImage(){
+    private void myTestImage(){
         canvas.drawColor(Color.BLACK);
         setColor(Color.RED);
         addFilledOval(0, 0, 150, 150);
@@ -92,33 +95,15 @@ public class MazePanel extends View {
         paint = new Paint();
     }
 
-    /**
-     * Draws the buffer image to the given graphics object.
-     * This method is called when this panel should redraw itself.
-     * The given graphics object is the one that actually shows
-     * on the screen.
-     */
-//    public void paint(Canvas c) {
-//        if (null == c) {
-//            Log.d("oh no", "canvas is null");
-//            System.out.println("MazePanel.paint: no canvas object, skipping drawImage operation");
-//        }
-//        else {
-//            c.drawBitmap(bitmap,0,0,paint);
-//        }
-//    }
 
     /**
-     * Obtains a graphics object that can be used for drawing.
-     * This MazePanel object internally stores the graphics object
-     * and will return the same graphics object over multiple method calls.
+     * Obtains a canvas object that can be used for drawing.
+     * This MazePanel object internally stores the canvas object
+     * and will return the same canvas object over multiple method calls.
      * The graphics object acts like a notepad where all clients draw
      * on to store their contribution to the overall image that is to be
      * delivered later.
-     * To make the drawing visible on screen, one needs to trigger
-     * a call of the paint method, which happens
-     * when calling the update method.
-     * @return graphics object to draw on, null if impossible to obtain image
+     * @return Canvas object to draw on, null if impossible to obtain image
      */
     public Canvas getBitmap() {
         // if necessary instantiate and store a graphics object for later use
@@ -155,7 +140,7 @@ public class MazePanel extends View {
      * Substitute for MazePanel.update method.
      */
     public void commit() {
-        Log.d("in commit", "thankfully");
+        Log.v(TAG, "Updating maze panel");
         invalidate();
     }
 
@@ -177,7 +162,6 @@ public class MazePanel extends View {
      * Sets the color for future drawing requests. The color setting
      * will remain in effect till this method is called again and
      * with a different color.
-     * Substitute for Graphics.setColor method.
      * @param rgb gives the red green and blue encoded value of the color
      */
     public void setColor(int rgb) {
@@ -247,8 +231,6 @@ public class MazePanel extends View {
      * Note that this also erases any previous drawings.
      * The color setting adjusts to the distance to the exit to
      * provide an additional clue for the user.
-     * Colors transition from black to gold and from grey to green.
-     * Substitute for FirstPersonView.drawBackground method.
      * @param percentToExit gives the distance to exit
      */
     public void addBackground(float percentToExit) {
@@ -309,14 +291,12 @@ public class MazePanel extends View {
      * The rectangle is specified with the {@code (x,y)} coordinates
      * of the upper left corner and then its width for the
      * x-axis and the height for the y-axis.
-     * Substitute for Graphics.fillRect() method
      * @param x is the x-coordinate of the top left corner
      * @param y is the y-coordinate of the top left corner
      * @param width is the width of the rectangle
      * @param height is the height of the rectangle
      */
     public void addFilledRectangle(float x, float y, float width, float height) {
-        Log.d("paint", paint.toString());
         paint.setStyle(Paint.Style.FILL);
         canvas.drawRect(x, y, x + width, y + height, paint);
 
@@ -382,7 +362,6 @@ public class MazePanel extends View {
      * Adds a line.
      * A line is described by {@code (x,y)} coordinates for its
      * starting point and its end point.
-     * Substitute for Graphics.drawLine method
      * @param startX is the x-coordinate of the starting point
      * @param startY is the y-coordinate of the starting point
      * @param endX is the x-coordinate of the end point
@@ -399,7 +378,6 @@ public class MazePanel extends View {
      * of the upper left corner and then its width for the
      * x-axis and the height for the y-axis. An oval is
      * described like a rectangle.
-     * Substitute for Graphics.fillOval method
      * @param left is the x-coordinate of the top left corner
      * @param top is the y-coordinate of the top left corner
      * @param right is the width of the oval
@@ -428,7 +406,6 @@ public class MazePanel extends View {
      * noticeably longer in one axis than the other, the angles to the start
      * and end of the arc segment will be skewed farther along the longer
      * axis of the bounds.
-     * Substitute for Graphics.drawArc method
      * @param left the x coordinate of the upper-left corner of the arc to be drawn.
      * @param top the y coordinate of the upper-left corner of the arc to be drawn.
      * @param right the width of the arc to be drawn.
@@ -443,7 +420,6 @@ public class MazePanel extends View {
 
     /**
      * Adds a string at the given position.
-     * Substitute for CompassRose.drawMarker method
      * @param x the x coordinate
      * @param y the y coordinate
      * @param str the string
@@ -463,30 +439,6 @@ public class MazePanel extends View {
         markerFont = fontName;
         paint.setFontFeatureSettings(fontName);
     }
-
-
-    /**
-     * Sets the value of a single preference for the rendering algorithms.
-     * Hint categories include controls for rendering quality
-     * and overall time/quality trade-off in the rendering process.
-     * Refer to the awt RenderingHints class for definitions of some common keys and values.
-     * @param hintKey the key of the hint to be set.
-     * @param hintValue the value indicating preferences for the specified hint category.
-     */
-    /*public void setRenderingHint(RenderingHints hintKey, RenderingHints hintValue) {
-        switch(hintKey) {
-            case KEY_RENDERING:
-                graphics.setRenderingHint((Key) java.awt.RenderingHints.KEY_RENDERING, java.awt.RenderingHints.VALUE_RENDER_QUALITY);
-                break;
-            case KEY_ANTIALIASING:
-                graphics.setRenderingHint((Key) java.awt.RenderingHints.KEY_ANTIALIASING, java.awt.RenderingHints.VALUE_ANTIALIAS_ON);
-                break;
-            case KEY_INTERPOLATION:
-                graphics.setRenderingHint((Key) java.awt.RenderingHints.KEY_INTERPOLATION, java.awt.RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-                break;
-        }
-
-    }*/
 
 
     /**

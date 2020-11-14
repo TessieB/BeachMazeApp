@@ -1,7 +1,6 @@
 package edu.wm.cs.cs301.TessieBaumann.gui;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
@@ -27,8 +26,7 @@ import edu.wm.cs.cs301.TessieBaumann.gui.Robot.Turn;
 public class Wizard implements RobotDriver {
 
     private static final String TAG = "Wizard";  //message key
-    private static final String KEY = "my message key";  //message key
-    private static final String LOST_KEY = "my message key";  //message key
+    private static final String KEY = "Wizard";  //message key
     private Robot robot;
     private ReliableSensor sensor;
     private Maze mazeConfig;
@@ -41,6 +39,12 @@ public class Wizard implements RobotDriver {
     private int[] speedOptions;
 
 
+    /**
+     * Constructs a new Wizard object with
+     * the boolean value lost set too false, since the
+     * driver has not lost yet, and initializes array
+     * speedOptions with the possible animation speeds
+     */
     public Wizard() {
         speedOptions = new int[]{2000, 1500, 1000, 900, 800, 700, 600, 500, 450, 400, 350, 300, 250, 200, 150, 100, 50, 25, 10, 5, 1};
         lost = false;
@@ -67,6 +71,14 @@ public class Wizard implements RobotDriver {
 
     }
 
+
+    /**
+     * Creates a new background thread for the
+     * driver to run on, which calls the drive1Step2Exit method
+     * until the robot reaches the exit or runs out of energy/crashes
+     * and controls how fast the animation speed is
+     * @param d distance to the exit
+     */
     public void runThread(int d) throws Exception{
         final int distance = d;
         Runnable runnable = new Runnable() {
@@ -97,7 +109,6 @@ public class Wizard implements RobotDriver {
                     }
                     Message message = new Message();
                     Bundle bundle = new Bundle();
-                    Log.d("lost boolean", lost + "");
                     bundle.putBoolean("lost", lost);
                     bundle.putInt(KEY, (int)robot.getBatteryLevel());
                     message.setData(bundle);
@@ -112,6 +123,10 @@ public class Wizard implements RobotDriver {
     }
 
 
+    /**
+     * Terminates the wizard thread and
+     * stops the driver from running
+     */
     @Override
     public void terminateThread(){
         if(wizardThread != null){
@@ -299,6 +314,10 @@ public class Wizard implements RobotDriver {
         getsToExit = atExit;
     }
 
+    /**
+     * Sets the animation speed for the driver
+     * @param speed
+     */
     public void setAnimationSpeed(int speed){
         this.speed = speedOptions[speed];
     }

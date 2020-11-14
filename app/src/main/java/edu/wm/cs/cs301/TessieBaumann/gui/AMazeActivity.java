@@ -188,10 +188,15 @@ public class AMazeActivity extends AppCompatActivity  {
     public void sendRevisitMessage(View view){
         Intent intent = new Intent(this, GeneratingActivity.class);
         Bundle bundle = getIntent().getExtras();
-        bundle.putString("Energy Consumption", null);
-        bundle.putBoolean("Revisit", true);
-        intent.putExtras(bundle);
-        startActivity(intent);
+        if(bundle != null){
+            bundle.putString("Energy Consumption", null);
+            bundle.putBoolean("Revisit", true);
+            intent.putExtras(bundle);
+            startActivity(intent);
+        }
+        else{
+            sendMessage(view);
+        }
     }
 
 }

@@ -2,13 +2,10 @@ package edu.wm.cs.cs301.TessieBaumann.gui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.AttributeSet;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -39,8 +36,8 @@ public class PlayManuallyActivity extends AppCompatActivity {
     private int pathLength = 0;  //length of the path the user has taken
     private int mapSize = 15;  //default map size
     private int shortestPathLength = 0;  //shortest possible path length, temp value
-    private MazePanel panel;
-    StatePlaying statePlaying;
+    private MazePanel panel;  // panel used to draw maze
+    StatePlaying statePlaying;  // class used to operate maze
 
     /**
      * This method sets the content view to the
@@ -51,10 +48,10 @@ public class PlayManuallyActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         setContentView(R.layout.play_manually_activity);
         statePlaying = new StatePlaying();
         panel = findViewById(R.id.mazePanelView);
-        Log.d("inside", "on create");
         int[] startPos = GeneratingActivity.mazeConfig.getStartingPosition();
         shortestPathLength = GeneratingActivity.mazeConfig.getDistanceToExit(startPos[0], startPos[1]);
         statePlaying.setPlayManuallyActivity(this);
@@ -102,9 +99,6 @@ public class PlayManuallyActivity extends AppCompatActivity {
         mapSize = size;
         statePlaying.setMapScale(mapSize);
         Log.v(TAG, "Map Size: " + mapSize);
-        Toast toast = Toast.makeText(getApplicationContext(), "Map Size: " + mapSize, Toast.LENGTH_SHORT);
-        toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 0);
-        toast.show();
     }
 
 
@@ -195,15 +189,9 @@ public class PlayManuallyActivity extends AppCompatActivity {
         statePlaying.keyDown(Constants.UserInput.ToggleLocalMap, 1);
         if(((ToggleButton)view).isChecked()) {
             Log.v(TAG, "Showing Map: On");
-            Toast toast = Toast.makeText(getApplicationContext(), "Showing Map: On", Toast.LENGTH_SHORT);
-            toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 0);
-            toast.show();
         }
         else{
             Log.v(TAG, "Showing Map: Off");
-            Toast toast = Toast.makeText(getApplicationContext(), "Showing Map: Off", Toast.LENGTH_SHORT);
-            toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 0);
-            toast.show();
         }
     }
 
@@ -218,15 +206,9 @@ public class PlayManuallyActivity extends AppCompatActivity {
         statePlaying.keyDown(Constants.UserInput.ToggleSolution, 1);
         if(((ToggleButton)view).isChecked()) {
             Log.v(TAG, "Showing Solution: On");
-            Toast toast = Toast.makeText(getApplicationContext(), "Showing Solution: On", Toast.LENGTH_SHORT);
-            toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 0);
-            toast.show();
         }
         else{
             Log.v(TAG, "Showing Solution: Off");
-            Toast toast = Toast.makeText(getApplicationContext(), "Showing Solution: Off", Toast.LENGTH_SHORT);
-            toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 0);
-            toast.show();
         }
     }
 
@@ -241,15 +223,9 @@ public class PlayManuallyActivity extends AppCompatActivity {
         statePlaying.keyDown(Constants.UserInput.ToggleFullMap, 1);
         if(((ToggleButton)view).isChecked()) {
             Log.v(TAG, "Showing Visible Walls: Off");
-            Toast toast = Toast.makeText(getApplicationContext(), "Showing Visible Walls: Off", Toast.LENGTH_SHORT);
-            toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 0);
-            toast.show();
         }
         else{
             Log.v(TAG, "Showing Visible Walls: On");
-            Toast toast = Toast.makeText(getApplicationContext(), "Showing Visible Walls: On", Toast.LENGTH_SHORT);
-            toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 0);
-            toast.show();
         }
     }
 }

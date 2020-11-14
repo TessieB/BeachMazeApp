@@ -29,7 +29,7 @@ import edu.wm.cs.cs301.TessieBaumann.gui.Robot.Turn;
 public class WallFollower extends Wizard implements RobotDriver {
 
     private Robot robot;
-    private static final String KEY = "my message key";  //message key
+    private static final String KEY = "WallFollower";  //message key
     private Maze mazeConfig;
     private static final int INITIAL_ENERGY = 3500;
     private boolean failedAtLeft = false;
@@ -40,23 +40,46 @@ public class WallFollower extends Wizard implements RobotDriver {
     private boolean lost;
     public static Handler wallFollowerHandler;
 
+    /**
+     * Constructs a new Wall Follower object with
+     * the boolean value lost set too false, since the
+     * driver has not lost yet, and initializes array
+     * speedOptions with the possible animation speeds
+     */
     public WallFollower() {
         speedOptions = new int[]{2000, 1500, 1000, 900, 800, 700, 600, 500, 450, 400, 350, 300, 250, 200, 150, 100, 50, 25, 10, 5, 1};
         lost = false;
     }
 
+
+    /**
+     * Sets the robot for the driver to push through the maze
+     * @param r robot to operate
+     */
     @Override
     public void setRobot(Robot r) {
         this.robot = r;
 
     }
 
+    /**
+     * Sets the maze that the driver is going to push the robot through
+     * @param maze represents the maze, must be non-null and a fully functional maze object.
+     */
     @Override
     public void setMaze(Maze maze) {
         mazeConfig = maze;
 
     }
 
+
+    /**
+     * Creates a new background thread for the
+     * driver to run on, which calls the drive1Step2Exit method
+     * until the robot reaches the exit or runs out of energy/crashes
+     * and controls how fast the animation speed is
+     * @param d distance to the exit
+     */
     public void runThread(int d){
         final int distance = d;
         Runnable runnable = new Runnable() {
@@ -86,7 +109,6 @@ public class WallFollower extends Wizard implements RobotDriver {
                     Bundle bundle = new Bundle();
                     bundle.putBoolean("lost", lost);
                     bundle.putInt(KEY, (int) robot.getBatteryLevel());
-                    Log.v(TAG, "Battery Level: " + robot.getBatteryLevel());
                     message.setData(bundle);
                     PlayAnimationActivity.myHandler.sendMessage(message);
                 }
@@ -98,6 +120,10 @@ public class WallFollower extends Wizard implements RobotDriver {
         wallFollowerThread.start();
     }
 
+    /**
+     * Terminates the wallFollower thread and
+     * stops the driver from running
+     */
     @Override
     public void terminateThread(){
         if(wallFollowerThread != null){
@@ -502,6 +528,11 @@ public class WallFollower extends Wizard implements RobotDriver {
         return tempDistance;
     }
 
+
+    /**
+     * Sets the animation speed for the driver
+     * @param speed
+     */
     @Override
     public void setAnimationSpeed(int speed){
         this.speed = speedOptions[speed];

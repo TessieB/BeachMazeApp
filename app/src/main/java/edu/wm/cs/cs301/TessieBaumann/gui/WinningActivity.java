@@ -42,6 +42,7 @@ public class WinningActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         setContentView(R.layout.winning_activity);
         setWinningScreenMessages();
     }
@@ -67,7 +68,6 @@ public class WinningActivity extends AppCompatActivity {
             int energyConsumption = bundle.getInt("Energy Consumption");
             overallEnergyConsumption.setText("Overall Energy Consumption: " + energyConsumption);
         }
-        Log.d("HEY", bundle.getString("Maze Generator"));
     }
 
 

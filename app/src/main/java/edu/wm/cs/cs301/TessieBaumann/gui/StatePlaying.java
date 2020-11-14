@@ -182,18 +182,12 @@ public class StatePlaying  {
                     }
                     break;
                 }
-                //draw();
-                //drawHintIfNecessary();
                 break;
             case Left: // turn left
                 rotate(1);
-                //draw();
-                //drawHintIfNecessary();
                 break;
             case Right: // turn right
                 rotate(-1);
-                //draw();
-                //drawHintIfNecessary();
                 break;
             case Down: // move backward
                 walk(-1);
@@ -208,7 +202,6 @@ public class StatePlaying  {
                         playAnimationActivity.sendWinningMessage(panel);
                     }
                 }
-                //draw();
                 break;
             case ReturnToTitle: // escape to title screen
                 //control.switchToTitle();
@@ -218,7 +211,6 @@ public class StatePlaying  {
                 if (GeneratingActivity.mazeConfig.isValidPosition(px + dx, py + dy)) {
                     setCurrentPosition(px + dx, py + dy) ;
                     draw() ;
-                    //drawHintIfNecessary();
                 }
                 break;
             case ToggleLocalMap: // show local information: current position and visible walls
@@ -361,25 +353,12 @@ public class StatePlaying  {
      */
     private void slowedDownRedraw() {
         draw() ;
-        //panel.commit();
         try {
             Thread.sleep(25);
         } catch (Exception e) {
             // may happen if thread is interrupted
             // no reason to do anything about it, ignore exception
         }
-//        Runnable runnable = new Runnable() {
-//            @Override
-//            public void run() {
-//                try {
-//                    Thread.sleep(25);
-//                } catch (Exception e) {
-//                    // may happen if thread is interrupted
-//                    // no reason to do anything about it, ignore exception
-//                }
-//
-//            }
-//        };
     }
 
     /**

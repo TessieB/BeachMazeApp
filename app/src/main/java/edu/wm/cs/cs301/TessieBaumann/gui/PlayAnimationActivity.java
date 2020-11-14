@@ -6,12 +6,10 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 import edu.wm.cs.cs301.TessieBaumann.gui.Robot.Direction;
 
@@ -49,26 +47,28 @@ public class PlayAnimationActivity extends AppCompatActivity {
     private static final int MAX_MAP_SIZE = 80;  //max size that the map can be
     private static final int MAX_ANIMATION_SPEED = 20;  //max animation speed for the robot
     private static final int ROBOT_INITIAL_ENERGY = 3500;  //amount of energy driver starts with
+
     private String sensorConfig;  //sensor configuration chosen by user
     private int mapSize = 15;  //default map size
     private int animationSpeed = 5;  //default animation speed
     private ProgressBar remainingEnergy;  //remaining energy of robot
     private int shortestPathLength;  //shortest possible path length through the maze
     private String reasonLost = "Ran Out of Energy"; //if the robot lost, tells why
-    private StatePlaying statePlaying;
-    private MazePanel panel;
-    private Robot robot;
-    private Wizard wizard;
-    private RobotDriver wallFollower;
-    boolean[] reliableSensor;
-    private DistanceSensor leftSensor;
-    private DistanceSensor rightSensor;
-    private DistanceSensor frontSensor;
-    private DistanceSensor backSensor;
-    private static final int MEAN_TIME_BETWEEN_FAILURES = 4000;
-    private static final int MEAN_TIME_TO_REPAIR = 2000;
-    private boolean isWizard = false;
-    public static Handler myHandler;
+    private StatePlaying statePlaying;  // allows the user to play the game
+    private MazePanel panel;  // panel to draw the maze on
+    private Robot robot;  // robot that runs through the maze
+    private Wizard wizard;  // driver to make robot go through the maze
+    private RobotDriver wallFollower;  // driver that follows wallFollower algorithm
+
+    boolean[] reliableSensor;  // tells what sensors are reliable and which are not
+    private DistanceSensor leftSensor;  // robot's left sensor
+    private DistanceSensor rightSensor;  // robot's right sensor
+    private DistanceSensor frontSensor;  // robot's front sensor
+    private DistanceSensor backSensor;  // robot's back sensor
+    private static final int MEAN_TIME_BETWEEN_FAILURES = 4000;  // average time between sensor failures
+    private static final int MEAN_TIME_TO_REPAIR = 2000;  // average time to repair sensor failures
+    private boolean isWizard = false;  // tells if the driver is the wizard algorithm
+    public static Handler myHandler;  // handler used to send messages between classes
 
 
     /**
@@ -82,6 +82,7 @@ public class PlayAnimationActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         setContentView(R.layout.play_animation_activity);
         setProgressBar();
 
@@ -93,7 +94,6 @@ public class PlayAnimationActivity extends AppCompatActivity {
 
         statePlaying = new StatePlaying();
         panel = findViewById(R.id.mazePanelViewAnimated);
-        Log.d("inside", "on create");
         int[] startPos = GeneratingActivity.mazeConfig.getStartingPosition();
         shortestPathLength = GeneratingActivity.mazeConfig.getDistanceToExit(startPos[0], startPos[1]);
         statePlaying.setPlayAnimationActivity(this);
@@ -106,6 +106,11 @@ public class PlayAnimationActivity extends AppCompatActivity {
         setAnimationSpeed();
     }
 
+
+    /**
+     * receives any messages for the class and calls the
+     * appropriate methods depending on what message is being received
+     */
     private void handleMessage(){
         myHandler = new Handler(Looper.getMainLooper()){
             @Override
@@ -128,6 +133,14 @@ public class PlayAnimationActivity extends AppCompatActivity {
         };
     }
 
+
+    /**
+     * Takes the sensor information provided that tells what sensor's
+     * failure status is being changed and whether or not that sensor
+     * is failing or has just been repaired and calls setRobotSensorsColors
+     * to set the sensor to green or red on the screen, depending on its status
+     * @param sensorInfo
+     */
     private void failAndRepairSensors(String[] sensorInfo){
         if(sensorInfo[1].equalsIgnoreCase("true")){
             setRobotSensorsColors(true, sensorInfo[0]);
@@ -137,6 +150,11 @@ public class PlayAnimationActivity extends AppCompatActivity {
         }
     }
 
+
+    /**
+     * Sets up the progress bar that shows the amount of energy
+     * the robot has left
+     */
     private void setProgressBar(){
         remainingEnergy = (ProgressBar) findViewById(R.id.remainingEnergyProgressBar);
         remainingEnergy.setMax(ROBOT_INITIAL_ENERGY);
@@ -145,31 +163,25 @@ public class PlayAnimationActivity extends AppCompatActivity {
         remainingEnergyText.setText("Remaining Energy: " + remainingEnergy.getProgress());
     }
 
+
+    /**
+     * Updates the progress bar that tells the user
+     * how much energy the robot has left with the current value
+     * passed in by the handler
+     * @param remainingEnergy of the robot
+     */
     private void updateProgressBar(int remainingEnergy){
         final TextView remainingEnergyText = (TextView) findViewById(R.id.remainingEnergyTextView);
         this.remainingEnergy.setProgress(remainingEnergy);
         remainingEnergyText.setText("Remaining Energy: " + this.remainingEnergy.getProgress());
     }
 
-//    private void setProgressBar(){
-//        remainingEnergy = (ProgressBar) findViewById(R.id.remainingEnergyProgressBar);
-//        remainingEnergy.setMax(ROBOT_INITIAL_ENERGY);
-//        remainingEnergy.setProgress(ROBOT_INITIAL_ENERGY);
-//        final TextView remainingEnergyText = (TextView) findViewById(R.id.remainingEnergyTextView);
-//        remainingEnergyText.setText("Remaining Energy: " + remainingEnergy.getProgress());
-//        myHandler = new Handler(Looper.getMainLooper()){
-//            @Override
-//            public void handleMessage(Message msg){
-//                Bundle bundle = msg.getData();
-//                int remainingEnergyMessage = bundle.getInt(KEY);
-//                Log.v(TAG, remainingEnergyMessage + "");
-//                remainingEnergy.setProgress(remainingEnergyMessage);
-//                remainingEnergyText.setText("Remaining Energy: " + remainingEnergy.getProgress());
-//            }
-//        };
-//    }
 
-
+    /**
+     * Makes the driver selected by the user begin
+     * playing in the maze
+     * @param bundle
+     */
     private void startDriverPlaying(Bundle bundle){
         String driver = bundle.getString("Driver");
         if(driver.equalsIgnoreCase("Wizard")){
@@ -196,7 +208,6 @@ public class PlayAnimationActivity extends AppCompatActivity {
         wizard.setRobot(robot);
         wizard.setMaze(GeneratingActivity.mazeConfig);
         try {
-            Log.d("inside set", "wizard playing try statement");
             boolean wizard1 = wizard.drive2Exit();
         }
         catch(Exception e) {
@@ -347,6 +358,13 @@ public class PlayAnimationActivity extends AppCompatActivity {
         }
     }
 
+
+    /**
+     * This method returns the sensor that corresponds
+     * to the direction that is passed in
+     * @param direction of the sensor that is requested
+     * @return the sensor with the passed in direction
+     */
     public DistanceSensor getSensor(Direction direction) {
         switch(direction){
             case FORWARD :
@@ -400,9 +418,6 @@ public class PlayAnimationActivity extends AppCompatActivity {
         mapSize = size;
         statePlaying.setMapScale(mapSize);
         Log.v(TAG, "Map Size: " + mapSize);
-        Toast toast = Toast.makeText(getApplicationContext(), "Map Size: " + mapSize, Toast.LENGTH_SHORT);
-        toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 0);
-        toast.show();
     }
 
     /**
@@ -448,9 +463,6 @@ public class PlayAnimationActivity extends AppCompatActivity {
             wallFollower.setAnimationSpeed(animationSpeed);
         }
         Log.v(TAG, "Animation Speed: " + animationSpeed);
-        Toast toast = Toast.makeText(getApplicationContext(), "Animation Speed: " + animationSpeed, Toast.LENGTH_SHORT);
-        toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 0);
-        toast.show();
     }
 
 
@@ -499,7 +511,6 @@ public class PlayAnimationActivity extends AppCompatActivity {
             pathLength = wallFollower.getPathLength();
             energyConsump = (int)wallFollower.getEnergyConsumption();
         }
-        Log.d("energy consumption", energyConsump + "");
         bundle.putInt("Path Length", pathLength);
         bundle.putInt("Shortest Path Length", shortestPathLength);
         bundle.putInt("Energy Consumption",  energyConsump);
@@ -548,15 +559,9 @@ public class PlayAnimationActivity extends AppCompatActivity {
         statePlaying.keyDown(Constants.UserInput.ToggleFullMap, 1);
         if(((ToggleButton)view).isChecked()) {
             Log.v(TAG, "Showing Map: On");
-            Toast toast = Toast.makeText(getApplicationContext(), "Showing Map: On", Toast.LENGTH_SHORT);
-            toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 0);
-            toast.show();
         }
         else{
             Log.v(TAG, "Showing Map: Off");
-            Toast toast = Toast.makeText(getApplicationContext(), "Showing Map: Off", Toast.LENGTH_SHORT);
-            toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 0);
-            toast.show();
         }
     }
 
@@ -576,9 +581,6 @@ public class PlayAnimationActivity extends AppCompatActivity {
                 wallFollower.terminateThread();
             }
             Log.v(TAG, "Play");
-            Toast toast = Toast.makeText(getApplicationContext(), "Pause", Toast.LENGTH_SHORT);
-            toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 0);
-            toast.show();
         }
         else{
             if(isWizard){
@@ -598,9 +600,6 @@ public class PlayAnimationActivity extends AppCompatActivity {
                 }
             }
             Log.v(TAG, "Pause");
-            Toast toast = Toast.makeText(getApplicationContext(), "Play", Toast.LENGTH_SHORT);
-            toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 0);
-            toast.show();
         }
     }
 

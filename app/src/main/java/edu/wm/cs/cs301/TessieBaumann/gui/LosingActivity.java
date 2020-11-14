@@ -30,7 +30,7 @@ import edu.wm.cs.cs301.TessieBaumann.R;
 
 public class LosingActivity extends AppCompatActivity {
 
-    private static final String TAG = "message";  //string message
+    private static final String TAG = "LosingActivity";  //string message
 
 
     /**
@@ -45,6 +45,7 @@ public class LosingActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         setContentView(R.layout.losing_activity);
         setLosingScreenMessages();
     }

@@ -140,7 +140,11 @@ public class Map {
         drawCurrentLocation(panel, viewDX, viewDY) ;
     }
 
-
+    /**
+     * sets the map scale to make the
+     * map a certain size
+     * @param scale
+     */
     public void setScale(int scale){
         mapScale = scale;
     }

@@ -147,7 +147,13 @@ public interface DistanceSensor {
      */
     void stopFailureAndRepairProcess() throws UnsupportedOperationException;
 
-    public void setWhichSensor(String sensor);
+    /**
+     * Tells what direction the sensor is, so that
+     * UnreliableSensor can tell PlayAnimationActivity
+     * when a sensor fails or repairs itself
+     * @param sensor
+     */
+    void setWhichSensor(String sensor);
 
 }
 

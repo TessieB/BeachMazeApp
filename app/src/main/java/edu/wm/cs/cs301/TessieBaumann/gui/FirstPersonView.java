@@ -156,9 +156,6 @@ public class FirstPersonView {
      */
     public void draw(MazePanel panel, int x, int y, int walkStep, int ang, float percentToExit) {
         // viewers draw on the buffer graphics
-        //panel.third();
-        //panel.commit();
-        Log.d("first person", "in draw method");
         if (null == panel.getBitmap()) {
             System.out.println("FirstPersonDrawer.draw: can't get graphics object to draw on, skipping redraw operation") ;
             return;
@@ -173,7 +170,6 @@ public class FirstPersonView {
         drawBackground(panel, percentToExit);
         // set color to white and draw what ever can be seen from the current position
         panel.setColor(WHITE);
-        Log.d("first person", "in draw method");
         // reset the set of ranges to a single new element (0,width-1)
         // to cover the full width of the view
         // as we have not drawn any polygons (walls) yet.

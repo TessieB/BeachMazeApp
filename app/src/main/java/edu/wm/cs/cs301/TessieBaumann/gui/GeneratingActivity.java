@@ -16,7 +16,6 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -50,93 +49,33 @@ import edu.wm.cs.cs301.TessieBaumann.generation.Order;
 public class GeneratingActivity extends AppCompatActivity implements Order {
 
 
-    private static final String TAG = "Run Thread";  //message key
+    private static final String TAG = "GeneratingActivity";  //message key
     private static final String PROGRESS_KEY = "my message key";  //message key
     private ProgressBar loadingBar;  //progress bar for loading maze
     private Handler handler;  //handler to send messages from background thread to UI thread
     private String driver;  //driver that the maze is going to use
     private boolean backPressed = false;  //tells whether or not the back button has been pressed
     private String robot = "Premium";  //sensor configuration that the user chooses
-    private Order.Builder builder;
-    private int skillLevel;
-    private boolean rooms;
-    private int seed = 13;
-    protected Factory factory;
-    private int percentdone = 0;
-    public static Maze mazeConfig;
-    private boolean deterministic = false;
-    private final int mode = Activity.MODE_PRIVATE;
-    private final String MYPREFS = "My Preferences";
-    private SharedPreferences myPreferences;
-    private SharedPreferences.Editor myEditor;
-    private final int DEFAULT_SEED = 13;
+    private Order.Builder builder;  // builder for the maze
+    private int skillLevel;  // difficulty level of the maze
+    private boolean rooms;  // whether or not the maze has rooms
+    private int seed;  // seed to generate random maze
+    protected Factory factory;  // factory created to order maze
+    private int percentdone;  // gives the percent that the maze has loaded
+    public static Maze mazeConfig;  // static variable for the maze configuration
+    private boolean deterministic = false;  // tells whether or not the maze is perfect
+    private final int mode = Activity.MODE_PRIVATE;  // mode for the preference storage
+    private final String MYPREFS = "My Preferences";  // string name for myPreferences
+    private SharedPreferences myPreferences;  // storage for maze settings
+    private SharedPreferences.Editor myEditor;  // editor for myPreferences
+    private final int DEFAULT_SEED = 13;  // default seed value
 
 
 
     public GeneratingActivity(){
-    }
-
-    /*public GeneratingActivity(Bundle bundle){
-        factory = new MazeFactory();
-        switch(bundle.getString("Maze Generator")){
-            case "Prim":
-                builder = Builder.Prim;
-                break;
-            case "Eller":
-                builder = Builder.Eller;
-                break;
-            case "DFS":
-                builder = Builder.DFS;
-                break;
-        }
-        skillLevel = bundle.getInt("Skill Level");
-        rooms = bundle.getBoolean("Rooms");
         seed = 13;
-    }*/
-
-
-    private void init(Bundle bundle){
-        factory = new MazeFactory();
-        switch(bundle.getString("Maze Generator")){
-            case "Prim":
-                builder = Builder.Prim;
-                break;
-            case "Eller":
-                builder = Builder.Eller;
-                break;
-            case "DFS":
-                builder = Builder.DFS;
-                break;
-        }
-        skillLevel = bundle.getInt("Skill Level");
-        rooms = bundle.getBoolean("Rooms");
-        if(!deterministic){
-            Random rand = new Random();
-            seed = rand.nextInt();
-        }
+        percentdone = 0;
     }
-
-    private void storeMazeSettings(Boolean revisit){
-        myPreferences = getSharedPreferences(MYPREFS, mode);
-        myEditor = myPreferences.edit();
-        if(revisit){
-            generatePreviousMaze();
-        }
-        else{
-            storePreferences();
-        }
-    }
-
-    private void generatePreviousMaze(){
-        seed = myPreferences.getInt(builder + " " + skillLevel + " " + rooms, DEFAULT_SEED);
-    }
-
-    private void storePreferences(){
-        myEditor.clear();
-        myEditor.putInt(builder + " " + skillLevel + " " + rooms, seed);
-        myEditor.commit();
-    }
-
 
     /**
      * This method sets the content view to the
@@ -150,15 +89,11 @@ public class GeneratingActivity extends AppCompatActivity implements Order {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         Bundle bundle = getIntent().getExtras();
-        Log.d("bundle", bundle.getString("Maze Generator"));
         init(bundle);
         Boolean revist = bundle.getBoolean("Revisit");
         storeMazeSettings(revist);
-        Toast toast = Toast.makeText(getApplicationContext(), "Builder: " + builder + " Skill Level: " + skillLevel + " Rooms: " + rooms + " Seed: " + seed, Toast.LENGTH_LONG);
-        toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 0);
-        toast.show();
-        //Log.d("builder", builder.toString());
         factory.order(this);
         setContentView(R.layout.generating_activity);
         Spinner sensorSpinner = (Spinner) findViewById(R.id.sensorspinner);
@@ -192,6 +127,72 @@ public class GeneratingActivity extends AppCompatActivity implements Order {
     }
 
     /**
+     * Initializes each of the elements in the order
+     * with the values chosen by the user in AMazeActivity
+     * @param bundle
+     */
+    private void init(Bundle bundle){
+        factory = new MazeFactory();
+        switch(bundle.getString("Maze Generator")){
+            case "Prim":
+                builder = Builder.Prim;
+                break;
+            case "Eller":
+                builder = Builder.Eller;
+                break;
+            case "DFS":
+                builder = Builder.DFS;
+                break;
+        }
+        skillLevel = bundle.getInt("Skill Level");
+        rooms = bundle.getBoolean("Rooms");
+        if(!deterministic){
+            Random rand = new Random();
+            seed = rand.nextInt();
+        }
+    }
+
+
+    /**
+     * Initializes myPreferences and myEditor and calls
+     * generatePreviousMaze() if the user wants to revisit
+     * their last maze; otherwise, it calls storePreferences()
+     * to store the preferences for this maze
+     * @param revisit
+     */
+    private void storeMazeSettings(Boolean revisit){
+        myPreferences = getSharedPreferences(MYPREFS, mode);
+        myEditor = myPreferences.edit();
+        if(revisit){
+            generatePreviousMaze();
+        }
+        else{
+            storePreferences();
+        }
+    }
+
+
+    /**
+     * Puts the maze information in myPreferences with the
+     * builder, skill level, and rooms as the key and the seed as the value
+     */
+    private void generatePreviousMaze(){
+        seed = myPreferences.getInt(builder + " " + skillLevel + " " + rooms, DEFAULT_SEED);
+    }
+
+
+    /**
+     * stores the key and value pair from this maze in myPreferences
+     */
+    private void storePreferences(){
+        myEditor.clear();
+        myEditor.putInt(builder + " " + skillLevel + " " + rooms, seed);
+        myEditor.commit();
+    }
+
+
+
+    /**
      * Allows external increase to percentage in generating mode.
      * Internal value is only updated if it exceeds the last value and is less or equal 100
      * @param percentage gives the new percentage on a range [0,100]
@@ -199,6 +200,7 @@ public class GeneratingActivity extends AppCompatActivity implements Order {
      */
     @Override
     public void updateProgress(int percentage) {
+        Log.v(TAG, "Updating progress loaded to " + percentage);
         if (this.percentdone < percentage && percentage <= 100) {
             this.percentdone = percentage;
             loadingBar.setProgress(percentdone);
@@ -224,43 +226,6 @@ public class GeneratingActivity extends AppCompatActivity implements Order {
 
 
     /**
-     * This method creates a background thread that
-     * updates the progress bar, giving the appearance that
-     * a maze is being loaded.
-     * @param view which is the progress bar that loads the maze
-     */
-    /*public void runThread(View view){
-        loadingBar.setProgress(0);
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                for(int i = 0; i < 100; i+= 10) {
-                    Log.v(TAG, "backPressed value: " + backPressed);
-                    if(backPressed){
-                        break;
-                    }
-                    Log.v(TAG, "Running thread inside run method");
-                    try{
-                        Thread.sleep(500);
-                    }
-                    catch (InterruptedException e){
-                        System.out.println("Thread was interrupted");
-                    }
-                    Message message = new Message();
-                    Bundle bundle = new Bundle();
-                    bundle.putString(KEY, "time to increment the progress bar by 5");
-                    message.setData(bundle);
-                    myHandler.sendMessage(message);
-                }
-                Log.v(TAG, "Thread is done running");
-            }
-        };
-        Thread thread = new Thread(runnable);
-        thread.start();
-    }*/
-
-
-    /**
      * This method sets the driver to be the
      * driver that the user clicks on.
      * @param view which is the driver radio button
@@ -268,7 +233,7 @@ public class GeneratingActivity extends AppCompatActivity implements Order {
     public void setDriver(View view){
         RadioButton tempDriver = (RadioButton) view;
         driver = tempDriver.getText().toString();
-        Log.d(TAG, "Driver: " + driver);
+        Log.v(TAG, "Driver: " + driver);
         showStartButton();
     }
 

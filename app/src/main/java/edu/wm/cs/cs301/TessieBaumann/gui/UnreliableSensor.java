@@ -204,6 +204,11 @@ public class UnreliableSensor extends ReliableSensor implements DistanceSensor, 
         return failure;
     }
 
+    /**
+     * Tells the sensor which direction the sensor
+     * it is currently working with has
+     * @param sensor
+     */
     @Override
     public void setWhichSensor(String sensor){
         whichSensor = sensor;

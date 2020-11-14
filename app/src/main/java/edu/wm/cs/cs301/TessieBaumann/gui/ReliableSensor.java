@@ -186,6 +186,25 @@ public class ReliableSensor implements DistanceSensor {
         return SENSING_ENERGY;
     }
 
+
+    /**
+     * Method starts a concurrent, independent failure and repair
+     * process that makes the sensor fail and repair itself.
+     * This creates alternating time periods of up time and down time.
+     * Up time: The duration of a time period when the sensor is in
+     * operational is characterized by a distribution
+     * whose mean value is given by parameter meanTimeBetweenFailures.
+     * Down time: The duration of a time period when the sensor is in repair
+     * and not operational is characterized by a distribution
+     * whose mean value is given by parameter meanTimeToRepair.
+     *
+     * This an optional operation. If not implemented, the method
+     * throws an UnsupportedOperationException.
+     *
+     * @param meanTimeBetweenFailures is the mean time in seconds, must be greater than zero
+     * @param meanTimeToRepair is the mean time in seconds, must be greater than zero
+     * @throws UnsupportedOperationException if method not supported
+     */
     @Override
     public void startFailureAndRepairProcess(int meanTimeBetweenFailures, int meanTimeToRepair)
             throws UnsupportedOperationException {
@@ -193,12 +212,37 @@ public class ReliableSensor implements DistanceSensor {
 
     }
 
+    /**
+     * This method stops a failure and repair process and
+     * leaves the sensor in an operational state.
+     *
+     * It is complementary to starting a
+     * failure and repair process.
+     *
+     * Intended use: If called after starting a process, this method
+     * will stop the process as soon as the sensor is operational.
+     *
+     * If called with no running failure and repair process,
+     * the method will return an UnsupportedOperationException.
+     *
+     * This an optional operation. If not implemented, the method
+     * throws an UnsupportedOperationException.
+     *
+     * @throws UnsupportedOperationException if method not supported
+     */
     @Override
     public void stopFailureAndRepairProcess() throws UnsupportedOperationException {
         throw new UnsupportedOperationException();
 
     }
 
+    /**
+     * This method tells UnreliableSensor what
+     * directional sensor it is working with so
+     * that it can tell PlayAnimationActivity which
+     * sensor is at what stage of failure or repair
+     * @param sensor
+     */
     @Override
     public void setWhichSensor(String sensor){}
 
