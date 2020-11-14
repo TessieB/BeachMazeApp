@@ -9,8 +9,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Shader;
-import android.graphics.fonts.Font;
-import android.os.Bundle;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -18,6 +16,8 @@ import android.view.View;
 import androidx.core.content.ContextCompat;
 
 import edu.wm.cs.cs301.TessieBaumann.R;
+
+import static android.graphics.Color.rgb;
 
 public class MazePanel extends View {
 
@@ -40,6 +40,7 @@ public class MazePanel extends View {
     private static final int yellowWM = Color.parseColor("#FFFF99");
     private boolean top = true;  //boolean value that tells if top or bottom background rectangle is being drawn
     private String markerFont;  //current font of the marker
+    private Paint shaderPaint;
 
 
     /**
@@ -93,6 +94,10 @@ public class MazePanel extends View {
         bitmap = Bitmap.createBitmap(Constants.VIEW_WIDTH, Constants.VIEW_HEIGHT, config);
         canvas = new Canvas(bitmap);
         paint = new Paint();
+        shaderPaint = new Paint();
+        Bitmap bitmap2 = BitmapFactory.decodeResource(getResources(), R.drawable.fish3);
+        BitmapShader sandShader = new BitmapShader(bitmap2, Shader.TileMode.REPEAT, Shader.TileMode.REPEAT);
+        shaderPaint.setShader(sandShader);
     }
 
 
@@ -202,29 +207,30 @@ public class MazePanel extends View {
         int wallColor = 0;
         switch (((d >> 3) ^ cc) % 6) {
             case 0:
-                wallColor = Color.rgb(rgbValue, RGB_DEF, RGB_DEF);
+                wallColor = rgb(rgbValue, RGB_DEF, RGB_DEF);
                 break;
             case 1:
-                wallColor = Color.rgb(RGB_DEF, RGB_DEF_GREEN, RGB_DEF);
+                wallColor = rgb(RGB_DEF, RGB_DEF_GREEN, RGB_DEF);
                 break;
             case 2:
-                wallColor = Color.rgb(RGB_DEF, RGB_DEF, rgbValue);
+                wallColor = rgb(RGB_DEF, RGB_DEF, rgbValue);
                 break;
             case 3:
-                wallColor = Color.rgb(rgbValue, RGB_DEF_GREEN, RGB_DEF);
+                wallColor = rgb(rgbValue, RGB_DEF_GREEN, RGB_DEF);
                 break;
             case 4:
-                wallColor = Color.rgb(RGB_DEF, RGB_DEF_GREEN, rgbValue);
+                wallColor = rgb(RGB_DEF, RGB_DEF_GREEN, rgbValue);
                 break;
             case 5:
-                wallColor = Color.rgb(rgbValue, RGB_DEF, rgbValue);
+                wallColor = rgb(rgbValue, RGB_DEF, rgbValue);
                 break;
             default:
-                wallColor = Color.rgb(RGB_DEF, RGB_DEF, RGB_DEF);
+                wallColor = rgb(RGB_DEF, RGB_DEF, RGB_DEF);
                 break;
         }
         return wallColor;
     }
+
 
     /**
      * Draws two solid rectangles to provide a background.
@@ -235,17 +241,7 @@ public class MazePanel extends View {
      */
     public void addBackground(float percentToExit) {
         paint.setColor(getBackgroundColor(percentToExit, top));
-//        Bitmap bitmap2 = BitmapFactory.decodeResource(getResources(), R.drawable.sandy3);
-//        BitmapShader sandShader = new BitmapShader(bitmap2, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
-//        paint.setShader(sandShader);
-//        //canvas.drawRect(0, 0, 400, 400, paint);
-//        Bitmap bitmap3 = BitmapFactory.decodeResource(getResources(), R.drawable.clouds);
-//        BitmapShader cloudShader = new BitmapShader(bitmap3, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
-//        paint.setShader(cloudShader);
-//        canvas.drawBitmap(bitmap2, 0, 0, null);
-        //canvas.drawRect(0, 0, 400, 200, paint);
-        //canvas.drawPicture(R.id.);
-        paint.setColor(ContextCompat.getColor(getContext(), R.color.skyBlue));
+        //paint.setColor(ContextCompat.getColor(getContext(), R.color.skyBlue));
         if(!top){
             paint.setColor(ContextCompat.getColor(getContext(), R.color.sand));
         }
@@ -262,7 +258,7 @@ public class MazePanel extends View {
      * @return the color to use for the background rectangle
      */
     private int getBackgroundColor(float percentToExit, boolean top) {
-        return top? blend(Color.valueOf(yellowWM), Color.valueOf(goldWM), percentToExit) :
+        return top? blend(Color.valueOf(Color.parseColor("#1FCDF8")), Color.valueOf(Color.parseColor("#031985")), percentToExit) :
                 blend(Color.valueOf(Color.LTGRAY), Color.valueOf(greenWM), percentToExit);
     }
 
@@ -273,17 +269,17 @@ public class MazePanel extends View {
      * @param weight0 of c0
      * @return blend of colors c0 and c1 as weighted average
      */
-    private int blend(Color c0, Color c1, double weight0) {
+    private int blend(Color c0, Color c1, float weight0) {
         if (weight0 < 0.1)
             return c1.toArgb();
         if (weight0 > 0.95)
             return c0.toArgb();
-        double r = weight0 * c0.red() + (1-weight0) * c1.red();
-        double g = weight0 * c0.green() + (1-weight0) * c1.green();
-        double b = weight0 * c0.blue() + (1-weight0) * c1.blue();
-        double a = Math.max(c0.alpha(), c1.alpha());
+        float r = weight0 * c0.red() + (1-weight0) * c1.red();
+        float g = weight0 * c0.green() + (1-weight0) * c1.green();
+        float b = weight0 * c0.blue() + (1-weight0) * c1.blue();
+        float a = Math.max(c0.alpha(), c1.alpha());
 
-        return Color.valueOf((int) r, (int) g, (int) b, (int) a).toArgb();
+        return Color.valueOf(r, g, b, a).toArgb();
     }
 
     /**
@@ -325,7 +321,7 @@ public class MazePanel extends View {
             for(int i = 1; i < nPoints; i++){
                 path.lineTo(xPoints[i], yPoints[i]);
             }
-            canvas.drawPath(path, paint);
+            canvas.drawPath(path, shaderPaint);
         }
     }
 

@@ -204,4 +204,22 @@ public class AMazeActivity extends AppCompatActivity  {
         }
     }
 
+    /**
+     * Pauses the music when the activity is paused
+     */
+    @Override
+    public void onPause(){
+        super.onPause();
+        mediaPlayer.pause();
+    }
+
+    /**
+     * Plays the music when the activity is resumed
+     */
+    @Override
+    public void onResume(){
+        super.onResume();
+        mediaPlayer.start();
+    }
+
 }

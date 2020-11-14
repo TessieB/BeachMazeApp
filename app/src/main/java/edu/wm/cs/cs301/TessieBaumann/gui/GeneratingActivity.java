@@ -54,7 +54,7 @@ public class GeneratingActivity extends AppCompatActivity implements Order {
     private Handler handler;  //handler to send messages from background thread to UI thread
     private String driver;  //driver that the maze is going to use
     private boolean backPressed = false;  //tells whether or not the back button has been pressed
-    private String robot = "Premium";  //sensor configuration that the user chooses
+    private String robot;  //sensor configuration that the user chooses
     private Order.Builder builder;  // builder for the maze
     private int skillLevel;  // difficulty level of the maze
     private boolean rooms;  // whether or not the maze has rooms
@@ -103,6 +103,7 @@ public class GeneratingActivity extends AppCompatActivity implements Order {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 setRobot(adapterView.getItemAtPosition(i).toString());
+                showStartButton(view);
             }
 
             @Override
@@ -119,7 +120,7 @@ public class GeneratingActivity extends AppCompatActivity implements Order {
             public void handleMessage(Message msg){
                 Bundle bundle = msg.getData();
                 int progressBarMessage = bundle.getInt(PROGRESS_KEY);
-                showStartButton();
+                showStartButton(loadingBar);
             }
         };
 
@@ -233,7 +234,7 @@ public class GeneratingActivity extends AppCompatActivity implements Order {
         RadioButton tempDriver = (RadioButton) view;
         driver = tempDriver.getText().toString();
         Log.v(TAG, "Driver: " + driver);
-        showStartButton();
+        showStartButton(view);
     }
 
 
@@ -243,11 +244,12 @@ public class GeneratingActivity extends AppCompatActivity implements Order {
      * maze has fully loaded (when the progress bar has
      * reached 100%) and the user has chosen a driver
      */
-    private void showStartButton(){
+    private void showStartButton(View view){
         Log.v(TAG, "Loading bar: " + loadingBar.toString());
-        if(driver != null && loadingBar.getProgress() == 100) {
-            Button startButton = (Button) findViewById(R.id.startGameButton);
-            startButton.setVisibility(startButton.VISIBLE);
+        if(driver != null && loadingBar.getProgress() == 100 && !robot.equalsIgnoreCase("None Selected")) {
+//            Button startButton = (Button) findViewById(R.id.startGameButton);
+//            startButton.setVisibility(startButton.VISIBLE);
+            moveToNextActivity(view);
         }
     }
 
@@ -365,6 +367,24 @@ public class GeneratingActivity extends AppCompatActivity implements Order {
     @Override
     public void deliver(Maze mazeConfig) {
         this.mazeConfig = mazeConfig;
+    }
+
+    /**
+     * Pauses the music when the activity is paused
+     */
+    @Override
+    public void onPause(){
+        super.onPause();
+        AMazeActivity.mediaPlayer.pause();
+    }
+
+    /**
+     * Plays the music when the activity is resumed
+     */
+    @Override
+    public void onResume(){
+        super.onResume();
+        AMazeActivity.mediaPlayer.start();
     }
 
 }

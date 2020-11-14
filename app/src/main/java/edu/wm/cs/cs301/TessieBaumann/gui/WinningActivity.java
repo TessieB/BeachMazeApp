@@ -99,4 +99,22 @@ public class WinningActivity extends AppCompatActivity {
         AMazeActivity.mediaPlayer.stop();
         startActivity(intent);
     }
+
+    /**
+     * Pauses the music when the activity is paused
+     */
+    @Override
+    public void onPause(){
+        super.onPause();
+        AMazeActivity.mediaPlayer.pause();
+    }
+
+    /**
+     * Plays the music when the activity is resumed
+     */
+    @Override
+    public void onResume(){
+        super.onResume();
+        AMazeActivity.mediaPlayer.start();
+    }
 }

@@ -129,6 +129,7 @@ public class WallFollower extends Wizard implements RobotDriver {
         if(wallFollowerThread != null){
             wallFollowerThread.interrupt();
             wallFollowerThread = null;
+            stopFailureAndRepairThreads();
         }
     }
 

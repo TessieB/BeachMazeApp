@@ -1,5 +1,6 @@
 package edu.wm.cs.cs301.TessieBaumann.gui;
 
+import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -672,6 +673,24 @@ public class PlayAnimationActivity extends AppCompatActivity {
         else{
             sensorText.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.red));
         }
+    }
+
+    /**
+     * Pauses the music when the activity is paused
+     */
+    @Override
+    public void onPause(){
+        super.onPause();
+        AMazeActivity.mediaPlayer.pause();
+    }
+
+    /**
+     * Plays the music when the activity is resumed
+     */
+    @Override
+    public void onResume(){
+        super.onResume();
+        AMazeActivity.mediaPlayer.start();
     }
 
 }

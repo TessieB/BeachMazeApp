@@ -6,10 +6,11 @@
     <color name="black">#020202</color>
     <color name="white">#FBFBFB</color>
     <color name="orange">#F69E50</color>
-    <color name="darkBlue">#0E2597</color>
+    <color name="darkBlue">#031985</color>
     <color name="sensor">#030304</color>
     <color name="green">#237102</color>
     <color name="red">#F44336</color>
     <color name="skyBlue">#39DDF3</color>
     <color name="sand">#F4DA8A</color>
+    <color name="sunset">#1FCDF8</color>
 </resources>
